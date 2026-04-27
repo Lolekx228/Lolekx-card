@@ -28,7 +28,7 @@
       inset: 0;
       background-size: cover;
       background-position: center;
-      filter: blur(5px) brightness(0.7); /* blur меньше, картинка читаемее */ [web:106]
+      filter: blur(5px) brightness(0.7);
       z-index: -2;
     }
 
@@ -53,8 +53,7 @@
     }
 
     .profile-card:hover {
-      /* только тень, без зума/сдвигов */
-      box-shadow: 0 20px 44px rgba(0,0,0,0.6); [web:105]
+      box-shadow: 0 20px 44px rgba(0,0,0,0.6);
     }
 
     .avatar {
@@ -96,7 +95,7 @@
       align-items: center;
       gap: 6px;
       background: rgba(0,0,0,0.6);
-      padding: 4px 10px; /* меньше паддинги, ближе к размеру текста */
+      padding: 3px 10px;
       border-radius: 999px;
     }
 
@@ -110,6 +109,11 @@
       width: 100%;
       height: 100%;
       display: block;
+    }
+
+    .location-text {
+      display: inline-block;
+      line-height: 1.2;
     }
 
     .social-links {
@@ -137,7 +141,6 @@
     }
 
     .social-links a:hover {
-      /* без scale/transform */
       background: rgba(255,255,255,0.18);
       border-color: rgba(255,255,255,0.26);
     }
@@ -164,7 +167,6 @@
       align-self: center;
     }
 
-    /* ОТДЕЛЬНАЯ ПЛАШКА ДЛЯ МЕДИА С ТЕМ ЖЕ ГРАДИЕНТОМ */
     .media-card {
       border-radius: 20px;
       padding: 12px 10px;
@@ -174,7 +176,6 @@
       background: linear-gradient(25deg, rgba(111,0,0,0.7), rgba(147,56,0,0.7));
     }
 
-    /* Внутренняя тёмная плашка с плеером */
     .audio-player-card {
       background: rgba(0,0,0,0.65);
       border-radius: 16px;
@@ -315,7 +316,6 @@
 <body>
 <div class="background-blur" id="bgBlur"></div>
 
-<!-- ОСНОВНАЯ КАРТОЧКА -->
 <div class="profile-card" id="profileCard">
   <img class="avatar" id="avatar" src="" alt="Avatar">
   <h1 class="username" id="username"></h1>
@@ -324,7 +324,6 @@
   <div class="location-wrapper">
     <div class="location" id="location">
       <span class="location-icon">
-        <!-- Google Maps‑style pin -->
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
           <path d="M12 2C8.7 2 6 4.7 6 8c0 4.1 4.4 8.9 5.7 10.3.2.2.4.3.6.3s.4-.1.6-.3C13.6 16.9 18 12.1 18 8c0-3.3-2.7-6-6-6zm0 8.5c-1.4 0-2.5-1.1-2.5-2.5S10.6 5.5 12 5.5s2.5 1.1 2.5 2.5S13.4 10.5 12 10.5z"/>
         </svg>
@@ -339,7 +338,6 @@
   </div>
 </div>
 
-<!-- ОТДЕЛЬНАЯ ПЛАШКА С МЕДИА ТАКОЙ ЖЕ ШИРИНЫ НИЖЕ -->
 <div class="media-card">
   <div id="audioPlayerContainer"></div>
 </div>
@@ -386,8 +384,7 @@
       if (!raw) return defaultProfile;
       const parsed = JSON.parse(raw);
       return { ...defaultProfile, ...parsed };
-    } catch (e) {
-      console.error(e);
+    } catch {
       return defaultProfile;
     }
   }
@@ -416,6 +413,7 @@
       profileCard.style.background = profile.bgColor;
       document.querySelector('.media-card').style.background = profile.bgColor;
     }
+
     profileCard.style.opacity = profile.opacity;
     profileCard.style.backdropFilter = `blur(${Math.max(profile.blur - 2, 0)}px)`;
 
@@ -444,7 +442,6 @@
         a.appendChild(iconSpan);
         a.appendChild(document.createTextNode('YouTube'));
       } else if (s.name === 'discord') {
-        /* более аккуратный дискорд‑логотип (bootstrap icon) */ [web:88]
         iconSpan.innerHTML = `
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
             <path d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011.05.05 0 0 0-.052.025 8 8 0 0 0-.406.833 12.2 12.2 0 0 0-3.658 0 8 8 0 0 0-.412-.833.05.05 0 0 0-.052-.025 13.2 13.2 0 0 0-3.257 1.011.04.04 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032a.05.05 0 0 0 .021.037 13.3 13.3 0 0 0 3.995 2.02.05.05 0 0 0 .056-.019 9 9 0 0 0 .818-1.329.05.05 0 0 0-.01-.059l-.018-.011c-.448-.168-.87-.38-1.248-.595a.05.05 0 0 1-.02-.066l.015-.019q.127-.095.248-.195a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.05.05 0 0 1 .053.007q.121.1.248.195a.05.05 0 0 1-.004.085 8 8 0 0 1-1.249.594.05.05 0 0 0-.03.03.05.05 0 0 0 .003.041c.24.465.515.909.817 1.329a.05.05 0 0 0 .056.019 13.2 13.2 0 0 0 4.001-2.02.05.05 0 0 0 .021-.037c.334-3.451-.559-6.449-2.366-9.106a.03.03 0 0 0-.02-.019M6.337 10.215c-.789 0-1.438-.724-1.438-1.612s.637-1.613 1.438-1.613c.807 0 1.45.73 1.438 1.613 0 .888-.637 1.612-1.438 1.612m5.316 0c-.788 0-1.438-.724-1.438-1.612s.637-1.613 1.438-1.613c.807 0 1.451.73 1.438 1.613 0 .888-.631 1.612-1.438 1.612"/>
@@ -455,9 +452,7 @@
         a.textContent = s.name || 'Link';
       }
 
-      if (profile.monochrome) {
-        a.style.filter = "grayscale(1)";
-      }
+      if (profile.monochrome) a.style.filter = "grayscale(1)";
       socialLinksEl.appendChild(a);
     });
 
@@ -476,7 +471,6 @@
 
   applyProfile();
 
-  // Аудиоплеер
   const audioPlayerContainer = document.getElementById('audioPlayerContainer');
   const playlist = (profile.audio || []).map(track => ({
     title: track.title,
@@ -491,7 +485,7 @@
   }
 
   let audio = null;
-  let currentVolume = 0.5; // сохраняем громкость между треками [web:79]
+  let currentVolume = 0.5;
 
   function renderAudioPlayer() {
     if (!playlist.length) {
@@ -531,10 +525,7 @@
   }
 
   function initPlayer() {
-    if (audio) {
-      audio.pause();
-      audio = null;
-    }
+    if (audio) audio.pause();
 
     const track = playlist[currentTrack];
     audio = new Audio(track.url);
@@ -554,13 +545,9 @@
     let isPlaying = false;
 
     function updateVolumeIcon() {
-      if (audio.volume === 0) {
-        volumeIcon.textContent = '🔇';
-      } else if (audio.volume < 0.5) {
-        volumeIcon.textContent = '🔉';
-      } else {
-        volumeIcon.textContent = '🔊';
-      }
+      if (audio.volume === 0) volumeIcon.textContent = '🔇';
+      else if (audio.volume < 0.5) volumeIcon.textContent = '🔉';
+      else volumeIcon.textContent = '🔊';
     }
 
     updateVolumeIcon();
