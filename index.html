@@ -64,6 +64,9 @@
       object-fit: cover;
       border: 3px solid #5b5b5b;
       margin-bottom: 10px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .username {
@@ -71,12 +74,14 @@
       font-weight: 700;
       margin-bottom: 6px;
       letter-spacing: -0.5px;
+      text-align: center;
     }
 
     .description {
       font-size: 16px;
       opacity: 0.9;
       line-height: 1.5;
+      text-align: center;
     }
 
     .location {
@@ -88,6 +93,16 @@
       background: rgba(0,0,0,0.45);
       padding: 5px 14px;
       border-radius: 30px;
+      justify-content: center;
+    }
+
+    .location-icon {
+      font-size: 14px;
+      display: inline-block;
+    }
+
+    .location-text {
+      display: inline-block;
     }
 
     .social-links {
@@ -142,19 +157,19 @@
       align-self: center;
     }
 
-    /* ОТДЕЛЬНАЯ ПЛАШКА ДЛЯ МЕДИА */
+    /* ОТДЕЛЬНАЯ ПЛАШКА ДЛЯ МЕДИА С ТЕМ ЖЕ ГРАДИЕНТОМ, ЧТО И ОСНОВНАЯ */
     .media-card {
-      background: rgba(0,0,0,0.7);
       border-radius: 20px;
       padding: 12px 10px;
       border: 1px solid rgba(255,255,255,0.14);
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       backdrop-filter: blur(6px);
+      background: linear-gradient(25deg, rgba(111,0,0,0.7), rgba(147,56,0,0.7));
     }
 
-    /* Аудиоплеер */
+    /* Внутренняя тёмная плашка с плеером */
     .audio-player-card {
-      background: rgba(0,0,0,0.6);
+      background: rgba(0,0,0,0.65);
       border-radius: 16px;
       padding: 10px;
       display: flex;
@@ -300,7 +315,10 @@
   <img class="avatar" id="avatar" src="" alt="Avatar">
   <h1 class="username" id="username"></h1>
   <p class="description" id="description"></p>
-  <div class="location" id="location"></div>
+  <div class="location" id="location">
+    <span class="location-icon">📍</span>
+    <span class="location-text"></span>
+  </div>
   <div class="social-links" id="socialLinks"></div>
   <div class="views-counter">
     Просмотров профиля: <span id="viewCount">0</span>
@@ -368,6 +386,7 @@
   const usernameEl = document.getElementById('username');
   const descriptionEl = document.getElementById('description');
   const locationEl = document.getElementById('location');
+  const locationTextEl = locationEl.querySelector('.location-text');
   const socialLinksEl = document.getElementById('socialLinks');
 
   function applyProfile() {
@@ -378,15 +397,19 @@
     if (profile.gradientEnabled) {
       profileCard.style.background =
         `linear-gradient(25deg, ${profile.gradient1}, ${profile.gradient2})`;
+      // медиа-плашка такой же градиент
+      document.querySelector('.media-card').style.background =
+        `linear-gradient(25deg, ${profile.gradient1}, ${profile.gradient2})`;
     } else {
       profileCard.style.background = profile.bgColor;
+      document.querySelector('.media-card').style.background = profile.bgColor;
     }
     profileCard.style.opacity = profile.opacity;
     profileCard.style.backdropFilter = `blur(${Math.max(profile.blur - 2, 0)}px)`;
 
     usernameEl.textContent = profile.displayName;
     descriptionEl.textContent = profile.description;
-    locationEl.textContent = profile.location;
+    locationTextEl.textContent = profile.location;
     profileCard.style.color = profile.textColor;
 
     avatar.src = profile.avatarUrl;
@@ -398,7 +421,6 @@
       a.href = s.url;
       a.target = "_blank";
 
-      // SVG‑значки вместо эмодзи
       const iconSpan = document.createElement('span');
       iconSpan.className = 'icon';
 
@@ -456,7 +478,7 @@
   }
 
   let audio = null;
-  let currentVolume = 0.5; // сохраняем громкость между треками
+  let currentVolume = 0.5; // сохраняем громкость между треками [web:76][web:79]
 
   function renderAudioPlayer() {
     if (!playlist.length) {
@@ -484,7 +506,9 @@
             <button class="ctrl-btn" id="prevBtn">&#9664;&#9664;</button>
             <button class="ctrl-btn play-btn" id="playPauseBtn">&#9654;</button>
             <button class="ctrl-btn" id="nextBtn">&#9654;&#9654;</button>
-            <button class="ctrl-btn" id="volumeBtn">VOL</button>
+            <button class="ctrl-btn" id="volumeBtn">
+              <span id="volumeIcon">&#128266;</span>
+            </button>
             <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="${currentVolume}">
           </div>
         </div>
@@ -501,19 +525,32 @@
 
     const track = playlist[currentTrack];
     audio = new Audio(track.url);
-    audio.volume = currentVolume; // применяем сохранённую громкость [web:76][web:79]
+    audio.volume = currentVolume;
 
     const playPauseBtn = document.getElementById('playPauseBtn');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
     const volumeBtn = document.getElementById('volumeBtn');
     const volumeSlider = document.getElementById('volumeSlider');
+    const volumeIcon = document.getElementById('volumeIcon');
     const progressBar = document.getElementById('progressBar');
     const progressFill = document.getElementById('progressFill');
     const currentTimeSpan = document.getElementById('currentTime');
     const durationSpan = document.getElementById('duration');
 
     let isPlaying = false;
+
+    function updateVolumeIcon() {
+      if (audio.volume === 0) {
+        volumeIcon.textContent = '🔇';
+      } else if (audio.volume < 0.5) {
+        volumeIcon.textContent = '🔉';
+      } else {
+        volumeIcon.textContent = '🔊';
+      }
+    }
+
+    updateVolumeIcon();
 
     function updateProgress() {
       if (!audio.duration) return;
@@ -575,6 +612,7 @@
       volumeSlider.addEventListener('input', () => {
         currentVolume = parseFloat(volumeSlider.value);
         audio.volume = currentVolume;
+        updateVolumeIcon();
       });
     }
 
@@ -589,6 +627,7 @@
           audio.volume = currentVolume;
           volumeSlider.value = currentVolume;
         }
+        updateVolumeIcon();
       });
     }
 
