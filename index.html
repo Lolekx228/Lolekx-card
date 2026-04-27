@@ -157,16 +157,6 @@
       display: block;
     }
 
-    .views-counter {
-      font-size: 12px;
-      opacity: 0.7;
-      background: rgba(0,0,0,0.5);
-      display: inline-block;
-      padding: 4px 12px;
-      border-radius: 40px;
-      align-self: center;
-    }
-
     .media-card {
       border-radius: 20px;
       padding: 12px 10px;
@@ -333,9 +323,6 @@
   </div>
 
   <div class="social-links" id="socialLinks"></div>
-  <div class="views-counter">
-    Просмотров профиля: <span id="viewCount">0</span>
-  </div>
 </div>
 
 <div class="media-card">
@@ -484,8 +471,11 @@
     if (idx >= 0) currentTrack = idx;
   }
 
+  // ограничиваем громкость
+  const MAX_VOLUME = 0.4;      // максимум ~40% от реальной [web:122][web:126]
+  let currentVolume = 0.15;    // стартуем тихо
+
   let audio = null;
-  let currentVolume = 0.5;
 
   function renderAudioPlayer() {
     if (!playlist.length) {
@@ -516,7 +506,8 @@
             <button class="ctrl-btn" id="volumeBtn">
               <span id="volumeIcon">&#128266;</span>
             </button>
-            <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="${currentVolume}">
+            <input type="range" id="volumeSlider" class="volume-slider"
+                   min="0" max="${MAX_VOLUME}" step="0.01" value="${currentVolume}">
           </div>
         </div>
       </div>
@@ -546,7 +537,7 @@
 
     function updateVolumeIcon() {
       if (audio.volume === 0) volumeIcon.textContent = '🔇';
-      else if (audio.volume < 0.5) volumeIcon.textContent = '🔉';
+      else if (audio.volume < MAX_VOLUME / 2) volumeIcon.textContent = '🔉';
       else volumeIcon.textContent = '🔊';
     }
 
@@ -623,7 +614,7 @@
           audio.volume = 0;
           volumeSlider.value = 0;
         } else {
-          currentVolume = 0.5;
+          currentVolume = MAX_VOLUME / 2;
           audio.volume = currentVolume;
           volumeSlider.value = currentVolume;
         }
@@ -651,15 +642,6 @@
   }
 
   renderAudioPlayer();
-
-  function updateViewCounter() {
-    let views = localStorage.getItem('profileViews');
-    if (views === null) views = 5;
-    else views = Number(views) + 1;
-    localStorage.setItem('profileViews', views);
-    document.getElementById('viewCount').innerText = views;
-  }
-  updateViewCounter();
 </script>
 </body>
 </html>
