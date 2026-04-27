@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>@Lolekx228 | Profile Card</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Onest', 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #080808;
+      padding: 20px;
+      animation: fadeIn 0.5s ease;
+      color: #ffffff;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .background-blur {
+      position: fixed;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      filter: blur(10px) brightness(0.6);
+      z-index: -2;
+    }
+
+    .profile-card {
+      max-width: 500px;
+      width: 100%;
+      border-radius: 20px;
+      padding: 35px 20px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .profile-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.5);
+    }
+
+    .avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #5b5b5b;
+      margin-bottom: 15px;
+    }
+
+    .username {
+      font-size: 38px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      letter-spacing: -0.5px;
+    }
+
+    .description {
+      font-size: 18px;
+      margin-bottom: 12px;
+      opacity: 0.9;
+      line-height: 1.4;
+    }
+
+    .location {
+      font-size: 15px;
+      margin-bottom: 25px;
+      opacity: 0.85;
+      display: inline-flex;
+      gap: 6px;
+      background: rgba(255,255,255,0.05);
+      padding: 5px 12px;
+      border-radius: 30px;
+      align-items: center;
+    }
+
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .social-links a {
+      background: rgba(255,255,255,0.1);
+      padding: 8px 20px;
+      border-radius: 40px;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 15px;
+      transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+      border: 1px solid rgba(255,255,255,0.15);
+      backdrop-filter: blur(4px);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .social-links a:hover {
+      background: rgba(255,255,255,0.25);
+      transform: scale(1.02);
+      border-color: rgba(255,255,255,0.25);
+    }
+
+    /* Аудиоплеер */
+    .audio-player-card {
+      background: rgba(0,0,0,0.45);
+      border-radius: 20px;
+      padding: 12px;
+      margin: 15px 0;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .audio-cover {
+      width: 70px;
+      height: 70px;
+      flex-shrink: 0;
+    }
+
+    .audio-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+
+    .audio-info { flex: 1; min-width: 160px; }
+
+    .audio-title {
+      font-weight: 600;
+      margin-bottom: 6px;
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .progress-container {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+      font-size: 11px;
+      opacity: 0.8;
+    }
+
+    .progress-bar {
+      flex: 1;
+      height: 3px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 3px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: #ffffff;
+      border-radius: 3px;
+      transition: width 0.05s linear;
+    }
+
+    .audio-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .ctrl-btn {
+      background: none;
+      border: none;
+      color: #ffffff;
+      font-size: 16px;
+      cursor: pointer;
+      padding: 4px;
+      opacity: 0.8;
+      transition: 0.1s;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ctrl-btn:hover {
+      opacity: 1;
+      transform: scale(1.05);
+      background: rgba(255,255,255,0.1);
+    }
+
+    .play-btn {
+      background: #ffffff;
+      color: #000000;
+      width: 32px;
+      height: 32px;
+      font-size: 14px;
+    }
+
+    .play-btn:hover {
+      background: #e0e0e0;
+      transform: scale(1.02);
+    }
+
+    .volume-slider {
+      width: 70px;
+      height: 3px;
+      -webkit-appearance: none;
+      background: rgba(255,255,255,0.3);
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    .volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #ffffff;
+      cursor: pointer;
+    }
+
+    .views-counter {
+      font-size: 13px;
+      opacity: 0.65;
+      background: rgba(0,0,0,0.35);
+      display: inline-block;
+      padding: 5px 14px;
+      border-radius: 40px;
+      margin-top: 15px;
+      backdrop-filter: blur(4px);
+    }
+
+    @media (max-width: 480px) {
+      .profile-card { padding: 25px 15px; }
+      .username { font-size: 28px; }
+      .description { font-size: 15px; }
+      .avatar { width: 90px; height: 90px; }
+      .social-links a { padding: 6px 14px; font-size: 13px; }
+      .audio-player-card {
+        flex-direction: column;
+        text-align: center;
+      }
+      .audio-cover { width: 80px; height: 80px; }
+      .audio-controls { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+<div class="background-blur" id="bgBlur"></div>
+
+<div class="profile-card" id="profileCard">
+  <img class="avatar" id="avatar" src="" alt="Avatar">
+  <h1 class="username" id="username"></h1>
+  <p class="description" id="description"></p>
+  <div class="location" id="location"></div>
+
+  <div class="social-links" id="socialLinks"></div>
+
+  <div id="audioPlayerContainer"></div>
+
+  <div class="views-counter">
+    👁️ Просмотров профиля: <span id="viewCount">0</span>
+  </div>
+</div>
+
+<script>
+  // ===== Настройки профиля =====
+  const PROFILE_KEY = 'Lolekx228_profile';
+
+  const defaultProfile = {
+    displayName: "Lolekx228",
+    description: "Hiii Me: Animation artist, Voice actor, Programmer, Web Developer, Game Developer, 3D modeler",
+    location: "Україна, ДНР, Донецьк",
+    accentColor: "#5b5b5b",
+    textColor: "#ffffff",
+    bgColor: "#080808",
+    gradientEnabled: true,
+    gradient1: "#6f0000",
+    gradient2: "#933800",
+    backgroundEffect: "blurred",
+    blur: 10,
+    opacity: 0.5,
+    monochrome: true,
+    animatedTitle: true,
+    audio: [
+      { title: "Durnojj Vkus - Plastinki", selected: true,
+        url: "https://r2.guns.lol/e2040c07-063d-4f8d-bf4a-4a784e5cb3f2.mp3",
+        cover: "https://r2.guns.lol/8b57c2d3-3cd2-4915-ad39-431819946a45.webp"
+      },
+      { title: "Kino - Spokojjnaya Noch", selected: false,
+        url: "https://r2.guns.lol/ef254576-8efc-4601-a39a-025acd7f50af.mp3",
+        cover: "https://r2.guns.lol/998a3ed5-4b5d-41c0-bdbe-c3ce107fc6b0.webp"
+      }
+    ],
+    socials: [
+      { name: "youtube", label: "▶️ YouTube", url: "https://youtube.com/@Lolekx228" },
+      { name: "discord", label: "💬 Discord", url: "https://discord.com/users/919815468519391252" }
+    ],
+    backgroundUrl: "https://r2.guns.lol/404eaec9-de84-4ca0-b031-6059b171072a.webp",
+    avatarUrl: "https://r2.guns.lol/a90d9caf-a563-4b08-a030-1febdba3397e.webp"
+  };
+
+  function loadProfile() {
+    try {
+      const raw = localStorage.getItem(PROFILE_KEY);
+      if (!raw) return defaultProfile;
+      const parsed = JSON.parse(raw);
+      return { ...defaultProfile, ...parsed };
+    } catch (e) {
+      console.error(e);
+      return defaultProfile;
+    }
+  }
+
+  const profile = loadProfile();
+
+  // ===== Применение профиля к карточке =====
+  const bgBlur = document.getElementById('bgBlur');
+  const profileCard = document.getElementById('profileCard');
+  const avatar = document.getElementById('avatar');
+  const usernameEl = document.getElementById('username');
+  const descriptionEl = document.getElementById('description');
+  const locationEl = document.getElementById('location');
+  const socialLinksEl = document.getElementById('socialLinks');
+
+  function applyProfile() {
+    // фон
+    if (profile.backgroundUrl) {
+      bgBlur.style.backgroundImage = `url('${profile.backgroundUrl}')`;
+    }
+
+    // карточка: фон / градиент / прозрачность / blur
+    if (profile.gradientEnabled) {
+      profileCard.style.background =
+        `linear-gradient(25deg, ${profile.gradient1}, ${profile.gradient2})`;
+    } else {
+      profileCard.style.background = profile.bgColor;
+    }
+    profileCard.style.opacity = profile.opacity;
+    profileCard.style.backdropFilter = `blur(${profile.blur}px)`;
+
+    // текст и цвета
+    usernameEl.textContent = profile.displayName;
+    descriptionEl.textContent = profile.description;
+    locationEl.textContent = "📍 " + profile.location;
+    profileCard.style.color = profile.textColor;
+
+    // аватар
+    avatar.src = profile.avatarUrl;
+
+    // соцсети
+    socialLinksEl.innerHTML = "";
+    (profile.socials || []).forEach(s => {
+      if (!s.url) return;
+      const a = document.createElement('a');
+      a.href = s.url;
+      a.target = "_blank";
+
+      // подпись / иконка
+      if (s.label) {
+        a.textContent = s.label;
+      } else {
+        // fallback по name
+        if (s.name === "youtube") a.textContent = "▶️ YouTube";
+        else if (s.name === "discord") a.textContent = "💬 Discord";
+        else a.textContent = s.name;
+      }
+
+      if (profile.monochrome) {
+        a.style.filter = "grayscale(1)";
+      }
+      socialLinksEl.appendChild(a);
+    });
+
+    // анимированный заголовок (простейший эффект)
+    if (profile.animatedTitle) {
+      usernameEl.style.animation = "glow 2s ease-in-out infinite alternate";
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes glow {
+          from { text-shadow: 0 0 5px ${profile.accentColor}; }
+          to { text-shadow: 0 0 18px ${profile.accentColor}; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+
+  applyProfile();
+
+  // ===== Аудиоплеер =====
+  const audioPlayerContainer = document.getElementById('audioPlayerContainer');
+
+  const playlist = (profile.audio || []).map(track => ({
+    title: track.title,
+    url: track.url,
+    cover: track.cover
+  })).filter(t => t.url);
+
+  let currentTrack = 0;
+  if (profile.audio) {
+    const idx = profile.audio.findIndex(t => t.selected && t.url);
+    if (idx >= 0) currentTrack = idx;
+  }
+
+  let audio = null;
+
+  function renderAudioPlayer() {
+    if (!playlist.length) {
+      audioPlayerContainer.innerHTML = "";
+      return;
+    }
+
+    const track = playlist[currentTrack];
+    audioPlayerContainer.innerHTML = `
+      <div class="audio-player-card">
+        <div class="audio-cover">
+          <img id="currentCover" src="${track.cover || ""}" alt="cover"
+            onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 24 24\\' fill=\\'white\\'%3E%3Cpath d=\\'M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z\\'/%3E%3C/svg%3E'">
+        </div>
+        <div class="audio-info">
+          <div class="audio-title" id="audioTitle">${track.title}</div>
+          <div class="progress-container">
+            <span class="current-time" id="currentTime">0:00</span>
+            <div class="progress-bar" id="progressBar">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <span class="duration" id="duration">0:00</span>
+          </div>
+          <div class="audio-controls">
+            <button class="ctrl-btn" id="prevBtn">⏮️</button>
+            <button class="ctrl-btn play-btn" id="playPauseBtn">▶️</button>
+            <button class="ctrl-btn" id="nextBtn">⏭️</button>
+            <button class="ctrl-btn" id="volumeBtn">🔊</button>
+            <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.5">
+          </div>
+        </div>
+      </div>
+    `;
+    initPlayer();
+  }
+
+  function initPlayer() {
+    if (audio) {
+      audio.pause();
+      audio = null;
+    }
+
+    const track = playlist[currentTrack];
+    audio = new Audio(track.url);
+    audio.volume = 0.5;
+
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const volumeBtn = document.getElementById('volumeBtn');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const progressBar = document.getElementById('progressBar');
+    const progressFill = document.getElementById('progressFill');
+    const currentTimeSpan = document.getElementById('currentTime');
+    const durationSpan = document.getElementById('duration');
+
+    let isPlaying = false;
+
+    function updateProgress() {
+      if (!audio.duration) return;
+      const percent = (audio.currentTime / audio.duration) * 100;
+      if (progressFill) progressFill.style.width = percent + '%';
+
+      const curMin = Math.floor(audio.currentTime / 60);
+      const curSec = Math.floor(audio.currentTime % 60);
+      if (currentTimeSpan) {
+        currentTimeSpan.textContent =
+          curMin + ":" + (curSec < 10 ? "0" + curSec : curSec);
+      }
+    }
+
+    audio.addEventListener('timeupdate', updateProgress);
+
+    audio.addEventListener('loadedmetadata', () => {
+      const durMin = Math.floor(audio.duration / 60);
+      const durSec = Math.floor(audio.duration % 60);
+      if (durationSpan) {
+        durationSpan.textContent =
+          durMin + ":" + (durSec < 10 ? "0" + durSec : durSec);
+      }
+    });
+
+    audio.addEventListener('ended', () => {
+      currentTrack = (currentTrack + 1) % playlist.length;
+      renderAudioPlayer();
+    });
+
+    if (playPauseBtn) {
+      playPauseBtn.addEventListener('click', () => {
+        if (isPlaying) {
+          audio.pause();
+          playPauseBtn.textContent = '▶️';
+        } else {
+          audio.play();
+          playPauseBtn.textContent = '⏸️';
+        }
+        isPlaying = !isPlaying;
+      });
+    }
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        currentTrack = (currentTrack - 1 + playlist.length) % playlist.length;
+        renderAudioPlayer();
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        currentTrack = (currentTrack + 1) % playlist.length;
+        renderAudioPlayer();
+      });
+    }
+
+    if (volumeSlider) {
+      volumeSlider.addEventListener('input', () => {
+        audio.volume = volumeSlider.value;
+        if (volumeBtn) {
+          volumeBtn.textContent = audio.volume === 0 ? '🔇' : '🔊';
+        }
+      });
+    }
+
+    if (volumeBtn) {
+      volumeBtn.addEventListener('click', () => {
+        if (audio.volume > 0) {
+          audio.volume = 0;
+          volumeSlider.value = 0;
+          volumeBtn.textContent = '🔇';
+        } else {
+          audio.volume = 0.5;
+          volumeSlider.value = 0.5;
+          volumeBtn.textContent = '🔊';
+        }
+      });
+    }
+
+    if (progressBar) {
+      progressBar.addEventListener('click', (e) => {
+        const rect = progressBar.getBoundingClientRect();
+        const percent = (e.clientX - rect.left) / rect.width;
+        audio.currentTime = percent * audio.duration;
+      });
+    }
+
+    // Автостарт по первому клику
+    const startAudio = () => {
+      if (!isPlaying && audio.src) {
+        audio.play().catch(() => {});
+        if (playPauseBtn) playPauseBtn.textContent = '⏸️';
+        isPlaying = true;
+      }
+      document.body.removeEventListener('click', startAudio);
+    };
+    document.body.addEventListener('click', startAudio);
+  }
+
+  renderAudioPlayer();
+
+  // ===== Счётчик просмотров =====
+  function updateViewCounter() {
+    let views = localStorage.getItem('profileViews');
+    if (views === null) views = 5;
+    else views = Number(views) + 1;
+    localStorage.setItem('profileViews', views);
+    document.getElementById('viewCount').innerText = views;
+  }
+  updateViewCounter();
+</script>
+</body>
+</html>
