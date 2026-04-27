@@ -26,25 +26,29 @@
       inset: 0;
       background-size: cover;
       background-position: center;
-      filter: blur(10px) brightness(0.6);
+      filter: blur(8px) brightness(0.6); /* blur меньше */
       z-index: -2;
     }
 
     .profile-card {
-      max-width: 500px;
+      max-width: 520px;
       width: 100%;
       border-radius: 20px;
-      padding: 35px 20px;
+      padding: 24px 20px 18px;
       text-align: center;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 14px 36px rgba(0,0,0,0.55);
+      border: 1px solid rgba(255,255,255,0.12);
       transition: transform 0.2s ease, box-shadow 0.2s ease;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(6px); /* blur меньше */
+      background: linear-gradient(25deg, rgba(111,0,0,0.7), rgba(147,56,0,0.7)); /* плотнее */
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
     }
 
     .profile-card:hover {
-      transform: scale(1.02);
-      box-shadow: 0 18px 40px rgba(0,0,0,0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 20px 44px rgba(0,0,0,0.6);
     }
 
     .avatar {
@@ -53,75 +57,93 @@
       border-radius: 50%;
       object-fit: cover;
       border: 3px solid #5b5b5b;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
     }
 
     .username {
-      font-size: 38px;
+      font-size: 34px;
       font-weight: 700;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
       letter-spacing: -0.5px;
     }
 
     .description {
-      font-size: 18px;
-      margin-bottom: 12px;
+      font-size: 16px;
       opacity: 0.9;
-      line-height: 1.4;
+      line-height: 1.5;
     }
 
     .location {
-      font-size: 15px;
-      margin-bottom: 25px;
-      opacity: 0.85;
+      font-size: 14px;
+      margin-top: 4px;
       display: inline-flex;
-      gap: 6px;
-      background: rgba(255,255,255,0.05);
-      padding: 5px 12px;
-      border-radius: 30px;
       align-items: center;
+      gap: 6px;
+      background: rgba(0,0,0,0.45);
+      padding: 5px 14px;
+      border-radius: 30px;
     }
 
     .social-links {
       display: flex;
       justify-content: center;
-      gap: 15px;
-      margin-bottom: 30px;
+      gap: 12px;
       flex-wrap: wrap;
+      margin-top: 8px;
     }
 
     .social-links a {
-      background: rgba(255,255,255,0.1);
-      padding: 8px 20px;
+      background: rgba(0,0,0,0.55);
+      padding: 7px 18px;
       border-radius: 40px;
       text-decoration: none;
       font-weight: 500;
-      font-size: 15px;
+      font-size: 14px;
       transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
-      border: 1px solid rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.18);
       backdrop-filter: blur(4px);
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      color: #ffffff;
     }
 
     .social-links a:hover {
-      background: rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.18);
       transform: scale(1.02);
-      border-color: rgba(255,255,255,0.25);
+      border-color: rgba(255,255,255,0.26);
     }
 
-    /* Аудиоплеер */
-    .audio-player-card {
-      background: rgba(0,0,0,0.45);
+    /* Блок с медиа отдельно внизу */
+    .media-card {
+      margin-top: 6px;
+      background: rgba(0,0,0,0.65);
       border-radius: 20px;
-      padding: 12px;
-      margin: 15px 0;
+      padding: 12px 10px;
+      border: 1px solid rgba(255,255,255,0.14);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .media-title {
+      font-size: 13px;
+      font-weight: 600;
+      text-align: left;
+      opacity: 0.85;
+      padding: 0 4px;
+    }
+
+    /* Аудиоплеер внутри медиа-плашки */
+    .audio-player-card {
+      background: rgba(0,0,0,0.6);
+      border-radius: 16px;
+      padding: 10px;
       display: flex;
       gap: 12px;
       align-items: center;
       flex-wrap: wrap;
-      border: 1px solid rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
     }
 
     .audio-cover {
@@ -201,7 +223,7 @@
     .ctrl-btn:hover {
       opacity: 1;
       transform: scale(1.05);
-      background: rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.12);
     }
 
     .play-btn {
@@ -236,20 +258,19 @@
     }
 
     .views-counter {
-      font-size: 13px;
-      opacity: 0.65;
-      background: rgba(0,0,0,0.35);
+      font-size: 12px;
+      opacity: 0.7;
+      background: rgba(0,0,0,0.5);
       display: inline-block;
-      padding: 5px 14px;
+      padding: 4px 12px;
       border-radius: 40px;
-      margin-top: 15px;
-      backdrop-filter: blur(4px);
+      align-self: center;
     }
 
     @media (max-width: 480px) {
-      .profile-card { padding: 25px 15px; }
-      .username { font-size: 28px; }
-      .description { font-size: 15px; }
+      .profile-card { padding: 20px 14px 16px; }
+      .username { font-size: 26px; }
+      .description { font-size: 14px; }
       .avatar { width: 90px; height: 90px; }
       .social-links a { padding: 6px 14px; font-size: 13px; }
       .audio-player-card {
@@ -265,22 +286,27 @@
 <div class="background-blur" id="bgBlur"></div>
 
 <div class="profile-card" id="profileCard">
-  <img class="avatar" id="avatar" src="" alt="Avatar">
-  <h1 class="username" id="username"></h1>
-  <p class="description" id="description"></p>
-  <div class="location" id="location"></div>
+  <!-- Основной блок -->
+  <div>
+    <img class="avatar" id="avatar" src="" alt="Avatar">
+    <h1 class="username" id="username"></h1>
+    <p class="description" id="description"></p>
+    <div class="location" id="location"></div>
+    <div class="social-links" id="socialLinks"></div>
+  </div>
 
-  <div class="social-links" id="socialLinks"></div>
-
-  <div id="audioPlayerContainer"></div>
+  <!-- Отдельная плашка с медиа -->
+  <div class="media-card">
+    <div class="media-title">Медиа</div>
+    <div id="audioPlayerContainer"></div>
+  </div>
 
   <div class="views-counter">
-    👁️ Просмотров профиля: <span id="viewCount">0</span>
+    Просмотров профиля: <span id="viewCount">0</span>
   </div>
 </div>
 
 <script>
-  // ===== Настройки профиля =====
   const PROFILE_KEY = 'Lolekx228_profile';
 
   const defaultProfile = {
@@ -295,7 +321,7 @@
     gradient2: "#933800",
     backgroundEffect: "blurred",
     blur: 10,
-    opacity: 0.5,
+    opacity: 0.85,
     monochrome: true,
     animatedTitle: true,
     audio: [
@@ -309,8 +335,8 @@
       }
     ],
     socials: [
-      { name: "youtube", label: "▶️ YouTube", url: "https://youtube.com/@Lolekx228" },
-      { name: "discord", label: "💬 Discord", url: "https://discord.com/users/919815468519391252" }
+      { name: "youtube", label: "YouTube", url: "https://youtube.com/@Lolekx228" },
+      { name: "discord", label: "Discord", url: "https://discord.com/users/919815468519391252" }
     ],
     backgroundUrl: "https://r2.guns.lol/404eaec9-de84-4ca0-b031-6059b171072a.webp",
     avatarUrl: "https://r2.guns.lol/a90d9caf-a563-4b08-a030-1febdba3397e.webp"
@@ -330,7 +356,6 @@
 
   const profile = loadProfile();
 
-  // ===== Применение профиля к карточке =====
   const bgBlur = document.getElementById('bgBlur');
   const profileCard = document.getElementById('profileCard');
   const avatar = document.getElementById('avatar');
@@ -340,12 +365,10 @@
   const socialLinksEl = document.getElementById('socialLinks');
 
   function applyProfile() {
-    // фон
     if (profile.backgroundUrl) {
       bgBlur.style.backgroundImage = `url('${profile.backgroundUrl}')`;
     }
 
-    // карточка: фон / градиент / прозрачность / blur
     if (profile.gradientEnabled) {
       profileCard.style.background =
         `linear-gradient(25deg, ${profile.gradient1}, ${profile.gradient2})`;
@@ -353,49 +376,33 @@
       profileCard.style.background = profile.bgColor;
     }
     profileCard.style.opacity = profile.opacity;
-    profileCard.style.backdropFilter = `blur(${profile.blur}px)`;
+    profileCard.style.backdropFilter = `blur(${Math.max(profile.blur - 2, 0)}px)`;
 
-    // текст и цвета
     usernameEl.textContent = profile.displayName;
     descriptionEl.textContent = profile.description;
-    locationEl.textContent = "📍 " + profile.location;
+    locationEl.textContent = profile.location;
     profileCard.style.color = profile.textColor;
 
-    // аватар
     avatar.src = profile.avatarUrl;
 
-    // соцсети
     socialLinksEl.innerHTML = "";
     (profile.socials || []).forEach(s => {
       if (!s.url) return;
       const a = document.createElement('a');
       a.href = s.url;
       a.target = "_blank";
-
-      // подпись / иконка
-      if (s.label) {
-        a.textContent = s.label;
-      } else {
-        // fallback по name
-        if (s.name === "youtube") a.textContent = "▶️ YouTube";
-        else if (s.name === "discord") a.textContent = "💬 Discord";
-        else a.textContent = s.name;
-      }
-
-      if (profile.monochrome) {
-        a.style.filter = "grayscale(1)";
-      }
+      a.textContent = s.label || s.name || "Link";
+      if (profile.monochrome) a.style.filter = "grayscale(1)";
       socialLinksEl.appendChild(a);
     });
 
-    // анимированный заголовок (простейший эффект)
     if (profile.animatedTitle) {
       usernameEl.style.animation = "glow 2s ease-in-out infinite alternate";
       const style = document.createElement('style');
       style.textContent = `
         @keyframes glow {
-          from { text-shadow: 0 0 5px ${profile.accentColor}; }
-          to { text-shadow: 0 0 18px ${profile.accentColor}; }
+          from { text-shadow: 0 0 4px ${profile.accentColor}; }
+          to { text-shadow: 0 0 14px ${profile.accentColor}; }
         }
       `;
       document.head.appendChild(style);
@@ -404,9 +411,8 @@
 
   applyProfile();
 
-  // ===== Аудиоплеер =====
+  // Аудиоплеер
   const audioPlayerContainer = document.getElementById('audioPlayerContainer');
-
   const playlist = (profile.audio || []).map(track => ({
     title: track.title,
     url: track.url,
@@ -444,9 +450,9 @@
             <span class="duration" id="duration">0:00</span>
           </div>
           <div class="audio-controls">
-            <button class="ctrl-btn" id="prevBtn">⏮️</button>
-            <button class="ctrl-btn play-btn" id="playPauseBtn">▶️</button>
-            <button class="ctrl-btn" id="nextBtn">⏭️</button>
+            <button class="ctrl-btn" id="prevBtn">⏮</button>
+            <button class="ctrl-btn play-btn" id="playPauseBtn">▶</button>
+            <button class="ctrl-btn" id="nextBtn">⏭</button>
             <button class="ctrl-btn" id="volumeBtn">🔊</button>
             <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.5">
           </div>
@@ -511,10 +517,10 @@
       playPauseBtn.addEventListener('click', () => {
         if (isPlaying) {
           audio.pause();
-          playPauseBtn.textContent = '▶️';
+          playPauseBtn.textContent = '▶';
         } else {
           audio.play();
-          playPauseBtn.textContent = '⏸️';
+          playPauseBtn.textContent = '⏸';
         }
         isPlaying = !isPlaying;
       });
@@ -565,11 +571,10 @@
       });
     }
 
-    // Автостарт по первому клику
     const startAudio = () => {
       if (!isPlaying && audio.src) {
         audio.play().catch(() => {});
-        if (playPauseBtn) playPauseBtn.textContent = '⏸️';
+        if (playPauseBtn) playPauseBtn.textContent = '⏸';
         isPlaying = true;
       }
       document.body.removeEventListener('click', startAudio);
@@ -579,7 +584,6 @@
 
   renderAudioPlayer();
 
-  // ===== Счётчик просмотров =====
   function updateViewCounter() {
     let views = localStorage.getItem('profileViews');
     if (views === null) views = 5;
