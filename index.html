@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lolekx228 Profile Card</title>
+  <title>Lolekx's Card Настройки</title>
 
   <!-- Бегущая строка в заголовке вкладки -->
   <script>
     (function () {
-      let baseTitle = document.title || "@Lolekx228 | Profile Card";
+      let baseTitle = document.title || "Lolekx's Card Настройки";
       const separator = " • ";
       const speed = 250;
 
@@ -360,6 +360,7 @@
 
 <script>
   const PROFILE_KEY = 'Lolekx228_profile';
+  const PROFILE_DEFAULT_KEY = 'Lolekx228_profile_default';
 
   const defaultProfile = {
     displayName: "Lolekx228",
@@ -394,14 +395,25 @@
     avatarUrl: "https://r2.guns.lol/a90d9caf-a563-4b08-a030-1febdba3397e.webp"
   };
 
-  function loadProfile() {
+  function loadDefaultProfile() {
     try {
-      const raw = localStorage.getItem(PROFILE_KEY);
+      const raw = localStorage.getItem(PROFILE_DEFAULT_KEY);
       if (!raw) return defaultProfile;
       const parsed = JSON.parse(raw);
       return { ...defaultProfile, ...parsed };
     } catch {
       return defaultProfile;
+    }
+  }
+
+  function loadProfile() {
+    try {
+      const raw = localStorage.getItem(PROFILE_KEY);
+      if (!raw) return loadDefaultProfile();
+      const parsed = JSON.parse(raw);
+      return { ...loadDefaultProfile(), ...parsed };
+    } catch {
+      return loadDefaultProfile();
     }
   }
 
@@ -503,7 +515,7 @@
   let currentTrack = 0;
 
   const MAX_VOLUME = 1.0;
-  let currentVolume = 0.5; // старт 50%
+  let currentVolume = 0.5;
 
   let audio = null;
 
@@ -568,7 +580,6 @@
     const iconSpan = document.getElementById('volumeIcon');
     if (!iconSpan) return;
     if (vol === 0) {
-      // mute
       iconSpan.innerHTML = `
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
              viewBox="0 0 24 24">
@@ -577,7 +588,6 @@
           </path>
         </svg>`;
     } else {
-      // основной красивый спикер из guns.lol
       iconSpan.innerHTML = `
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
              viewBox="0 0 48 48">
@@ -602,7 +612,6 @@
     const btn = document.getElementById('playPauseBtn');
     if (!btn) return;
     if (isPlaying) {
-      // pause (две палки)
       btn.innerHTML = `
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
              viewBox="0 0 24 24">
@@ -610,7 +619,6 @@
                 d="M8 5h3v14H8V5zm5 0h3v14h-3V5z"></path>
         </svg>`;
     } else {
-      // play
       btn.innerHTML = `
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
              viewBox="0 0 24 24">
@@ -678,7 +686,7 @@
           audio.pause();
           isPlaying = false;
         } else {
-          audio.play(); // старт только по клику [web:64]
+          audio.play();
           isPlaying = true;
         }
         setPlayIcon(isPlaying);
