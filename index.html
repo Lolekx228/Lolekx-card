@@ -348,11 +348,11 @@
     monochrome: true,
     animatedTitle: true,
     audio: [
-      { title: "Durnojj Vkus - Plastinki", selected: true,
+      { title: "Durnojj Vkus - Plastinki",
         url: "https://r2.guns.lol/e2040c07-063d-4f8d-bf4a-4a784e5cb3f2.mp3",
         cover: "https://r2.guns.lol/8b57c2d3-3cd2-4915-ad39-431819946a45.webp"
       },
-      { title: "Kino - Spokojjnaya Noch", selected: false,
+      { title: "Kino - Spokojjnaya Noch",
         url: "https://r2.guns.lol/ef254576-8efc-4601-a39a-025acd7f50af.mp3",
         cover: "https://r2.guns.lol/998a3ed5-4b5d-41c0-bdbe-c3ce107fc6b0.webp"
       }
@@ -466,14 +466,10 @@
   })).filter(t => t.url);
 
   let currentTrack = 0;
-  if (profile.audio) {
-    const idx = profile.audio.findIndex(t => t.selected && t.url);
-    if (idx >= 0) currentTrack = idx;
-  }
 
-  // ограничиваем громкость
-  const MAX_VOLUME = 0.4;      // максимум ~40% от реальной [web:122][web:126]
-  let currentVolume = 0.15;    // стартуем тихо
+  // громкость 50%
+  const MAX_VOLUME = 1.0;
+  let currentVolume = 0.5;
 
   let audio = null;
 
@@ -614,7 +610,7 @@
           audio.volume = 0;
           volumeSlider.value = 0;
         } else {
-          currentVolume = MAX_VOLUME / 2;
+          currentVolume = 0.5;
           audio.volume = currentVolume;
           volumeSlider.value = currentVolume;
         }
@@ -630,15 +626,13 @@
       });
     }
 
-    const startAudio = () => {
-      if (!isPlaying && audio.src) {
+    // Автоплей сразу при инициализации
+    audio.play().catch(() => {
+      // Если браузер не разрешил — включим при первом клике
+      document.body.addEventListener('click', () => {
         audio.play().catch(() => {});
-        if (playPauseBtn) playPauseBtn.innerHTML = '&#10074;&#10074;';
-        isPlaying = true;
-      }
-      document.body.removeEventListener('click', startAudio);
-    };
-    document.body.addEventListener('click', startAudio);
+      }, { once: true });
+    });
   }
 
   renderAudioPlayer();
