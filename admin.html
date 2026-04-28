@@ -34,23 +34,23 @@
 
         .settings-card {
             background: #111111;
-            border-radius: 28px;
-            padding: 28px 24px;
+            border-radius: 24px;
+            padding: 24px 20px;
             border: 1px solid #2a2a2a;
         }
 
         .media-row-horizontal {
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 16px;
             justify-content: space-between;
         }
         .media-item {
-            flex: 1;
-            min-width: 200px;
+            flex: 1 1 180px;
+            max-width: 260px;
             background: #1a1a1a;
-            border-radius: 20px;
-            padding: 16px;
+            border-radius: 18px;
+            padding: 12px;
             text-align: center;
             cursor: pointer;
             transition: 0.2s;
@@ -59,72 +59,71 @@
         .media-label {
             font-weight: 500;
             color: #aaa;
-            margin-bottom: 12px;
-            font-size: 0.85rem;
+            margin-bottom: 10px;
+            font-size: 0.8rem;
         }
         .media-content {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
         .file-badge {
             display: flex;
-            gap: 8px;
-            font-size: 0.7rem;
+            gap: 6px;
+            font-size: 0.65rem;
             color: #888;
             background: #0a0a0a;
-            padding: 4px 10px;
+            padding: 3px 8px;
             border-radius: 20px;
         }
         .media-preview {
-            width: 64px;
-            height: 64px;
-            border-radius: 16px;
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
             object-fit: cover;
         }
         .audio-placeholder, .cursor-placeholder {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             color: white;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
         }
         .audio-placeholder svg, .cursor-placeholder svg {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
         }
 
         .settings-grid {
             display: flex;
             flex-direction: column;
-            gap: 28px;
+            gap: 24px;
         }
         .two-columns {
             display: flex;
             flex-wrap: wrap;
-            gap: 40px;
+            gap: 28px;
             justify-content: space-between;
         }
         .settings-column {
-            flex: 1;
-            min-width: 240px;
+            flex: 1 1 230px;
         }
-        .setting-item { margin-bottom: 24px; }
+        .setting-item { margin-bottom: 18px; }
         .setting-label {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 500;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             color: #ddd;
         }
         .input-wrapper {
             background: #1a1a1a;
-            border-radius: 16px;
-            padding: 12px 16px;
+            border-radius: 14px;
+            padding: 10px 14px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
         .input-wrapper input {
             background: transparent;
@@ -132,10 +131,10 @@
             color: white;
             width: 100%;
             outline: none;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
-        .slider-container { margin-top: 8px; }
+        .slider-container { margin-top: 6px; }
         .slider {
             width: 100%;
             height: 6px;
@@ -145,8 +144,8 @@
         }
         .slider::-webkit-slider-thumb {
             appearance: none;
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             background: #5b5b5b;
             border-radius: 50%;
             cursor: pointer;
@@ -154,7 +153,7 @@
 
         .location-row {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             flex-wrap: wrap;
         }
         .location-row .input-wrapper {
@@ -164,35 +163,60 @@
         .color-picker-row {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
+            gap: 10px;
+            margin-bottom: 10px;
             flex-wrap: wrap;
         }
         .color-swatch {
-            width: 36px;
-            height: 36px;
-            border-radius: 12px;
+            width: 30px;
+            height: 30px;
+            border-radius: 10px;
             border: 2px solid #fff;
         }
         .color-input {
             background: #1a1a1a;
             border: none;
-            padding: 10px 14px;
-            border-radius: 16px;
+            padding: 8px 10px;
+            border-radius: 14px;
             color: white;
             font-family: monospace;
-            flex: 1;
+            font-size: 0.8rem;
+            flex: 1 1 80px;
+        }
+        .color-picker-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1 1 140px;
+        }
+        .color-picker-wrapper input[type="color"] {
+            -webkit-appearance: none;
+            appearance: none;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            padding: 0;
+            background: transparent;
+            cursor: pointer;
+        }
+        .color-picker-wrapper input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        .color-picker-wrapper input[type="color"]::-webkit-color-swatch {
+            border-radius: 8px;
+            border: 1px solid #444;
         }
 
         .checkbox-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 10px;
         }
-        .checkbox-label { color: #ddd; }
+        .checkbox-label { color: #ddd; font-size: 0.85rem; }
 
         .toggle-switch {
             position: relative;
@@ -234,7 +258,7 @@
 
         hr {
             border-color: #2a2a2a;
-            margin: 20px 0;
+            margin: 16px 0;
         }
 
         .modal-overlay {
@@ -254,9 +278,9 @@
 
         .audio-manager-modal {
             background: #111111;
-            border-radius: 32px;
+            border-radius: 28px;
             width: 90%;
-            max-width: 560px;
+            max-width: 520px;
             border: 1px solid #2a2a2a;
             overflow: hidden;
         }
@@ -264,36 +288,36 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 24px;
+            padding: 16px 20px;
             border-bottom: 1px solid #2a2a2a;
         }
         .modal-header h2 {
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             font-weight: 600;
         }
         .close-modal {
             background: none;
             border: none;
             color: #aaa;
-            font-size: 28px;
+            font-size: 24px;
             cursor: pointer;
             line-height: 1;
         }
-        .modal-content { padding: 20px 24px; }
+        .modal-content { padding: 16px 20px; }
         .audio-list {
-            margin-bottom: 24px;
-            max-height: 400px;
+            margin-bottom: 20px;
+            max-height: 360px;
             overflow-y: auto;
         }
         .audio-item {
             position: relative;
             display: flex;
             align-items: center;
-            gap: 16px;
-            padding: 12px;
+            gap: 12px;
+            padding: 10px;
             background: #1a1a1a;
-            border-radius: 20px;
-            margin-bottom: 12px;
+            border-radius: 16px;
+            margin-bottom: 10px;
             border: 1px solid transparent;
             cursor: pointer;
         }
@@ -302,22 +326,26 @@
             border-color: #5b5b5b;
         }
         .audio-cover-small {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
             background-size: cover;
             background-position: center;
             background-color: #2c2c2c;
         }
-        .audio-info { flex: 1; }
+        .audio-info { flex: 1; min-width: 0; }
         .audio-title {
             font-weight: 500;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .audio-badge {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             background: #5b5b5b;
-            padding: 2px 8px;
+            padding: 1px 6px;
             border-radius: 20px;
             display: inline-block;
         }
@@ -326,10 +354,11 @@
             border: 1px solid #444;
             color: #ccc;
             cursor: pointer;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 0.7rem;
             transition: 0.2s;
+            flex-shrink: 0;
         }
         .edit-audio-btn:hover {
             background: #333;
@@ -337,13 +366,12 @@
             border-color: #666;
         }
 
-        /* удаление чуть выше/правее карточки */
         .audio-delete-btn {
             position: absolute;
-            top: -10px;
-            right: -10px;
-            width: 22px;
-            height: 22px;
+            top: -8px;
+            right: -8px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
             background: #3a0000;
             border: 1px solid #ff4d4d;
@@ -351,7 +379,7 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
+            font-size: 12px;
             cursor: pointer;
             padding: 0;
             line-height: 1;
@@ -368,17 +396,18 @@
         .add-audio-btn {
             background: #5b5b5b;
             border: none;
-            padding: 10px 20px;
-            border-radius: 40px;
+            padding: 8px 14px;
+            border-radius: 999px;
             color: white;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             font-weight: 500;
-            margin-top: 16px;
+            margin-top: 10px;
             width: 100%;
             justify-content: center;
+            font-size: 0.8rem;
         }
         .add-audio-btn:hover { background: #6c6c6c; }
 
@@ -386,18 +415,18 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 0;
+            padding: 10px 0;
             border-bottom: 1px solid #2a2a2a;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
         }
         .setting-switch:last-child { border-bottom: none; }
         .setting-left {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 2px;
         }
-        .setting-title { font-weight: 500; }
+        .setting-title { font-weight: 500; font-size: 0.85rem; }
         .setting-description {
             font-size: 0.7rem;
             color: #888;
@@ -405,50 +434,50 @@
 
         .edit-audio-modal {
             background: #111111;
-            border-radius: 26px;
+            border-radius: 22px;
             width: 90%;
-            max-width: 520px;
+            max-width: 480px;
             border: 1px solid #2a2a2a;
-            padding: 20px 24px 22px;
+            padding: 16px 18px 18px;
         }
         .edit-audio-modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 14px;
+            margin-bottom: 10px;
         }
         .edit-audio-modal-header h3 {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
         }
         .edit-audio-close {
             background: none;
             border: none;
             color: #aaa;
-            font-size: 24px;
+            font-size: 22px;
             cursor: pointer;
         }
-        .edit-row { margin-bottom: 16px; }
+        .edit-row { margin-bottom: 12px; }
         .edit-label {
-            font-size: 0.85rem;
-            margin-bottom: 6px;
+            font-size: 0.8rem;
+            margin-bottom: 4px;
             color: #ddd;
         }
         .edit-input-text {
             width: 100%;
-            padding: 10px 12px;
-            border-radius: 14px;
+            padding: 8px 10px;
+            border-radius: 12px;
             border: 1px solid #2a2a2a;
             background: #1a1a1a;
             color: #fff;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
 
         .file-input-wrapper {
             position: relative;
             display: inline-flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
         .file-input-wrapper input[type="file"] {
             position: absolute;
@@ -458,11 +487,11 @@
         }
         .file-input-button {
             border-radius: 999px;
-            padding: 6px 14px;
+            padding: 5px 12px;
             border: 1px solid #444;
             background: #1a1a1a;
             color: #eee;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             cursor: pointer;
             white-space: nowrap;
         }
@@ -470,18 +499,18 @@
             background: #2a2a2a;
         }
         .file-input-name {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: #888;
-            max-width: 180px;
+            max-width: 150px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
 
         .edit-cover-preview {
-            width: 56px;
-            height: 56px;
-            border-radius: 12px;
+            width: 46px;
+            height: 46px;
+            border-radius: 10px;
             background-size: cover;
             background-position: center;
             background-color: #2c2c2c;
@@ -489,16 +518,16 @@
         .edit-modal-actions {
             display: flex;
             justify-content: flex-end;
-            gap: 10px;
-            margin-top: 6px;
+            gap: 8px;
+            margin-top: 4px;
         }
         .btn-small {
             border-radius: 999px;
-            padding: 6px 14px;
+            padding: 5px 12px;
             border: 1px solid #444;
             background: #1a1a1a;
             color: #eee;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             cursor: pointer;
             transition: transform 0.1s ease, background 0.15s ease, box-shadow 0.15s ease;
         }
@@ -516,20 +545,20 @@
 
         .global-actions {
             position: sticky;
-            bottom: 16px;
-            margin-top: 12px;
+            bottom: 12px;
+            margin-top: 10px;
             display: flex;
             justify-content: flex-end;
-            gap: 10px;
+            gap: 8px;
             z-index: 5;
         }
         .global-actions button {
             border-radius: 999px;
-            padding: 8px 18px;
+            padding: 7px 14px;
             border: 1px solid #444;
             background: #1a1a1a;
             color: #eee;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             cursor: pointer;
             transition: transform 0.1s ease, background 0.15s ease, box-shadow 0.15s ease;
         }
@@ -548,21 +577,20 @@
             box-shadow: 0 0 0 2px rgba(255,255,255,0.08);
         }
 
-        /* Toast уведомление */
         .toast {
             position: fixed;
             left: 50%;
-            bottom: 24px;
+            bottom: 20px;
             transform: translateX(-50%) translateY(20px);
-            padding: 10px 16px;
+            padding: 8px 14px;
             border-radius: 999px;
             background: rgba(20,20,20,0.95);
             border: 1px solid #444;
             color: #eee;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.2s ease, transform 0.2s ease;
@@ -574,26 +602,25 @@
             pointer-events: auto;
         }
         .toast-icon {
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
             background: #3a7a3a;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 11px;
+            font-size: 9px;
         }
 
         @media (max-width: 768px) {
             body { padding: 24px 12px 70px; }
-            .settings-card { padding: 20px 16px; }
+            .settings-card { padding: 18px 14px; }
             .section-title { font-size: 1.4rem; }
         }
     </style>
 </head>
 <body>
 <div class="customize-container">
-    <!-- Загрузка медиа -->
     <div class="settings-section">
         <span class="section-title">Загрузка медиа</span>
         <div class="settings-card">
@@ -615,7 +642,7 @@
                     <div class="media-label">Аудио</div>
                     <div class="media-content">
                         <div class="audio-placeholder">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="white"><path d="M14 22v-3.075l5.525-5.5q.225-.225.5-.325t.55-.1q.3 0 .575.113t.5.337l.925.925q.2.225.313.5t.112.55t-.1.563t-.325.512l-5.5 5.5zm6.575-5.6l.925-.975l-.925-.925l-.95.95zM4 20q-.825 0-1.412-.587T2 18V6q0-.825.588-1.412T4 4h6l2 2h8q.825 0 1.413.588T22 8v3.3q-.35-.15-.725-.225t-.75-.075q-.7 0-1.312.25T18.1 12L12 18.1V20z"/></svg>
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M14 22v-3.075l5.525-5.5q.225-.225.5-.325t.55-.1q.3 0 .575.113t.5.337l.925.925q.2.225.313.5t.112.55t-.1.563t-.325.512l-5.5 5.5zm6.575-5.6l.925-.975l-.925-.925l-.95.95zM4 20q-.825 0-1.412-.587T2 18V6q0-.825.588-1.412T4 4h6l2 2h8q.825 0 1.413.588T22 8v3.3q-.35-.15-.725-.225t-.75-.075q-.7 0-1.312.25T18.1 12L12 18.1V20z"/></svg>
                             <span>Открыть менеджер</span>
                         </div>
                     </div>
@@ -638,7 +665,7 @@
                     <div class="media-label">Пользовательский курсор</div>
                     <div class="media-content">
                         <div class="cursor-placeholder">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="white"><path d="M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21zm2-4h10q.3 0 .45-.275t-.05-.525l-2.75-3.675q-.15-.2-.4-.2t-.4.2L11.25 16L9.4 13.525q-.15-.2-.4-.2t-.4.2l-2 2.675q-.2.25-.05.525T7 17"/></svg>
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21zm2-4h10q.3 0 .45-.275t-.05-.525l-2.75-3.675q-.15-.2-.4-.2t-.4.2L11.25 16L9.4 13.525q-.15-.2-.4-.2t-.4.2l-2 2.675q-.2.25-.05.525T7 17"/></svg>
                             <span>Загрузить файл</span>
                         </div>
                     </div>
@@ -647,7 +674,6 @@
         </div>
     </div>
 
-    <!-- Общие настройки -->
     <div class="settings-section">
         <span class="section-title">Общие настройки</span>
         <div class="settings-card">
@@ -694,7 +720,6 @@
         </div>
     </div>
 
-    <!-- Настройка цветов -->
     <div class="settings-section">
         <span class="section-title">Настройка цветов</span>
         <div class="settings-card">
@@ -703,24 +728,36 @@
                     <div class="setting-label">Акцентный цвет</div>
                     <div class="color-picker-row">
                         <div id="accentSwatch" class="color-swatch" style="background:#5b5b5b;"></div>
-                        <input id="accentInput" class="color-input" value="#5b5b5b">
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="accentColorPicker" value="#5b5b5b">
+                            <input id="accentInput" class="color-input" value="#5b5b5b">
+                        </div>
                     </div>
                     <div class="setting-label">Цвет текста</div>
                     <div class="color-picker-row">
                         <div id="textSwatch" class="color-swatch" style="background:#ffffff;"></div>
-                        <input id="textInput" class="color-input" value="#ffffff">
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="textColorPicker" value="#ffffff">
+                            <input id="textInput" class="color-input" value="#ffffff">
+                        </div>
                     </div>
                 </div>
                 <div class="settings-column">
                     <div class="setting-label">Цвет фона</div>
                     <div class="color-picker-row">
                         <div id="bgColorSwatch" class="color-swatch" style="background:#080808;"></div>
-                        <input id="bgColorInput" class="color-input" value="#080808">
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="bgColorPicker" value="#080808">
+                            <input id="bgColorInput" class="color-input" value="#080808">
+                        </div>
                     </div>
                     <div class="setting-label">Цвет иконок (соц. сети)</div>
                     <div class="color-picker-row">
                         <div id="iconColorSwatch" class="color-swatch" style="background:#ffffff;"></div>
-                        <input id="iconColorInput" class="color-input" value="#ffffff">
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="iconColorPicker" value="#ffffff">
+                            <input id="iconColorInput" class="color-input" value="#ffffff">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -737,21 +774,26 @@
                     <div class="setting-label">Основной цвет градиента</div>
                     <div class="color-picker-row">
                         <div id="grad1Swatch" class="color-swatch" style="background:#6f0000;"></div>
-                        <input id="grad1Input" class="color-input" value="#6f0000">
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="grad1ColorPicker" value="#6f0000">
+                            <input id="grad1Input" class="color-input" value="#6f0000">
+                        </div>
                     </div>
                 </div>
                 <div class="settings-column">
                     <div class="setting-label">Дополнительный цвет градиента</div>
                     <div class="color-picker-row">
                         <div id="grad2Swatch" class="color-swatch" style="background:#933800;"></div>
-                        <input id="grad2Input" class="color-input" value="#933800">
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="grad2ColorPicker" value="#933800">
+                            <input id="grad2Input" class="color-input" value="#933800">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Другие настройки -->
     <div class="settings-section">
         <span class="section-title">Другие настройки</span>
         <div class="settings-card">
@@ -806,7 +848,6 @@
         </div>
     </div>
 
-    <!-- Глобальные кнопки сохранения профиля -->
     <div class="global-actions">
         <button id="resetProfileBtn">Сбросить</button>
         <button id="saveDefaultBtn">Сохранить как дефолт</button>
@@ -814,13 +855,11 @@
     </div>
 </div>
 
-<!-- Toast уведомление -->
 <div id="toast" class="toast">
     <div class="toast-icon">✓</div>
     <span id="toastText">Настройки сохранены</span>
 </div>
 
-<!-- Модал менеджера аудио -->
 <div id="audioManagerModal" class="modal-overlay">
     <div class="audio-manager-modal">
         <div class="modal-header">
@@ -857,7 +896,6 @@
     </div>
 </div>
 
-<!-- Модалка редактирования трека -->
 <div id="editAudioOverlay" class="modal-overlay">
     <div class="edit-audio-modal">
         <div class="edit-audio-modal-header">
@@ -969,17 +1007,27 @@
 
     const accentInput = document.getElementById('accentInput');
     const accentSwatch = document.getElementById('accentSwatch');
+    const accentColorPicker = document.getElementById('accentColorPicker');
+
     const textInput = document.getElementById('textInput');
     const textSwatch = document.getElementById('textSwatch');
+    const textColorPicker = document.getElementById('textColorPicker');
+
     const bgColorInput = document.getElementById('bgColorInput');
     const bgColorSwatch = document.getElementById('bgColorSwatch');
+    const bgColorPicker = document.getElementById('bgColorPicker');
+
     const iconColorInput = document.getElementById('iconColorInput');
     const iconColorSwatch = document.getElementById('iconColorSwatch');
+    const iconColorPicker = document.getElementById('iconColorPicker');
 
     const grad1Input = document.getElementById('grad1Input');
     const grad1Swatch = document.getElementById('grad1Swatch');
+    const grad1ColorPicker = document.getElementById('grad1ColorPicker');
+
     const grad2Input = document.getElementById('grad2Input');
     const grad2Swatch = document.getElementById('grad2Swatch');
+    const grad2ColorPicker = document.getElementById('grad2ColorPicker');
     const gradientToggle = document.getElementById('gradientToggle');
 
     const monochromeToggle = document.getElementById('monochromeToggle');
@@ -1043,18 +1091,29 @@
         blurInput.value = profile.blur;
 
         accentInput.value = profile.accentColor;
+        accentColorPicker.value = profile.accentColor;
         accentSwatch.style.background = profile.accentColor;
+
         textInput.value = profile.textColor;
+        textColorPicker.value = profile.textColor;
         textSwatch.style.background = profile.textColor;
+
         bgColorInput.value = profile.bgColor;
+        bgColorPicker.value = profile.bgColor;
         bgColorSwatch.style.background = profile.bgColor;
+
         iconColorInput.value = profile.iconColor;
+        iconColorPicker.value = profile.iconColor;
         iconColorSwatch.style.background = profile.iconColor;
 
         grad1Input.value = profile.gradient1;
+        grad1ColorPicker.value = profile.gradient1;
         grad1Swatch.style.background = profile.gradient1;
+
         grad2Input.value = profile.gradient2;
+        grad2ColorPicker.value = profile.gradient2;
         grad2Swatch.style.background = profile.gradient2;
+
         gradientToggle.checked = !profile.gradientEnabled;
 
         monochromeToggle.checked = profile.monochrome;
@@ -1099,24 +1158,35 @@
         profile.audioPlayerEnabled = playerEnabledCheckbox.checked;
     }
 
-    accentInput.addEventListener('input', () => {
-        accentSwatch.style.background = accentInput.value;
-    });
-    textInput.addEventListener('input', () => {
-        textSwatch.style.background = textInput.value;
-    });
-    bgColorInput.addEventListener('input', () => {
-        bgColorSwatch.style.background = bgColorInput.value;
-    });
-    iconColorInput.addEventListener('input', () => {
-        iconColorSwatch.style.background = iconColorInput.value;
-    });
-    grad1Input.addEventListener('input', () => {
-        grad1Swatch.style.background = grad1Input.value;
-    });
-    grad2Input.addEventListener('input', () => {
-        grad2Swatch.style.background = grad2Input.value;
-    });
+    // синхронизация палитра <-> hex
+    function bindColorPair(inputEl, pickerEl, swatchEl, key) {
+        function setFromHex() {
+            let val = inputEl.value.trim();
+            if (!val.startsWith('#')) val = '#' + val;
+            if (/^#[0-9a-fA-F]{6}$/.test(val)) {
+                inputEl.value = val.toLowerCase();
+                pickerEl.value = val.toLowerCase();
+                swatchEl.style.background = val.toLowerCase();
+                profile[key] = val.toLowerCase();
+            }
+        }
+        function setFromPicker() {
+            const val = pickerEl.value;
+            inputEl.value = val.toLowerCase();
+            swatchEl.style.background = val.toLowerCase();
+            profile[key] = val.toLowerCase();
+        }
+        inputEl.addEventListener('change', setFromHex);
+        inputEl.addEventListener('blur', setFromHex);
+        pickerEl.addEventListener('input', setFromPicker);
+    } // [web:309][web:310]
+
+    bindColorPair(accentInput, accentColorPicker, accentSwatch, 'accentColor');
+    bindColorPair(textInput, textColorPicker, textSwatch, 'textColor');
+    bindColorPair(bgColorInput, bgColorPicker, bgColorSwatch, 'bgColor');
+    bindColorPair(iconColorInput, iconColorPicker, iconColorSwatch, 'iconColor');
+    bindColorPair(grad1Input, grad1ColorPicker, grad1Swatch, 'gradient1');
+    bindColorPair(grad2Input, grad2ColorPicker, grad2Swatch, 'gradient2');
 
     function handleImageFile(input, previewImg, nameLabel, profileKey) {
         const file = input.files[0];
@@ -1208,7 +1278,7 @@
         });
 
         return div;
-    } // [web:291]
+    } // [web:302][web:304][web:291]
 
     function renderAudioList() {
         audioList.innerHTML = '';
