@@ -212,6 +212,7 @@
             align-items: center;
         }
         .modal-overlay.active { display: flex; }
+
         .audio-manager-modal {
             background: #111111;
             border-radius: 32px;
@@ -311,6 +312,7 @@
             justify-content: center;
         }
         .add-audio-btn:hover { background: #6c6c6c; }
+
         .setting-switch {
             display: flex;
             justify-content: space-between;
@@ -330,6 +332,150 @@
         .setting-description {
             font-size: 0.7rem;
             color: #888;
+        }
+
+        /* кастомные тумблеры */
+        .toggle-switch {
+            position: relative;
+            width: 42px;
+            height: 22px;
+            display: inline-block;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background-color: #333;
+            border-radius: 999px;
+            transition: 0.2s;
+        }
+        .toggle-slider::before {
+            content: "";
+            position: absolute;
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            top: 3px;
+            background-color: #fff;
+            border-radius: 50%;
+            transition: 0.2s;
+        }
+        .toggle-switch input:checked + .toggle-slider {
+            background-color: #5b5b5b;
+        }
+        .toggle-switch input:checked + .toggle-slider::before {
+            transform: translateX(18px);
+        }
+
+        /* модалка редактирования трека */
+        .edit-audio-modal {
+            background: #111111;
+            border-radius: 26px;
+            width: 90%;
+            max-width: 520px;
+            border: 1px solid #2a2a2a;
+            padding: 20px 24px 22px;
+        }
+        .edit-audio-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+        .edit-audio-modal-header h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .edit-audio-close {
+            background: none;
+            border: none;
+            color: #aaa;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .edit-row {
+            margin-bottom: 16px;
+        }
+        .edit-label {
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+            color: #ddd;
+        }
+        .edit-input-text {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 14px;
+            border: 1px solid #2a2a2a;
+            background: #1a1a1a;
+            color: #fff;
+            font-size: 0.85rem;
+        }
+        .file-input-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .file-input-row input[type="file"] {
+            font-size: 0.8rem;
+        }
+        .edit-cover-preview {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            background-size: cover;
+            background-position: center;
+            background-color: #2c2c2c;
+        }
+        .edit-modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 6px;
+        }
+        .btn-small {
+            border-radius: 999px;
+            padding: 6px 14px;
+            border: 1px solid #444;
+            background: #1a1a1a;
+            color: #eee;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        .btn-small.primary {
+            background: #5b5b5b;
+            border-color: #5b5b5b;
+        }
+        .btn-small.primary:hover {
+            background: #6c6c6c;
+        }
+
+        .profile-actions {
+            margin-top: 22px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .profile-actions button {
+            border-radius: 999px;
+            padding: 8px 18px;
+            border: 1px solid #444;
+            background: #1a1a1a;
+            color: #eee;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        .profile-actions button.primary {
+            background: #5b5b5b;
+            border-color: #5b5b5b;
+        }
+        .profile-actions button.primary:hover {
+            background: #6c6c6c;
         }
     </style>
 </head>
@@ -452,6 +598,7 @@
     </div>
 </div>
 
+<!-- Модал менеджера аудио -->
 <div id="audioManagerModal" class="modal-overlay">
     <div class="audio-manager-modal">
         <div class="modal-header">
@@ -468,7 +615,10 @@
                     <span class="setting-title">Перемешивание аудио</span>
                     <span class="setting-description">Проигрывать случайное аудио при каждом посещении страницы</span>
                 </div>
-                <input type="checkbox" class="normal-checkbox" id="shuffleCheckbox">
+                <label class="toggle-switch">
+                    <input type="checkbox" id="shuffleCheckbox">
+                    <span class="toggle-slider"></span>
+                </label>
             </div>
 
             <div class="setting-switch">
@@ -476,14 +626,55 @@
                     <span class="setting-title">Аудиоплеер</span>
                     <span class="setting-description">Добавляет в профиль виджет аудиоплеера</span>
                 </div>
-                <input type="checkbox" class="normal-checkbox" id="playerEnabledCheckbox" checked>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="playerEnabledCheckbox" checked>
+                    <span class="toggle-slider"></span>
+                </label>
             </div>
+
+            <div class="profile-actions">
+                <button class="primary" id="saveProfileBtn">Сохранить в профиль</button>
+                <button id="saveDefaultBtn">Сохранить как дефолт</button>
+                <button id="resetProfileBtn">Сбросить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модалка редактирования трека -->
+<div id="editAudioOverlay" class="modal-overlay">
+    <div class="edit-audio-modal">
+        <div class="edit-audio-modal-header">
+            <h3>Редактировать аудио</h3>
+            <button class="edit-audio-close" id="closeEditModalBtn">×</button>
+        </div>
+        <div class="edit-row">
+            <div class="edit-label">Название</div>
+            <input type="text" id="editTitleInput" class="edit-input-text" placeholder="Название трека">
+        </div>
+        <div class="edit-row">
+            <div class="edit-label">Файл аудио (.mp3)</div>
+            <div class="file-input-row">
+                <input type="file" id="editAudioFile" accept="audio/mpeg,audio/mp3">
+            </div>
+        </div>
+        <div class="edit-row">
+            <div class="edit-label">Обложка</div>
+            <div class="file-input-row">
+                <input type="file" id="editCoverFile" accept="image/*">
+                <div class="edit-cover-preview" id="editCoverPreview"></div>
+            </div>
+        </div>
+        <div class="edit-modal-actions">
+            <button class="btn-small" id="cancelEditBtn">Отмена</button>
+            <button class="btn-small primary" id="saveEditBtn">Сохранить</button>
         </div>
     </div>
 </div>
 
 <script>
     const PROFILE_KEY = 'Lolekx228_profile';
+    const PROFILE_DEFAULT_KEY = 'Lolekx228_profile_default';
 
     const defaultProfile = {
         audio: [
@@ -504,22 +695,27 @@
         audioPlayerEnabled: true
     };
 
-    function loadProfile() {
+    function loadProfile(key, fallback) {
         try {
-            const raw = localStorage.getItem(PROFILE_KEY);
-            if (!raw) return { ...defaultProfile };
+            const raw = localStorage.getItem(key);
+            if (!raw) return JSON.parse(JSON.stringify(fallback));
             const parsed = JSON.parse(raw);
-            return { ...defaultProfile, ...parsed };
+            return { ...fallback, ...parsed };
         } catch {
-            return { ...defaultProfile };
+            return JSON.parse(JSON.stringify(fallback));
         }
     }
 
-    function saveProfile(profile) {
-        localStorage.setItem(PROFILE_KEY, JSON.stringify(profile)); // [web:50][web:51][web:127]
+    function saveProfile(key, data) {
+        localStorage.setItem(key, JSON.stringify(data)); // [web:47][web:224]
     }
 
-    let profile = loadProfile();
+    function clearAllProfile() {
+        localStorage.removeItem(PROFILE_KEY);
+        localStorage.removeItem(PROFILE_DEFAULT_KEY);
+    }
+
+    let profile = loadProfile(PROFILE_KEY, defaultProfile);
 
     const openBtn = document.getElementById('openAudioManagerBtn');
     const modal = document.getElementById('audioManagerModal');
@@ -529,8 +725,88 @@
     const shuffleCheckbox = document.getElementById('shuffleCheckbox');
     const playerEnabledCheckbox = document.getElementById('playerEnabledCheckbox');
 
+    const saveProfileBtn = document.getElementById('saveProfileBtn');
+    const saveDefaultBtn = document.getElementById('saveDefaultBtn');
+    const resetProfileBtn = document.getElementById('resetProfileBtn');
+
+    const editOverlay = document.getElementById('editAudioOverlay');
+    const closeEditModalBtn = document.getElementById('closeEditModalBtn');
+    const editTitleInput = document.getElementById('editTitleInput');
+    const editAudioFile = document.getElementById('editAudioFile');
+    const editCoverFile = document.getElementById('editCoverFile');
+    const editCoverPreview = document.getElementById('editCoverPreview');
+    const cancelEditBtn = document.getElementById('cancelEditBtn');
+    const saveEditBtn = document.getElementById('saveEditBtn');
+
+    let editingIndex = null;
+
+    function openEditModal(index) {
+        editingIndex = index;
+        const track = profile.audio[index] || {};
+        editTitleInput.value = track.title || '';
+        editAudioFile.value = '';
+        editCoverFile.value = '';
+        editCoverPreview.style.backgroundImage = track.cover ? `url('${track.cover}')` : 'none';
+        editOverlay.classList.add('active');
+    }
+
+    function closeEditModal() {
+        editingIndex = null;
+        editOverlay.classList.remove('active');
+    }
+
+    closeEditModalBtn.addEventListener('click', closeEditModal);
+    cancelEditBtn.addEventListener('click', closeEditModal);
+    editOverlay.addEventListener('click', (e) => {
+        if (e.target === editOverlay) closeEditModal();
+    });
+
+    editCoverFile.addEventListener('change', () => {
+        const file = editCoverFile.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            editCoverPreview.style.backgroundImage = `url('${e.target.result}')`;
+        };
+        reader.readAsDataURL(file);
+    });
+
+    saveEditBtn.addEventListener('click', () => {
+        if (editingIndex === null) return;
+        const track = profile.audio[editingIndex] || {};
+
+        if (editTitleInput.value.trim()) {
+            track.title = editTitleInput.value.trim();
+        }
+
+        const audioFile = editAudioFile.files[0];
+        if (audioFile) {
+            const audioUrl = URL.createObjectURL(audioFile);
+            track.url = audioUrl;
+        }
+
+        const coverFile = editCoverFile.files[0];
+        if (coverFile) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                track.cover = e.target.result;
+                profile.audio[editingIndex] = track;
+                saveProfile(PROFILE_KEY, profile);
+                renderAudioList();
+                closeEditModal();
+            };
+            reader.readAsDataURL(coverFile);
+            return;
+        }
+
+        profile.audio[editingIndex] = track;
+        saveProfile(PROFILE_KEY, profile);
+        renderAudioList();
+        closeEditModal();
+    });
+
     openBtn.addEventListener('click', () => {
-        profile = loadProfile();
+        profile = loadProfile(PROFILE_KEY, defaultProfile);
         renderAudioList();
         shuffleCheckbox.checked = !!profile.audioShuffle;
         playerEnabledCheckbox.checked = profile.audioPlayerEnabled !== false;
@@ -545,11 +821,11 @@
 
     shuffleCheckbox.addEventListener('change', () => {
         profile.audioShuffle = shuffleCheckbox.checked;
-        saveProfile(profile);
+        saveProfile(PROFILE_KEY, profile);
     });
     playerEnabledCheckbox.addEventListener('change', () => {
         profile.audioPlayerEnabled = playerEnabledCheckbox.checked;
-        saveProfile(profile);
+        saveProfile(PROFILE_KEY, profile);
     });
 
     function escapeHtml(str) {
@@ -582,29 +858,14 @@
             (profile.audio || []).forEach((t, i) => {
                 t.active = (i === index);
             });
-            saveProfile(profile);
+            saveProfile(PROFILE_KEY, profile);
             renderAudioList();
         });
 
         const editBtn = div.querySelector('.edit-audio-btn');
         editBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            const current = profile.audio[index] || {};
-
-            const newTitle = prompt('Название трека:', current.title || '');
-            if (newTitle === null) return;
-            const newUrl = prompt('URL аудио (mp3):', current.url || '');
-            if (newUrl === null) return;
-            const newCover = prompt('URL обложки (картинка):', current.cover || '');
-            if (newCover === null) return;
-
-            current.title = newTitle.trim() || current.title;
-            current.url = newUrl.trim() || current.url;
-            current.cover = newCover.trim() || current.cover;
-
-            profile.audio[index] = current;
-            saveProfile(profile);
-            renderAudioList();
+            openEditModal(index);
         });
 
         return div;
@@ -620,26 +881,36 @@
     }
 
     addAudioBtn.addEventListener('click', () => {
-        const title = prompt('Введите название нового аудио:', 'Новый трек');
-        if (!title || !title.trim()) return;
-
-        const url = prompt('Вставь URL аудио (mp3):', '');
-        if (url === null || !url.trim()) return;
-
-        const cover = prompt('Вставь URL обложки (картинка):', '');
-        if (cover === null) return;
-
-        const track = {
-            title: title.trim(),
-            url: url.trim(),
-            cover: cover.trim(),
-            active: false
-        };
         profile.audio = profile.audio || [];
-        profile.audio.push(track);
-
-        saveProfile(profile);
+        profile.audio.push({
+            title: 'Новый трек',
+            url: '',
+            cover: '',
+            active: false
+        });
+        saveProfile(PROFILE_KEY, profile);
         renderAudioList();
+    });
+
+    saveProfileBtn.addEventListener('click', () => {
+        saveProfile(PROFILE_KEY, profile);
+        alert('Сохранено в профиль');
+    });
+
+    saveDefaultBtn.addEventListener('click', () => {
+        saveProfile(PROFILE_DEFAULT_KEY, profile);
+        alert('Текущие настройки сохранены как дефолт');
+    });
+
+    resetProfileBtn.addEventListener('click', () => {
+        if (!confirm('Сбросить профиль и дефолт к исходным настройкам?')) return;
+        clearAllProfile();
+        profile = JSON.parse(JSON.stringify(defaultProfile));
+        saveProfile(PROFILE_KEY, profile);
+        renderAudioList();
+        shuffleCheckbox.checked = !!profile.audioShuffle;
+        playerEnabledCheckbox.checked = profile.audioPlayerEnabled !== false;
+        alert('Профиль сброшен');
     });
 </script>
 </body>
