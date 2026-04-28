@@ -13,7 +13,7 @@
       background: #050505;
       color: #fff;
     }
-    .wrap { max-width: 800px; margin: 0 auto; }
+    .wrap { max-width: 880px; margin: 0 auto; }
     h1 { margin-bottom: 4px; font-size: 24px; }
     .subtitle {
       font-size: 13px;
@@ -78,49 +78,6 @@
       border: 1px solid #444;
       background: #111;
     }
-    .tracks {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .track {
-      border-radius: 8px;
-      border: 1px solid #333;
-      padding: 8px;
-      background: #0c0c0c;
-    }
-    .track-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 6px;
-      font-size: 13px;
-    }
-    .track-header span { opacity: 0.9; }
-    .track-header label {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      margin: 0;
-      font-size: 12px;
-      opacity: 0.8;
-    }
-    .file-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      align-items: center;
-      margin-bottom: 4px;
-    }
-    .file-row input[type="file"] {
-      font-size: 11px;
-      max-width: 280px;
-    }
-    .small-note {
-      font-size: 11px;
-      opacity: 0.65;
-      margin-bottom: 6px;
-    }
     .btn-row {
       display: flex;
       gap: 8px;
@@ -150,14 +107,88 @@
     }
     .status.ok { color: #7fd47f; }
     .status.err { color: #ff7f7f; }
+
+    /* Аудио «папка» */
+    .tracks-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+    .tracks-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .track {
+      border-radius: 8px;
+      border: 1px solid #333;
+      padding: 8px;
+      background: #0c0c0c;
+    }
+    .track-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+      font-size: 12px;
+    }
+    .track-top-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .track-index {
+      font-size: 11px;
+      opacity: 0.7;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: #151515;
+    }
+    .track-top-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .track-top-right label {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin: 0;
+      font-size: 11px;
+      opacity: 0.8;
+    }
+    .track button.small {
+      padding: 4px 10px;
+      font-size: 11px;
+      border-radius: 999px;
+    }
+    .file-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .file-row input[type="file"] {
+      font-size: 11px;
+      max-width: 290px;
+    }
+    .small-note {
+      font-size: 11px;
+      opacity: 0.65;
+      margin-bottom: 6px;
+    }
   </style>
 </head>
 <body>
 <div class="wrap">
   <h1>Админка Lolekx-card</h1>
   <div class="subtitle">
-    Тут можно настроить ник, описание, локацию, фон, аватар, ссылки и музыку.
-    Треки и обложки можно выбрать файлами — они сохраняются в профиле как dataURL.
+    Настройка профиля, внешки и музыки. В «папке» аудио можно держать несколько треков, добавлять/удалять и выбирать дефолтный.
   </div>
 
   <!-- Профиль -->
@@ -176,7 +207,7 @@
   <!-- Аватар и фон -->
   <fieldset>
     <legend>Аватар и фон</legend>
-    <label for="avatarUrl">Ссылка на аватар (или вставь сюда dataURL)</label>
+    <label for="avatarUrl">Ссылка на аватар (или dataURL)</label>
     <input type="url" id="avatarUrl" placeholder="https://...">
 
     <label for="backgroundUrl">Ссылка на фон (BG, или dataURL)</label>
@@ -210,7 +241,7 @@
 
     <div class="checkbox-line">
       <input type="checkbox" id="gradientEnabled">
-      <label for="gradientEnabled">Включить градиент (иначе фон — сплошной цвет bgColor)</label>
+      <label for="gradientEnabled">Включить градиент (иначе фон — bgColor)</label>
     </div>
 
     <div class="row">
@@ -257,74 +288,20 @@
     </div>
   </fieldset>
 
-  <!-- Треки -->
+  <!-- Музыка (папка) -->
   <fieldset>
-    <legend>Музыка (до 2 треков, файлы или ссылки)</legend>
+    <legend>Музыка (папка треков)</legend>
     <div class="small-note">
-      Можно оставить поля URL, как сейчас, или выбрать файлы: аудио и обложки будут сохранены как dataURL прямо в профиле.
+      Можно добавить несколько треков. Каждый трек: название, аудио (файл или URL), обложка (файл или URL).
+      Один трек можно пометить как выбранный по умолчанию.
     </div>
 
-    <div class="tracks">
-      <!-- Трек 1 -->
-      <div class="track" data-index="0">
-        <div class="track-header">
-          <span>Трек 1</span>
-          <label>
-            <input type="radio" name="selectedTrack" value="0">
-            выбран по умолчанию
-          </label>
-        </div>
-
-        <label>Название</label>
-        <input type="text" class="track-title" placeholder="Название трека">
-
-        <label>URL аудио (mp3) — можно не заполнять, если выберешь файл ниже</label>
-        <input type="url" class="track-url" placeholder="https://...mp3">
-
-        <div class="file-row">
-          <label style="margin-bottom:0;">Аудио-файл:</label>
-          <input type="file" accept="audio/*" class="track-audio-file">
-        </div>
-
-        <label>Обложка (URL картинки — можно не заполнять, если выберешь файл ниже)</label>
-        <input type="url" class="track-cover" placeholder="https://...">
-
-        <div class="file-row">
-          <label style="margin-bottom:0;">Файл обложки:</label>
-          <input type="file" accept="image/*" class="track-cover-file">
-        </div>
-      </div>
-
-      <!-- Трек 2 -->
-      <div class="track" data-index="1">
-        <div class="track-header">
-          <span>Трек 2</span>
-          <label>
-            <input type="radio" name="selectedTrack" value="1">
-            выбран по умолчанию
-          </label>
-        </div>
-
-        <label>Название</label>
-        <input type="text" class="track-title" placeholder="Название трека">
-
-        <label>URL аудио (mp3)</label>
-        <input type="url" class="track-url" placeholder="https://...mp3">
-
-        <div class="file-row">
-          <label style="margin-bottom:0;">Аудио-файл:</label>
-          <input type="file" accept="audio/*" class="track-audio-file">
-        </div>
-
-        <label>Обложка (URL картинки)</label>
-        <input type="url" class="track-cover" placeholder="https://...">
-
-        <div class="file-row">
-          <label style="margin-bottom:0;">Файл обложки:</label>
-          <input type="file" accept="image/*" class="track-cover-file">
-        </div>
-      </div>
+    <div class="tracks-header">
+      <span>Треки</span>
+      <button type="button" id="addTrackBtn">Добавить трек</button>
     </div>
+
+    <div id="tracksList" class="tracks-list"></div>
   </fieldset>
 
   <div class="btn-row">
@@ -383,7 +360,7 @@
   }
 
   function saveProfile(profile) {
-    localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+    localStorage.setItem(PROFILE_KEY, JSON.stringify(profile)); // [web:188]
   }
 
   const statusEl = document.getElementById('status');
@@ -398,15 +375,127 @@
     }, 2000);
   }
 
-  // утилита: File -> dataURL
+  // File -> dataURL
   function fileToDataURL(file) {
     return new Promise((resolve, reject) => {
-      const reader = new FileReader();  // [web:175][web:179]
+      const reader = new FileReader(); // [web:175]
       reader.onload = () => resolve(reader.result);
       reader.onerror = reject;
       reader.readAsDataURL(file);
     });
   }
+
+  // ===== Рендер треков (папка) =====
+
+  const tracksListEl = document.getElementById('tracksList');
+  const addTrackBtn = document.getElementById('addTrackBtn');
+
+  function createTrackElement(track, index) {
+    const div = document.createElement('div');
+    div.className = 'track';
+    div.dataset.index = index;
+
+    div.innerHTML = `
+      <div class="track-top">
+        <div class="track-top-left">
+          <div class="track-index">#${index + 1}</div>
+          <div>${track.title ? track.title : 'Без названия'}</div>
+        </div>
+        <div class="track-top-right">
+          <label>
+            <input type="radio" name="selectedTrack" value="${index}" ${track.selected ? 'checked' : ''}>
+            по умолчанию
+          </label>
+          <button type="button" class="small remove-track-btn">Удалить</button>
+        </div>
+      </div>
+
+      <label>Название</label>
+      <input type="text" class="track-title" value="${track.title || ''}" placeholder="Название трека">
+
+      <label>URL аудио (mp3) — можно не заполнять, если выберешь файл ниже</label>
+      <input type="url" class="track-url" value="${track.url && track.url.startsWith('data:') ? '' : (track.url || '')}" placeholder="https://...mp3">
+
+      <div class="file-row">
+        <label style="margin-bottom:0;">Аудио-файл:</label>
+        <input type="file" accept="audio/*" class="track-audio-file">
+      </div>
+
+      <label>Обложка (URL картинки — можно не заполнять, если выберешь файл ниже)</label>
+      <input type="url" class="track-cover" value="${track.cover && track.cover.startsWith('data:') ? '' : (track.cover || '')}" placeholder="https://...">
+
+      <div class="file-row">
+        <label style="margin-bottom:0;">Файл обложки:</label>
+        <input type="file" accept="image/*" class="track-cover-file">
+      </div>
+    `;
+    return div;
+  }
+
+  function renderTracks(audioArray) {
+    tracksListEl.innerHTML = '';
+    if (!audioArray || !audioArray.length) {
+      audioArray = [];
+    }
+    audioArray.forEach((track, idx) => {
+      const el = createTrackElement(track, idx);
+      tracksListEl.appendChild(el);
+    });
+  }
+
+  function getTracksFromDOM() {
+    const blocks = Array.from(tracksListEl.querySelectorAll('.track'));
+    return blocks.map((block, i) => {
+      const title = block.querySelector('.track-title').value.trim();
+      const urlField = block.querySelector('.track-url').value.trim();
+      const coverField = block.querySelector('.track-cover').value.trim();
+      const radio = block.querySelector('input[type="radio"]');
+      return {
+        title: title || `Track ${i + 1}`,
+        url: urlField,
+        cover: coverField,
+        selected: radio.checked
+      };
+    });
+  }
+
+  function attachTrackHandlers() {
+    tracksListEl.addEventListener('click', (e) => {
+      const btn = e.target;
+      if (btn.classList.contains('remove-track-btn')) {
+        const trackEl = btn.closest('.track');
+        if (!trackEl) return;
+        trackEl.remove();
+
+        const blocks = Array.from(tracksListEl.querySelectorAll('.track'));
+        blocks.forEach((el, i) => {
+          el.dataset.index = i;
+          const idxBadge = el.querySelector('.track-index');
+          if (idxBadge) idxBadge.textContent = '#' + (i + 1);
+          const radio = el.querySelector('input[type="radio"]');
+          if (radio) radio.value = i;
+        });
+
+        const radios = Array.from(tracksListEl.querySelectorAll('input[name="selectedTrack"]'));
+        if (radios.length && !radios.some(r => r.checked)) {
+          radios[0].checked = true;
+        }
+      }
+    });
+  }
+
+  addTrackBtn.addEventListener('click', () => {
+    const currentTracks = getTracksFromDOM();
+    currentTracks.push({
+      title: '',
+      url: '',
+      cover: '',
+      selected: currentTracks.length === 0
+    });
+    renderTracks(currentTracks);
+  });
+
+  // ===== Профиль =====
 
   function fillFormFromProfile(profile) {
     document.getElementById('displayName').value = profile.displayName || '';
@@ -438,22 +527,7 @@
     document.getElementById('youtubeUrl').value = youtubeUrl;
     document.getElementById('discordUrl').value = discordUrl;
 
-    const trackBlocks = document.querySelectorAll('.track');
-    const audioArr = profile.audio || [];
-    trackBlocks.forEach(block => {
-      const idx = Number(block.dataset.index);
-      const track = audioArr[idx] || {};
-      block.querySelector('.track-title').value = track.title || '';
-      block.querySelector('.track-url').value = track.url || '';
-      block.querySelector('.track-cover').value = track.cover || '';
-      const radio = block.querySelector('input[type="radio"]');
-      radio.checked = !!track.selected;
-    });
-
-    if (!Array.from(document.querySelectorAll('input[name="selectedTrack"]')).some(r => r.checked)) {
-      const first = document.querySelector('input[name="selectedTrack"]');
-      if (first) first.checked = true;
-    }
+    renderTracks(profile.audio || []);
   }
 
   async function collectProfileFromForm(prevProfile) {
@@ -495,10 +569,11 @@
     if (discordUrl) socials.push({ name: 'discord', url: discordUrl });
     profile.socials = socials.length ? socials : defaultProfile.socials;
 
-    const trackBlocks = document.querySelectorAll('.track');
+    const trackEls = Array.from(tracksListEl.querySelectorAll('.track'));
     const audio = [];
-    for (const block of trackBlocks) {
-      const idx = Number(block.dataset.index);
+
+    for (let i = 0; i < trackEls.length; i++) {
+      const block = trackEls[i];
       const title = block.querySelector('.track-title').value.trim();
       let url = block.querySelector('.track-url').value.trim();
       let cover = block.querySelector('.track-cover').value.trim();
@@ -509,7 +584,7 @@
 
       if (audioFileInput.files && audioFileInput.files[0]) {
         try {
-          url = await fileToDataURL(audioFileInput.files[0]); // [web:175][web:179]
+          url = await fileToDataURL(audioFileInput.files[0]); // [web:175]
         } catch (e) {
           console.error('Ошибка чтения аудио-файла', e);
         }
@@ -517,16 +592,16 @@
 
       if (coverFileInput.files && coverFileInput.files[0]) {
         try {
-          cover = await fileToDataURL(coverFileInput.files[0]); // [web:176][web:180]
+          cover = await fileToDataURL(coverFileInput.files[0]); // [web:180]
         } catch (e) {
-          console.error('Ошибка чтения файла обложки', e);
+          console.error('Ошибка чтения обложки', e);
         }
       }
 
       if (!title && !url) continue;
 
       audio.push({
-        title: title || `Track ${idx + 1}`,
+        title: title || `Track ${i + 1}`,
         url,
         cover,
         selected: radio.checked
@@ -552,6 +627,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     const prof = loadProfile();
     fillFormFromProfile(prof);
+    attachTrackHandlers();
   });
 
   saveBtn.addEventListener('click', async () => {
