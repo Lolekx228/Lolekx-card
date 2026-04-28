@@ -5,17 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lolekx's Card Настройки</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             background: #0a0a0a;
             font-family: 'Onest', 'Segoe UI', system-ui, -apple-system, sans-serif;
             color: #ffffff;
-            padding: 40px 24px;
+            padding: 40px 24px 80px;
             display: flex;
             justify-content: center;
         }
@@ -179,7 +175,7 @@
             flex: 1;
         }
 
-        .checkbox-item {
+        .checkbox-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -188,11 +184,46 @@
             gap: 12px;
         }
         .checkbox-label { color: #ddd; }
-        .normal-checkbox {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
+
+        /* Единый стиль тумблеров по всей админке */
+        .toggle-switch {
+            position: relative;
+            width: 42px;
+            height: 22px;
+            display: inline-block;
+            flex-shrink: 0;
         }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background-color: #333;
+            border-radius: 999px;
+            transition: 0.2s;
+        }
+        .toggle-slider::before {
+            content: "";
+            position: absolute;
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            top: 3px;
+            background-color: #fff;
+            border-radius: 50%;
+            transition: 0.2s;
+        }
+        .toggle-switch input:checked + .toggle-slider {
+            background-color: #5b5b5b;
+        }
+        .toggle-switch input:checked + .toggle-slider::before {
+            transform: translateX(18px);
+        }
+
         hr {
             border-color: #2a2a2a;
             margin: 20px 0;
@@ -334,45 +365,7 @@
             color: #888;
         }
 
-        /* кастомные тумблеры */
-        .toggle-switch {
-            position: relative;
-            width: 42px;
-            height: 22px;
-            display: inline-block;
-        }
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        .toggle-slider {
-            position: absolute;
-            cursor: pointer;
-            inset: 0;
-            background-color: #333;
-            border-radius: 999px;
-            transition: 0.2s;
-        }
-        .toggle-slider::before {
-            content: "";
-            position: absolute;
-            height: 16px;
-            width: 16px;
-            left: 3px;
-            top: 3px;
-            background-color: #fff;
-            border-radius: 50%;
-            transition: 0.2s;
-        }
-        .toggle-switch input:checked + .toggle-slider {
-            background-color: #5b5b5b;
-        }
-        .toggle-switch input:checked + .toggle-slider::before {
-            transform: translateX(18px);
-        }
-
-        /* модалка редактирования трека */
+        /* Модалка редактирования трека */
         .edit-audio-modal {
             background: #111111;
             border-radius: 26px;
@@ -398,9 +391,7 @@
             font-size: 24px;
             cursor: pointer;
         }
-        .edit-row {
-            margin-bottom: 16px;
-        }
+        .edit-row { margin-bottom: 16px; }
         .edit-label {
             font-size: 0.85rem;
             margin-bottom: 6px;
@@ -415,15 +406,42 @@
             color: #fff;
             font-size: 0.85rem;
         }
-        .file-input-row {
-            display: flex;
+
+        /* Кастомный file-input */
+        .file-input-wrapper {
+            position: relative;
+            display: inline-flex;
             align-items: center;
             gap: 10px;
-            flex-wrap: wrap;
         }
-        .file-input-row input[type="file"] {
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .file-input-button {
+            border-radius: 999px;
+            padding: 6px 14px;
+            border: 1px solid #444;
+            background: #1a1a1a;
+            color: #eee;
             font-size: 0.8rem;
+            cursor: pointer;
+            white-space: nowrap;
         }
+        .file-input-button:hover {
+            background: #2a2a2a;
+        }
+        .file-input-name {
+            font-size: 0.75rem;
+            color: #888;
+            max-width: 180px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
         .edit-cover-preview {
             width: 56px;
             height: 56px;
@@ -455,13 +473,17 @@
             background: #6c6c6c;
         }
 
-        .profile-actions {
-            margin-top: 22px;
+        /* Кнопки сохранения всей админки */
+        .global-actions {
+            position: sticky;
+            bottom: 16px;
+            margin-top: 12px;
             display: flex;
-            flex-wrap: wrap;
+            justify-content: flex-end;
             gap: 10px;
+            z-index: 5;
         }
-        .profile-actions button {
+        .global-actions button {
             border-radius: 999px;
             padding: 8px 18px;
             border: 1px solid #444;
@@ -470,12 +492,18 @@
             font-size: 0.8rem;
             cursor: pointer;
         }
-        .profile-actions button.primary {
+        .global-actions button.primary {
             background: #5b5b5b;
             border-color: #5b5b5b;
         }
-        .profile-actions button.primary:hover {
+        .global-actions button.primary:hover {
             background: #6c6c6c;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 24px 12px 70px; }
+            .settings-card { padding: 20px 16px; }
+            .section-title { font-size: 1.4rem; }
         }
     </style>
 </head>
@@ -490,9 +518,15 @@
                     <div class="media-label">Фон</div>
                     <div class="media-content">
                         <div class="file-badge"><span>.WEBP</span><span>✕</span></div>
-                        <img class="media-preview" src="https://r2.guns.lol/404eaec9-de84-4ca0-b031-6059b171072a.webp" alt="фон">
+                        <img class="media-preview" id="bgPreview" src="https://r2.guns.lol/404eaec9-de84-4ca0-b031-6059b171072a.webp" alt="фон">
+                        <label class="file-input-wrapper">
+                            <span class="file-input-button">Выбрать фон</span>
+                            <span class="file-input-name" id="bgFileName">Файл не выбран</span>
+                            <input type="file" id="bgFileInput" accept="image/*">
+                        </label>
                     </div>
                 </div>
+
                 <div class="media-item" id="openAudioManagerBtn">
                     <div class="media-label">Аудио</div>
                     <div class="media-content">
@@ -502,13 +536,20 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="media-item">
                     <div class="media-label">Аватар профиля</div>
                     <div class="media-content">
                         <div class="file-badge"><span>.WEBP</span><span>✕</span></div>
-                        <img class="media-preview" src="https://r2.guns.lol/a90d9caf-a563-4b08-a030-1febdba3397e.webp" alt="аватар">
+                        <img class="media-preview" id="avatarPreview" src="https://r2.guns.lol/a90d9caf-a563-4b08-a030-1febdba3397e.webp" alt="аватар">
+                        <label class="file-input-wrapper">
+                            <span class="file-input-button">Выбрать аватар</span>
+                            <span class="file-input-name" id="avatarFileName">Файл не выбран</span>
+                            <input type="file" id="avatarFileInput" accept="image/*">
+                        </label>
                     </div>
                 </div>
+
                 <div class="media-item">
                     <div class="media-label">Пользовательский курсор</div>
                     <div class="media-content">
@@ -528,24 +569,42 @@
         <div class="settings-card">
             <div class="settings-grid">
                 <div class="setting-item">
+                    <div class="setting-label">Имя профиля</div>
+                    <div class="input-wrapper">
+                        <input id="displayNameInput" type="text" value="Lolekx228">
+                    </div>
+                </div>
+                <div class="setting-item">
                     <div class="setting-label">Описание</div>
                     <div class="input-wrapper">
-                        <input type="text" value="Hiii Me: Animation artist, Voice actor, Programmer, Web Developer, Game Developer, 3D modeler">
+                        <input id="descriptionInput" type="text" value="Hiii Me: Animation artist, Voice actor, Programmer, Web Developer, Game Developer, 3D modeler">
                     </div>
                 </div>
                 <div class="two-columns">
                     <div class="settings-column">
                         <div class="setting-label">Прозрачность профиля</div>
-                        <div class="slider-container"><input type="range" min="0" max="1" step="0.01" value="0.5" class="slider"></div>
+                        <div class="slider-container">
+                            <input id="opacityInput" type="range" min="0.4" max="1" step="0.01" value="0.9" class="slider">
+                        </div>
                     </div>
                     <div class="settings-column">
                         <div class="setting-label">Размытие фона</div>
-                        <div class="slider-container"><input type="range" min="0" max="100" value="10" class="slider"></div>
+                        <div class="slider-container">
+                            <input id="blurInput" type="range" min="0" max="30" value="10" class="slider">
+                        </div>
                     </div>
                 </div>
                 <div class="setting-item">
-                    <div class="setting-label">Местоположение</div>
-                    <div class="input-wrapper"><input type="text" value="Україна, ДНР, Донецьк"></div>
+                    <div class="setting-label">Короткое местоположение</div>
+                    <div class="input-wrapper">
+                        <input id="locationShortInput" type="text" value="Україна, ДНР, Донецьк">
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">Полное местоположение (подсказка)</div>
+                    <div class="input-wrapper">
+                        <input id="locationFullInput" type="text" value="Україна, Донецкая Народная Республика, город Донецьк">
+                    </div>
                 </div>
             </div>
         </div>
@@ -558,22 +617,52 @@
             <div class="two-columns">
                 <div class="settings-column">
                     <div class="setting-label">Акцентный цвет</div>
-                    <div class="color-picker-row"><div class="color-swatch" style="background:#5b5b5b;"></div><input class="color-input" value="#5b5b5b"></div>
+                    <div class="color-picker-row">
+                        <div id="accentSwatch" class="color-swatch" style="background:#5b5b5b;"></div>
+                        <input id="accentInput" class="color-input" value="#5b5b5b">
+                    </div>
                     <div class="setting-label">Цвет текста</div>
-                    <div class="color-picker-row"><div class="color-swatch" style="background:#ffffff;"></div><input class="color-input" value="#ffffff"></div>
+                    <div class="color-picker-row">
+                        <div id="textSwatch" class="color-swatch" style="background:#ffffff;"></div>
+                        <input id="textInput" class="color-input" value="#ffffff">
+                    </div>
                 </div>
                 <div class="settings-column">
                     <div class="setting-label">Цвет фона</div>
-                    <div class="color-picker-row"><div class="color-swatch" style="background:#080808;"></div><input class="color-input" value="#080808"></div>
-                    <div class="setting-label">Цвет иконок</div>
-                    <div class="color-picker-row"><div class="color-swatch" style="background:#ffffff;"></div><input class="color-input" value="#ffffff"></div>
+                    <div class="color-picker-row">
+                        <div id="bgColorSwatch" class="color-swatch" style="background:#080808;"></div>
+                        <input id="bgColorInput" class="color-input" value="#080808">
+                    </div>
+                    <div class="setting-label">Цвет иконок (соц. сети)</div>
+                    <div class="color-picker-row">
+                        <div id="iconColorSwatch" class="color-swatch" style="background:#ffffff;"></div>
+                        <input id="iconColorInput" class="color-input" value="#ffffff">
+                    </div>
                 </div>
             </div>
             <hr>
-            <div class="checkbox-item"><span class="checkbox-label">Выключить градиент профиля</span><input type="checkbox" class="normal-checkbox" checked></div>
+            <div class="checkbox-row">
+                <span class="checkbox-label">Выключить градиент профиля</span>
+                <label class="toggle-switch">
+                    <input id="gradientToggle" type="checkbox">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
             <div class="two-columns">
-                <div class="settings-column"><div class="setting-label">Основной цвет</div><div class="color-picker-row"><div class="color-swatch" style="background:#6f0000;"></div><input class="color-input" value="#6f0000"></div></div>
-                <div class="settings-column"><div class="setting-label">Дополнительный цвет</div><div class="color-picker-row"><div class="color-swatch" style="background:#933800;"></div><input class="color-input" value="#933800"></div></div>
+                <div class="settings-column">
+                    <div class="setting-label">Основной цвет градиента</div>
+                    <div class="color-picker-row">
+                        <div id="grad1Swatch" class="color-swatch" style="background:#6f0000;"></div>
+                        <input id="grad1Input" class="color-input" value="#6f0000">
+                    </div>
+                </div>
+                <div class="settings-column">
+                    <div class="setting-label">Дополнительный цвет градиента</div>
+                    <div class="color-picker-row">
+                        <div id="grad2Swatch" class="color-swatch" style="background:#933800;"></div>
+                        <input id="grad2Input" class="color-input" value="#933800">
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -584,17 +673,60 @@
         <div class="settings-card">
             <div class="two-columns">
                 <div class="settings-column">
-                    <div class="checkbox-item"><span class="checkbox-label">Монохромные иконки</span><input type="checkbox" class="normal-checkbox" checked></div>
-                    <div class="checkbox-item"><span class="checkbox-label">Анимированный заголовок</span><input type="checkbox" class="normal-checkbox" checked></div>
-                    <div class="checkbox-item"><span class="checkbox-label">Поменять цвета блоков</span><input type="checkbox" class="normal-checkbox"></div>
+                    <div class="checkbox-row">
+                        <span class="checkbox-label">Монохромные иконки</span>
+                        <label class="toggle-switch">
+                            <input id="monochromeToggle" type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="checkbox-row">
+                        <span class="checkbox-label">Анимированный заголовок</span>
+                        <label class="toggle-switch">
+                            <input id="animatedTitleToggle" type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="checkbox-row">
+                        <span class="checkbox-label">Поменять цвета блоков</span>
+                        <label class="toggle-switch">
+                            <input id="swapBlocksToggle" type="checkbox">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
                 </div>
                 <div class="settings-column">
-                    <div class="checkbox-item"><span class="checkbox-label">Регулятор громкости</span><input type="checkbox" class="normal-checkbox" checked></div>
-                    <div class="checkbox-item"><span class="checkbox-label">Использовать аватар Discord</span><input type="checkbox" class="normal-checkbox"></div>
-                    <div class="checkbox-item"><span class="checkbox-label">Декор аватара Discord</span><input type="checkbox" class="normal-checkbox" checked></div>
+                    <div class="checkbox-row">
+                        <span class="checkbox-label">Регулятор громкости</span>
+                        <label class="toggle-switch">
+                            <input id="volumeToggle" type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="checkbox-row">
+                        <span class="checkbox-label">Использовать аватар Discord</span>
+                        <label class="toggle-switch">
+                            <input id="discordAvatarToggle" type="checkbox">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="checkbox-row">
+                        <span class="checkbox-label">Декор аватара Discord</span>
+                        <label class="toggle-switch">
+                            <input id="discordDecorToggle" type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Глобальные кнопки сохранения профиля -->
+    <div class="global-actions">
+        <button id="resetProfileBtn">Сбросить</button>
+        <button id="saveDefaultBtn">Сохранить как дефолт</button>
+        <button class="primary" id="saveProfileBtn">Сохранить в профиль</button>
     </div>
 </div>
 
@@ -631,12 +763,6 @@
                     <span class="toggle-slider"></span>
                 </label>
             </div>
-
-            <div class="profile-actions">
-                <button class="primary" id="saveProfileBtn">Сохранить в профиль</button>
-                <button id="saveDefaultBtn">Сохранить как дефолт</button>
-                <button id="resetProfileBtn">Сбросить</button>
-            </div>
         </div>
     </div>
 </div>
@@ -652,19 +778,26 @@
             <div class="edit-label">Название</div>
             <input type="text" id="editTitleInput" class="edit-input-text" placeholder="Название трека">
         </div>
+
         <div class="edit-row">
             <div class="edit-label">Файл аудио (.mp3)</div>
-            <div class="file-input-row">
+            <div class="file-input-wrapper">
+                <span class="file-input-button">Выбрать аудио</span>
+                <span class="file-input-name" id="editAudioFileName">Файл не выбран</span>
                 <input type="file" id="editAudioFile" accept="audio/mpeg,audio/mp3">
             </div>
         </div>
+
         <div class="edit-row">
             <div class="edit-label">Обложка</div>
-            <div class="file-input-row">
+            <div class="file-input-wrapper">
+                <span class="file-input-button">Выбрать обложку</span>
+                <span class="file-input-name" id="editCoverFileName">Файл не выбран</span>
                 <input type="file" id="editCoverFile" accept="image/*">
                 <div class="edit-cover-preview" id="editCoverPreview"></div>
             </div>
         </div>
+
         <div class="edit-modal-actions">
             <button class="btn-small" id="cancelEditBtn">Отмена</button>
             <button class="btn-small primary" id="saveEditBtn">Сохранить</button>
@@ -676,7 +809,30 @@
     const PROFILE_KEY = 'Lolekx228_profile';
     const PROFILE_DEFAULT_KEY = 'Lolekx228_profile_default';
 
-    const defaultProfile = {
+    const baseProfile = {
+        displayName: "Lolekx228",
+        description: "Hiii Me: Animation artist, Voice actor, Programmer, Web Developer, Game Developer, 3D modeler",
+        locationShort: "Україна, ДНР, Донецьк",
+        locationFull: "Україна, Донецкая Народная Республика, город Донецьк",
+        accentColor: "#5b5b5b",
+        textColor: "#ffffff",
+        bgColor: "#080808",
+        iconColor: "#ffffff",
+        gradientEnabled: true,
+        gradient1: "#6f0000",
+        gradient2: "#933800",
+        blur: 10,
+        opacity: 0.9,
+        monochrome: true,
+        animatedTitle: true,
+        swapBlocks: false,
+        volumeControl: true,
+        discordAvatar: false,
+        discordDecor: true,
+        audioShuffle: false,
+        audioPlayerEnabled: true,
+        backgroundUrl: "https://r2.guns.lol/404eaec9-de84-4ca0-b031-6059b171072a.webp",
+        avatarUrl: "https://r2.guns.lol/a90d9caf-a563-4b08-a030-1febdba3397e.webp",
         audio: [
             {
                 title: "Durnojj Vkus - Plastinki",
@@ -690,24 +846,26 @@
                 cover: "https://r2.guns.lol/998a3ed5-4b5d-41c0-bdbe-c3ce107fc6b0.webp",
                 active: false
             }
-        ],
-        audioShuffle: false,
-        audioPlayerEnabled: true
+        ]
     };
+
+    function deepClone(obj) {
+        return JSON.parse(JSON.stringify(obj));
+    }
 
     function loadProfile(key, fallback) {
         try {
             const raw = localStorage.getItem(key);
-            if (!raw) return JSON.parse(JSON.stringify(fallback));
+            if (!raw) return deepClone(fallback);
             const parsed = JSON.parse(raw);
             return { ...fallback, ...parsed };
         } catch {
-            return JSON.parse(JSON.stringify(fallback));
+            return deepClone(fallback);
         }
     }
 
     function saveProfile(key, data) {
-        localStorage.setItem(key, JSON.stringify(data)); // [web:47][web:224]
+        localStorage.setItem(key, JSON.stringify(data)); // [web:55][web:79]
     }
 
     function clearAllProfile() {
@@ -715,11 +873,47 @@
         localStorage.removeItem(PROFILE_DEFAULT_KEY);
     }
 
-    let profile = loadProfile(PROFILE_KEY, defaultProfile);
+    let profile = loadProfile(PROFILE_KEY, baseProfile);
 
-    const openBtn = document.getElementById('openAudioManagerBtn');
-    const modal = document.getElementById('audioManagerModal');
-    const closeBtn = document.getElementById('closeModalBtn');
+    const displayNameInput = document.getElementById('displayNameInput');
+    const descriptionInput = document.getElementById('descriptionInput');
+    const locationShortInput = document.getElementById('locationShortInput');
+    const locationFullInput = document.getElementById('locationFullInput');
+    const opacityInput = document.getElementById('opacityInput');
+    const blurInput = document.getElementById('blurInput');
+
+    const accentInput = document.getElementById('accentInput');
+    const accentSwatch = document.getElementById('accentSwatch');
+    const textInput = document.getElementById('textInput');
+    const textSwatch = document.getElementById('textSwatch');
+    const bgColorInput = document.getElementById('bgColorInput');
+    const bgColorSwatch = document.getElementById('bgColorSwatch');
+    const iconColorInput = document.getElementById('iconColorInput');
+    const iconColorSwatch = document.getElementById('iconColorSwatch');
+
+    const grad1Input = document.getElementById('grad1Input');
+    const grad1Swatch = document.getElementById('grad1Swatch');
+    const grad2Input = document.getElementById('grad2Input');
+    const grad2Swatch = document.getElementById('grad2Swatch');
+    const gradientToggle = document.getElementById('gradientToggle');
+
+    const monochromeToggle = document.getElementById('monochromeToggle');
+    const animatedTitleToggle = document.getElementById('animatedTitleToggle');
+    const swapBlocksToggle = document.getElementById('swapBlocksToggle');
+    const volumeToggle = document.getElementById('volumeToggle');
+    const discordAvatarToggle = document.getElementById('discordAvatarToggle');
+    const discordDecorToggle = document.getElementById('discordDecorToggle');
+
+    const bgPreview = document.getElementById('bgPreview');
+    const bgFileInput = document.getElementById('bgFileInput');
+    const bgFileName = document.getElementById('bgFileName');
+    const avatarPreview = document.getElementById('avatarPreview');
+    const avatarFileInput = document.getElementById('avatarFileInput');
+    const avatarFileName = document.getElementById('avatarFileName');
+
+    const openAudioManagerBtn = document.getElementById('openAudioManagerBtn');
+    const audioManagerModal = document.getElementById('audioManagerModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
     const audioList = document.getElementById('audioList');
     const addAudioBtn = document.getElementById('addAudioBtn');
     const shuffleCheckbox = document.getElementById('shuffleCheckbox');
@@ -734,98 +928,135 @@
     const editTitleInput = document.getElementById('editTitleInput');
     const editAudioFile = document.getElementById('editAudioFile');
     const editCoverFile = document.getElementById('editCoverFile');
+    const editAudioFileName = document.getElementById('editAudioFileName');
+    const editCoverFileName = document.getElementById('editCoverFileName');
     const editCoverPreview = document.getElementById('editCoverPreview');
     const cancelEditBtn = document.getElementById('cancelEditBtn');
     const saveEditBtn = document.getElementById('saveEditBtn');
 
     let editingIndex = null;
 
-    function openEditModal(index) {
-        editingIndex = index;
-        const track = profile.audio[index] || {};
-        editTitleInput.value = track.title || '';
-        editAudioFile.value = '';
-        editCoverFile.value = '';
-        editCoverPreview.style.backgroundImage = track.cover ? `url('${track.cover}')` : 'none';
-        editOverlay.classList.add('active');
+    function applyProfileToUI() {
+        displayNameInput.value = profile.displayName;
+        descriptionInput.value = profile.description;
+        locationShortInput.value = profile.locationShort;
+        locationFullInput.value = profile.locationFull;
+        opacityInput.value = profile.opacity;
+        blurInput.value = profile.blur;
+
+        accentInput.value = profile.accentColor;
+        accentSwatch.style.background = profile.accentColor;
+        textInput.value = profile.textColor;
+        textSwatch.style.background = profile.textColor;
+        bgColorInput.value = profile.bgColor;
+        bgColorSwatch.style.background = profile.bgColor;
+        iconColorInput.value = profile.iconColor;
+        iconColorSwatch.style.background = profile.iconColor;
+
+        grad1Input.value = profile.gradient1;
+        grad1Swatch.style.background = profile.gradient1;
+        grad2Input.value = profile.gradient2;
+        grad2Swatch.style.background = profile.gradient2;
+        gradientToggle.checked = !profile.gradientEnabled;
+
+        monochromeToggle.checked = profile.monochrome;
+        animatedTitleToggle.checked = profile.animatedTitle;
+        swapBlocksToggle.checked = profile.swapBlocks;
+        volumeToggle.checked = profile.volumeControl;
+        discordAvatarToggle.checked = profile.discordAvatar;
+        discordDecorToggle.checked = profile.discordDecor;
+
+        bgPreview.src = profile.backgroundUrl;
+        avatarPreview.src = profile.avatarUrl;
+
+        shuffleCheckbox.checked = profile.audioShuffle;
+        playerEnabledCheckbox.checked = profile.audioPlayerEnabled;
     }
 
-    function closeEditModal() {
-        editingIndex = null;
-        editOverlay.classList.remove('active');
+    function collectProfileFromUI() {
+        profile.displayName = displayNameInput.value.trim() || baseProfile.displayName;
+        profile.description = descriptionInput.value.trim() || baseProfile.description;
+        profile.locationShort = locationShortInput.value.trim() || baseProfile.locationShort;
+        profile.locationFull = locationFullInput.value.trim() || baseProfile.locationFull;
+        profile.opacity = parseFloat(opacityInput.value) || baseProfile.opacity;
+        profile.blur = parseFloat(blurInput.value) || baseProfile.blur;
+
+        profile.accentColor = accentInput.value || baseProfile.accentColor;
+        profile.textColor = textInput.value || baseProfile.textColor;
+        profile.bgColor = bgColorInput.value || baseProfile.bgColor;
+        profile.iconColor = iconColorInput.value || baseProfile.iconColor;
+
+        profile.gradient1 = grad1Input.value || baseProfile.gradient1;
+        profile.gradient2 = grad2Input.value || baseProfile.gradient2;
+        profile.gradientEnabled = !gradientToggle.checked;
+
+        profile.monochrome = monochromeToggle.checked;
+        profile.animatedTitle = animatedTitleToggle.checked;
+        profile.swapBlocks = swapBlocksToggle.checked;
+        profile.volumeControl = volumeToggle.checked;
+        profile.discordAvatar = discordAvatarToggle.checked;
+        profile.discordDecor = discordDecorToggle.checked;
+
+        profile.audioShuffle = shuffleCheckbox.checked;
+        profile.audioPlayerEnabled = playerEnabledCheckbox.checked;
     }
 
-    closeEditModalBtn.addEventListener('click', closeEditModal);
-    cancelEditBtn.addEventListener('click', closeEditModal);
-    editOverlay.addEventListener('click', (e) => {
-        if (e.target === editOverlay) closeEditModal();
+    accentInput.addEventListener('input', () => {
+        accentSwatch.style.background = accentInput.value;
+    });
+    textInput.addEventListener('input', () => {
+        textSwatch.style.background = textInput.value;
+    });
+    bgColorInput.addEventListener('input', () => {
+        bgColorSwatch.style.background = bgColorInput.value;
+    });
+    iconColorInput.addEventListener('input', () => {
+        iconColorSwatch.style.background = iconColorInput.value;
+    });
+    grad1Input.addEventListener('input', () => {
+        grad1Swatch.style.background = grad1Input.value;
+    });
+    grad2Input.addEventListener('input', () => {
+        grad2Swatch.style.background = grad2Input.value;
     });
 
-    editCoverFile.addEventListener('change', () => {
-        const file = editCoverFile.files[0];
+    function handleImageFile(input, previewImg, nameLabel, profileKey) {
+        const file = input.files[0];
         if (!file) return;
+        nameLabel.textContent = file.name;
         const reader = new FileReader();
-        reader.onload = (e) => {
-            editCoverPreview.style.backgroundImage = `url('${e.target.result}')`;
+        reader.onload = e => {
+            previewImg.src = e.target.result;
+            profile[profileKey] = e.target.result;
         };
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(file); // [web:237][web:241][web:243]
+    }
+
+    bgFileInput.addEventListener('change', () => {
+        handleImageFile(bgFileInput, bgPreview, bgFileName, 'backgroundUrl');
+    });
+    avatarFileInput.addEventListener('change', () => {
+        handleImageFile(avatarFileInput, avatarPreview, avatarFileName, 'avatarUrl');
     });
 
-    saveEditBtn.addEventListener('click', () => {
-        if (editingIndex === null) return;
-        const track = profile.audio[editingIndex] || {};
-
-        if (editTitleInput.value.trim()) {
-            track.title = editTitleInput.value.trim();
-        }
-
-        const audioFile = editAudioFile.files[0];
-        if (audioFile) {
-            const audioUrl = URL.createObjectURL(audioFile);
-            track.url = audioUrl;
-        }
-
-        const coverFile = editCoverFile.files[0];
-        if (coverFile) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                track.cover = e.target.result;
-                profile.audio[editingIndex] = track;
-                saveProfile(PROFILE_KEY, profile);
-                renderAudioList();
-                closeEditModal();
-            };
-            reader.readAsDataURL(coverFile);
-            return;
-        }
-
-        profile.audio[editingIndex] = track;
-        saveProfile(PROFILE_KEY, profile);
+    openAudioManagerBtn.addEventListener('click', () => {
+        profile = loadProfile(PROFILE_KEY, baseProfile);
+        applyProfileToUI();
         renderAudioList();
-        closeEditModal();
+        audioManagerModal.classList.add('active');
     });
-
-    openBtn.addEventListener('click', () => {
-        profile = loadProfile(PROFILE_KEY, defaultProfile);
-        renderAudioList();
-        shuffleCheckbox.checked = !!profile.audioShuffle;
-        playerEnabledCheckbox.checked = profile.audioPlayerEnabled !== false;
-        modal.classList.add('active');
+    closeModalBtn.addEventListener('click', () => {
+        audioManagerModal.classList.remove('active');
     });
-    closeBtn.addEventListener('click', () => {
-        modal.classList.remove('active');
-    });
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) modal.classList.remove('active');
+    audioManagerModal.addEventListener('click', (e) => {
+        if (e.target === audioManagerModal) audioManagerModal.classList.remove('active');
     });
 
     shuffleCheckbox.addEventListener('change', () => {
         profile.audioShuffle = shuffleCheckbox.checked;
-        saveProfile(PROFILE_KEY, profile);
     });
     playerEnabledCheckbox.addEventListener('change', () => {
         profile.audioPlayerEnabled = playerEnabledCheckbox.checked;
-        saveProfile(PROFILE_KEY, profile);
     });
 
     function escapeHtml(str) {
@@ -858,7 +1089,6 @@
             (profile.audio || []).forEach((t, i) => {
                 t.active = (i === index);
             });
-            saveProfile(PROFILE_KEY, profile);
             renderAudioList();
         });
 
@@ -888,30 +1118,101 @@
             cover: '',
             active: false
         });
-        saveProfile(PROFILE_KEY, profile);
         renderAudioList();
+    });
+
+    function openEditModal(index) {
+        editingIndex = index;
+        const track = profile.audio[index] || {};
+        editTitleInput.value = track.title || '';
+        editAudioFile.value = '';
+        editCoverFile.value = '';
+        editAudioFileName.textContent = 'Файл не выбран';
+        editCoverFileName.textContent = 'Файл не выбран';
+        editCoverPreview.style.backgroundImage = track.cover ? `url('${track.cover}')` : 'none';
+        editOverlay.classList.add('active');
+    }
+
+    function closeEditModal() {
+        editingIndex = null;
+        editOverlay.classList.remove('active');
+    }
+
+    closeEditModalBtn.addEventListener('click', closeEditModal);
+    cancelEditBtn.addEventListener('click', closeEditModal);
+    editOverlay.addEventListener('click', (e) => {
+        if (e.target === editOverlay) closeEditModal();
+    });
+
+    editAudioFile.addEventListener('change', () => {
+        const file = editAudioFile.files[0];
+        if (!file) return;
+        editAudioFileName.textContent = file.name;
+    });
+
+    editCoverFile.addEventListener('change', () => {
+        const file = editCoverFile.files[0];
+        if (!file) return;
+        editCoverFileName.textContent = file.name;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            editCoverPreview.style.backgroundImage = `url('${e.target.result}')`;
+        };
+        reader.readAsDataURL(file);
+    });
+
+    saveEditBtn.addEventListener('click', () => {
+        if (editingIndex === null) return;
+        const track = profile.audio[editingIndex] || {};
+
+        if (editTitleInput.value.trim()) {
+            track.title = editTitleInput.value.trim();
+        }
+
+        const audioFile = editAudioFile.files[0];
+        if (audioFile) {
+            const audioUrl = URL.createObjectURL(audioFile);
+            track.url = audioUrl;
+        }
+
+        const coverFile = editCoverFile.files[0];
+        if (coverFile) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                track.cover = e.target.result;
+                profile.audio[editingIndex] = track;
+                renderAudioList();
+                closeEditModal();
+            };
+            reader.readAsDataURL(coverFile);
+            return;
+        }
+
+        profile.audio[editingIndex] = track;
+        renderAudioList();
+        closeEditModal();
     });
 
     saveProfileBtn.addEventListener('click', () => {
+        collectProfileFromUI();
         saveProfile(PROFILE_KEY, profile);
-        alert('Сохранено в профиль');
     });
 
     saveDefaultBtn.addEventListener('click', () => {
+        collectProfileFromUI();
         saveProfile(PROFILE_DEFAULT_KEY, profile);
-        alert('Текущие настройки сохранены как дефолт');
     });
 
     resetProfileBtn.addEventListener('click', () => {
-        if (!confirm('Сбросить профиль и дефолт к исходным настройкам?')) return;
-        clearAllProfile();
-        profile = JSON.parse(JSON.stringify(defaultProfile));
-        saveProfile(PROFILE_KEY, profile);
+        profile = deepClone(baseProfile);
+        applyProfileToUI();
         renderAudioList();
-        shuffleCheckbox.checked = !!profile.audioShuffle;
-        playerEnabledCheckbox.checked = profile.audioPlayerEnabled !== false;
-        alert('Профиль сброшен');
+        saveProfile(PROFILE_KEY, profile);
+        localStorage.removeItem(PROFILE_DEFAULT_KEY);
     });
+
+    applyProfileToUI();
+    renderAudioList();
 </script>
 </body>
 </html>
