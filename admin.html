@@ -5,9 +5,7 @@
   <title>Админка Lolekx-card</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    :root {
-      color-scheme: dark;
-    }
+    :root { color-scheme: dark; }
     body {
       margin: 0;
       padding: 20px;
@@ -15,14 +13,8 @@
       background: #050505;
       color: #fff;
     }
-    .wrap {
-      max-width: 800px;
-      margin: 0 auto;
-    }
-    h1 {
-      margin-bottom: 4px;
-      font-size: 24px;
-    }
+    .wrap { max-width: 800px; margin: 0 auto; }
+    h1 { margin-bottom: 4px; font-size: 24px; }
     .subtitle {
       font-size: 13px;
       opacity: 0.7;
@@ -104,9 +96,7 @@
       margin-bottom: 6px;
       font-size: 13px;
     }
-    .track-header span {
-      opacity: 0.9;
-    }
+    .track-header span { opacity: 0.9; }
     .track-header label {
       display: inline-flex;
       align-items: center;
@@ -114,6 +104,22 @@
       margin: 0;
       font-size: 12px;
       opacity: 0.8;
+    }
+    .file-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .file-row input[type="file"] {
+      font-size: 11px;
+      max-width: 280px;
+    }
+    .small-note {
+      font-size: 11px;
+      opacity: 0.65;
+      margin-bottom: 6px;
     }
     .btn-row {
       display: flex;
@@ -130,36 +136,28 @@
       cursor: pointer;
       font-size: 13px;
     }
-    button:hover {
-      background: #202020;
-    }
+    button:hover { background: #202020; }
     button.primary {
       border-color: #c4442e;
       background: #c4442e;
     }
-    button.primary:hover {
-      background: #d6543c;
-    }
+    button.primary:hover { background: #d6543c; }
     .status {
       margin-top: 8px;
       font-size: 12px;
       opacity: 0.8;
       min-height: 16px;
     }
-    .status.ok {
-      color: #7fd47f;
-    }
-    .status.err {
-      color: #ff7f7f;
-    }
+    .status.ok { color: #7fd47f; }
+    .status.err { color: #ff7f7f; }
   </style>
 </head>
 <body>
 <div class="wrap">
   <h1>Админка Lolekx-card</h1>
   <div class="subtitle">
-    Тут можно настроить ник, описание, локацию, фон, аватар, ссылки и музыку для карточки.
-    Все данные сохраняются в localStorage под ключом <code>Lolekx228_profile</code>.
+    Тут можно настроить ник, описание, локацию, фон, аватар, ссылки и музыку.
+    Треки и обложки можно выбрать файлами — они сохраняются в профиле как dataURL.
   </div>
 
   <!-- Профиль -->
@@ -178,10 +176,10 @@
   <!-- Аватар и фон -->
   <fieldset>
     <legend>Аватар и фон</legend>
-    <label for="avatarUrl">Ссылка на аватар</label>
+    <label for="avatarUrl">Ссылка на аватар (или вставь сюда dataURL)</label>
     <input type="url" id="avatarUrl" placeholder="https://...">
 
-    <label for="backgroundUrl">Ссылка на фон (BG)</label>
+    <label for="backgroundUrl">Ссылка на фон (BG, или dataURL)</label>
     <input type="url" id="backgroundUrl" placeholder="https://...">
   </fieldset>
 
@@ -261,7 +259,11 @@
 
   <!-- Треки -->
   <fieldset>
-    <legend>Музыка (до 2 треков, как сейчас)</legend>
+    <legend>Музыка (до 2 треков, файлы или ссылки)</legend>
+    <div class="small-note">
+      Можно оставить поля URL, как сейчас, или выбрать файлы: аудио и обложки будут сохранены как dataURL прямо в профиле.
+    </div>
+
     <div class="tracks">
       <!-- Трек 1 -->
       <div class="track" data-index="0">
@@ -272,14 +274,25 @@
             выбран по умолчанию
           </label>
         </div>
+
         <label>Название</label>
         <input type="text" class="track-title" placeholder="Название трека">
 
-        <label>URL аудио (mp3)</label>
+        <label>URL аудио (mp3) — можно не заполнять, если выберешь файл ниже</label>
         <input type="url" class="track-url" placeholder="https://...mp3">
 
-        <label>Обложка (картинка)</label>
+        <div class="file-row">
+          <label style="margin-bottom:0;">Аудио-файл:</label>
+          <input type="file" accept="audio/*" class="track-audio-file">
+        </div>
+
+        <label>Обложка (URL картинки — можно не заполнять, если выберешь файл ниже)</label>
         <input type="url" class="track-cover" placeholder="https://...">
+
+        <div class="file-row">
+          <label style="margin-bottom:0;">Файл обложки:</label>
+          <input type="file" accept="image/*" class="track-cover-file">
+        </div>
       </div>
 
       <!-- Трек 2 -->
@@ -291,14 +304,25 @@
             выбран по умолчанию
           </label>
         </div>
+
         <label>Название</label>
         <input type="text" class="track-title" placeholder="Название трека">
 
         <label>URL аудио (mp3)</label>
         <input type="url" class="track-url" placeholder="https://...mp3">
 
-        <label>Обложка (картинка)</label>
+        <div class="file-row">
+          <label style="margin-bottom:0;">Аудио-файл:</label>
+          <input type="file" accept="audio/*" class="track-audio-file">
+        </div>
+
+        <label>Обложка (URL картинки)</label>
         <input type="url" class="track-cover" placeholder="https://...">
+
+        <div class="file-row">
+          <label style="margin-bottom:0;">Файл обложки:</label>
+          <input type="file" accept="image/*" class="track-cover-file">
+        </div>
       </div>
     </div>
   </fieldset>
@@ -374,6 +398,16 @@
     }, 2000);
   }
 
+  // утилита: File -> dataURL
+  function fileToDataURL(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();  // [web:175][web:179]
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
   function fillFormFromProfile(profile) {
     document.getElementById('displayName').value = profile.displayName || '';
     document.getElementById('description').value = profile.description || '';
@@ -422,7 +456,7 @@
     }
   }
 
-  function collectProfileFromForm(prevProfile) {
+  async function collectProfileFromForm(prevProfile) {
     const profile = { ...defaultProfile, ...prevProfile };
 
     profile.displayName = document.getElementById('displayName').value || defaultProfile.displayName;
@@ -463,20 +497,41 @@
 
     const trackBlocks = document.querySelectorAll('.track');
     const audio = [];
-    trackBlocks.forEach(block => {
+    for (const block of trackBlocks) {
       const idx = Number(block.dataset.index);
       const title = block.querySelector('.track-title').value.trim();
-      const url = block.querySelector('.track-url').value.trim();
-      const cover = block.querySelector('.track-cover').value.trim();
+      let url = block.querySelector('.track-url').value.trim();
+      let cover = block.querySelector('.track-cover').value.trim();
       const radio = block.querySelector('input[type="radio"]');
-      if (!title && !url) return;
+
+      const audioFileInput = block.querySelector('.track-audio-file');
+      const coverFileInput = block.querySelector('.track-cover-file');
+
+      if (audioFileInput.files && audioFileInput.files[0]) {
+        try {
+          url = await fileToDataURL(audioFileInput.files[0]); // [web:175][web:179]
+        } catch (e) {
+          console.error('Ошибка чтения аудио-файла', e);
+        }
+      }
+
+      if (coverFileInput.files && coverFileInput.files[0]) {
+        try {
+          cover = await fileToDataURL(coverFileInput.files[0]); // [web:176][web:180]
+        } catch (e) {
+          console.error('Ошибка чтения файла обложки', e);
+        }
+      }
+
+      if (!title && !url) continue;
+
       audio.push({
         title: title || `Track ${idx + 1}`,
         url,
         cover,
         selected: radio.checked
       });
-    });
+    }
 
     if (!audio.length) {
       profile.audio = defaultProfile.audio;
@@ -499,10 +554,10 @@
     fillFormFromProfile(prof);
   });
 
-  saveBtn.addEventListener('click', () => {
+  saveBtn.addEventListener('click', async () => {
     try {
       const current = loadProfile();
-      const updated = collectProfileFromForm(current);
+      const updated = await collectProfileFromForm(current);
       saveProfile(updated);
       setStatus('Профиль сохранён. Обнови главную страницу с карточкой.', 'ok');
     } catch (e) {
