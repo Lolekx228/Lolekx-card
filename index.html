@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lolekx's Card Настройки</title>
 
+  <!-- Иконка вкладки (favicon) -->
+  <link rel="icon" type="image/png" href="https://r2.guns.lol/a90d9caf-a563-4b08-a030-1febdba3397e.webp">
+
   <!-- Бегущая строка в заголовке вкладки -->
   <script>
     (function () {
@@ -55,7 +58,7 @@
       inset: 0;
       background-size: cover;
       background-position: center;
-      filter: blur(5px) brightness(0.7);
+      filter: blur(10px) brightness(0.7);
       z-index: -2;
     }
 
@@ -72,7 +75,7 @@
       box-shadow: 0 14px 36px rgba(0,0,0,0.55);
       border: 1px solid rgba(255,255,255,0.12);
       transition: box-shadow 0.2s ease;
-      backdrop-filter: blur(6px);
+      backdrop-filter: blur(8px);
       background: linear-gradient(25deg, rgba(111,0,0,0.7), rgba(147,56,0,0.7));
       display: flex;
       flex-direction: column;
@@ -225,7 +228,7 @@
       padding: 12px 10px;
       border: 1px solid rgba(255,255,255,0.14);
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      backdrop-filter: blur(6px);
+      backdrop-filter: blur(8px);
       background: linear-gradient(25deg, rgba(111,0,0,0.7), rgba(147,56,0,0.7));
     }
 
@@ -482,8 +485,14 @@
       document.querySelector('.media-card').style.background = profile.bgColor;
     }
 
+    const blurValue = typeof profile.blur === 'number'
+      ? profile.blur
+      : (parseFloat(profile.blur) || 10);
+
+    profileCard.style.backdropFilter = `blur(${Math.max(blurValue - 2, 0)}px)`;
+    bgBlur.style.filter = `blur(${blurValue}px) brightness(0.7)`; // [web:110]
+
     profileCard.style.opacity = profile.opacity;
-    profileCard.style.backdropFilter = `blur(${Math.max(profile.blur - 2, 0)}px)`;
 
     usernameEl.textContent = profile.displayName;
     descriptionEl.textContent = profile.description;
