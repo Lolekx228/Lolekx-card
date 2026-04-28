@@ -152,6 +152,15 @@
             cursor: pointer;
         }
 
+        .location-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .location-row .input-wrapper {
+            flex: 1 1 200px;
+        }
+
         .color-picker-row {
             display: flex;
             align-items: center;
@@ -185,7 +194,6 @@
         }
         .checkbox-label { color: #ddd; }
 
-        /* Единый стиль тумблеров по всей админке */
         .toggle-switch {
             position: relative;
             width: 42px;
@@ -278,6 +286,7 @@
             overflow-y: auto;
         }
         .audio-item {
+            position: relative;
             display: flex;
             align-items: center;
             gap: 16px;
@@ -327,6 +336,34 @@
             color: white;
             border-color: #666;
         }
+
+        .audio-delete-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #3a0000;
+            border: 1px solid #ff4d4d;
+            color: #ff4d4d;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+            transition: 0.15s;
+        }
+        .audio-delete-btn:hover {
+            background: #ff4d4d;
+            color: #1a1a1a;
+        }
+        .audio-delete-btn span {
+            transform: translateY(-0.5px);
+        }
+
         .add-audio-btn {
             background: #5b5b5b;
             border: none;
@@ -365,7 +402,6 @@
             color: #888;
         }
 
-        /* Модалка редактирования трека */
         .edit-audio-modal {
             background: #111111;
             border-radius: 26px;
@@ -407,7 +443,6 @@
             font-size: 0.85rem;
         }
 
-        /* Кастомный file-input */
         .file-input-wrapper {
             position: relative;
             display: inline-flex;
@@ -473,7 +508,6 @@
             background: #6c6c6c;
         }
 
-        /* Кнопки сохранения всей админки */
         .global-actions {
             position: sticky;
             bottom: 16px;
@@ -509,7 +543,6 @@
 </head>
 <body>
 <div class="customize-container">
-    <!-- Загрузка медиа -->
     <div class="settings-section">
         <span class="section-title">Загрузка медиа</span>
         <div class="settings-card">
@@ -563,7 +596,6 @@
         </div>
     </div>
 
-    <!-- Общие настройки -->
     <div class="settings-section">
         <span class="section-title">Общие настройки</span>
         <div class="settings-card">
@@ -594,23 +626,22 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="setting-item">
-                    <div class="setting-label">Короткое местоположение</div>
-                    <div class="input-wrapper">
-                        <input id="locationShortInput" type="text" value="Україна, ДНР, Донецьк">
-                    </div>
-                </div>
-                <div class="setting-item">
-                    <div class="setting-label">Полное местоположение (подсказка)</div>
-                    <div class="input-wrapper">
-                        <input id="locationFullInput" type="text" value="Україна, Донецкая Народная Республика, город Донецьк">
+                    <div class="setting-label">Местоположение</div>
+                    <div class="location-row">
+                        <div class="input-wrapper">
+                            <input id="locationShortInput" type="text" placeholder="Короткое" value="Україна, ДНР, Донецьк">
+                        </div>
+                        <div class="input-wrapper">
+                            <input id="locationFullInput" type="text" placeholder="Полное (подсказка)" value="Україна, Донецька Народна Республіка, Донецьк">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Настройка цветов -->
     <div class="settings-section">
         <span class="section-title">Настройка цветов</span>
         <div class="settings-card">
@@ -667,7 +698,6 @@
         </div>
     </div>
 
-    <!-- Другие настройки -->
     <div class="settings-section">
         <span class="section-title">Другие настройки</span>
         <div class="settings-card">
@@ -722,7 +752,6 @@
         </div>
     </div>
 
-    <!-- Глобальные кнопки сохранения профиля -->
     <div class="global-actions">
         <button id="resetProfileBtn">Сбросить</button>
         <button id="saveDefaultBtn">Сохранить как дефолт</button>
@@ -730,7 +759,6 @@
     </div>
 </div>
 
-<!-- Модал менеджера аудио -->
 <div id="audioManagerModal" class="modal-overlay">
     <div class="audio-manager-modal">
         <div class="modal-header">
@@ -767,7 +795,6 @@
     </div>
 </div>
 
-<!-- Модалка редактирования трека -->
 <div id="editAudioOverlay" class="modal-overlay">
     <div class="edit-audio-modal">
         <div class="edit-audio-modal-header">
@@ -813,7 +840,7 @@
         displayName: "Lolekx228",
         description: "Hiii Me: Animation artist, Voice actor, Programmer, Web Developer, Game Developer, 3D modeler",
         locationShort: "Україна, ДНР, Донецьк",
-        locationFull: "Україна, Донецкая Народная Республика, город Донецьк",
+        locationFull: "Україна, Донецька Народна Республіка, Донецьк",
         accentColor: "#5b5b5b",
         textColor: "#ffffff",
         bgColor: "#080808",
@@ -865,12 +892,7 @@
     }
 
     function saveProfile(key, data) {
-        localStorage.setItem(key, JSON.stringify(data)); // [web:55][web:79]
-    }
-
-    function clearAllProfile() {
-        localStorage.removeItem(PROFILE_KEY);
-        localStorage.removeItem(PROFILE_DEFAULT_KEY);
+        localStorage.setItem(key, JSON.stringify(data)); // [web:69][web:50]
     }
 
     let profile = loadProfile(PROFILE_KEY, baseProfile);
@@ -979,7 +1001,7 @@
         profile.locationShort = locationShortInput.value.trim() || baseProfile.locationShort;
         profile.locationFull = locationFullInput.value.trim() || baseProfile.locationFull;
         profile.opacity = parseFloat(opacityInput.value) || baseProfile.opacity;
-        profile.blur = parseFloat(blurInput.value) || baseProfile.blur;
+        profile.blur = parseFloat(blurInput.value) || 0;
 
         profile.accentColor = accentInput.value || baseProfile.accentColor;
         profile.textColor = textInput.value || baseProfile.textColor;
@@ -1029,7 +1051,7 @@
             previewImg.src = e.target.result;
             profile[profileKey] = e.target.result;
         };
-        reader.readAsDataURL(file); // [web:237][web:241][web:243]
+        reader.readAsDataURL(file); // [web:80][web:223]
     }
 
     bgFileInput.addEventListener('change', () => {
@@ -1083,6 +1105,9 @@
                 ${track.active ? '<span class="audio-badge">Активно</span>' : ''}
             </div>
             <button class="edit-audio-btn">Редактировать</button>
+            <button class="audio-delete-btn" title="Удалить трек">
+                <span>×</span>
+            </button>
         `;
 
         div.addEventListener('click', () => {
@@ -1096,6 +1121,14 @@
         editBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             openEditModal(index);
+        });
+
+        const deleteBtn = div.querySelector('.audio-delete-btn');
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (!Array.isArray(profile.audio)) return;
+            profile.audio.splice(index, 1);
+            renderAudioList();
         });
 
         return div;
