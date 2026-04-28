@@ -398,6 +398,28 @@
           </div>
         </div>
 
+        <!-- Два поля для гео -->
+        <div class="two-columns">
+          <div class="settings-column">
+            <div class="setting-item">
+              <div class="setting-label">Местоположение (кратко)</div>
+              <div class="input-wrapper">
+                <input type="text" id="locationShortInput"
+                       placeholder="Україна, ДНР, Донецьк">
+              </div>
+            </div>
+          </div>
+          <div class="settings-column">
+            <div class="setting-item">
+              <div class="setting-label">Местоположение (полностью)</div>
+              <div class="input-wrapper">
+                <input type="text" id="locationFullInput"
+                       placeholder="Україна, Донецкая Народная Республика, город Донецьк">
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="two-columns">
           <div class="settings-column">
             <div class="setting-label">Прозрачность профиля</div>
@@ -412,14 +434,6 @@
               <input type="range" min="0" max="30" step="1" value="10"
                      class="slider" id="blurSlider">
             </div>
-          </div>
-        </div>
-
-        <div class="setting-item">
-          <div class="setting-label">Местоположение</div>
-          <div class="input-wrapper">
-            <input type="text" id="locationInput"
-                   placeholder="Страна, город">
           </div>
         </div>
 
@@ -559,6 +573,8 @@
   const defaultProfile = {
     displayName: "Lolekx228",
     description: "Hiii Me: Animation artist, Voice actor, Programmer, Web Developer, Game Developer, 3D modeler",
+    locationShort: "Україна, ДНР, Донецьк",
+    locationFull: "Україна, Донецкая Народная Республика, город Донецьк",
     location: "Україна, ДНР, Донецьк",
     accentColor: "#5b5b5b",
     textColor: "#ffffff",
@@ -612,7 +628,7 @@
   }
 
   function saveProfile(profile) {
-    localStorage.setItem(PROFILE_KEY, JSON.stringify(profile)); // [web:55]
+    localStorage.setItem(PROFILE_KEY, JSON.stringify(profile)); // [web:51]
   }
 
   function fileToDataURL(file) {
@@ -639,9 +655,11 @@
 
   const descriptionInput = document.getElementById('descriptionInput');
   const displayNameInput = document.getElementById('displayNameInput');
-  const locationInput = document.getElementById('locationInput');
   const youtubeInput = document.getElementById('youtubeInput');
   const discordInput = document.getElementById('discordInput');
+
+  const locationShortInput = document.getElementById('locationShortInput');
+  const locationFullInput  = document.getElementById('locationFullInput');
 
   const opacitySlider = document.getElementById('opacitySlider');
   const blurSlider = document.getElementById('blurSlider');
@@ -692,11 +710,13 @@
 
     descriptionInput.value = profile.description || '';
     displayNameInput.value = profile.displayName || '';
-    locationInput.value = profile.location || '';
 
     const socials = profile.socials || [];
     youtubeInput.value = (socials.find(s => s.name === 'youtube') || {}).url || '';
     discordInput.value = (socials.find(s => s.name === 'discord') || {}).url || '';
+
+    locationShortInput.value = profile.locationShort || profile.location || '';
+    locationFullInput.value  = profile.locationFull  || profile.location || '';
 
     opacitySlider.value = profile.opacity ?? 0.9;
     blurSlider.value = profile.blur ?? 10;
@@ -787,36 +807,47 @@
       (titles.length ? '\n\nСписок:\n- ' + titles.join('\n- ') : ''));
   });
 
+  function applyFormToProfile(baseProfile) {
+    const updated = { ...baseProfile };
+
+    updated.description = descriptionInput.value || defaultProfile.description;
+    updated.displayName = displayNameInput.value || defaultProfile.displayName;
+
+    const socials = [];
+    if (youtubeInput.value.trim()) socials.push({ name: 'youtube', url: youtubeInput.value.trim() });
+    if (discordInput.value.trim()) socials.push({ name: 'discord', url: discordInput.value.trim() });
+    updated.socials = socials.length ? socials : defaultProfile.socials;
+
+    const locShort = locationShortInput.value.trim();
+    const locFull  = locationFullInput.value.trim();
+
+    updated.locationShort = locShort || defaultProfile.locationShort;
+    updated.locationFull  = locFull  || defaultProfile.locationFull;
+    updated.location = updated.locationShort;
+
+    updated.opacity = Math.max(0.5, Math.min(1, parseFloat(opacitySlider.value) || defaultProfile.opacity));
+    updated.blur = Math.max(0, Math.min(30, parseFloat(blurSlider.value) || defaultProfile.blur));
+
+    updated.accentColor = accentInput.value || defaultProfile.accentColor;
+    updated.textColor = textInput.value || defaultProfile.textColor;
+    updated.bgColor = bgColorInput.value || defaultProfile.bgColor;
+
+    updated.gradientEnabled = !disableGradientCheckbox.checked;
+    updated.gradient1 = gradient1Input.value || defaultProfile.gradient1;
+    updated.gradient2 = gradient2Input.value || defaultProfile.gradient2;
+
+    updated.monochrome = monochromeCheckbox.checked;
+    updated.animatedTitle = animatedTitleCheckbox.checked;
+
+    updated.backgroundUrl = profile.backgroundUrl || defaultProfile.backgroundUrl;
+    updated.avatarUrl = profile.avatarUrl || defaultProfile.avatarUrl;
+
+    return updated;
+  }
+
   saveBtn.addEventListener('click', () => {
     try {
-      const updated = { ...profile };
-
-      updated.description = descriptionInput.value || defaultProfile.description;
-      updated.displayName = displayNameInput.value || defaultProfile.displayName;
-      updated.location = locationInput.value || defaultProfile.location;
-
-      const socials = [];
-      if (youtubeInput.value.trim()) socials.push({ name: 'youtube', url: youtubeInput.value.trim() });
-      if (discordInput.value.trim()) socials.push({ name: 'discord', url: discordInput.value.trim() });
-      updated.socials = socials.length ? socials : defaultProfile.socials;
-
-      updated.opacity = Math.max(0.5, Math.min(1, parseFloat(opacitySlider.value) || defaultProfile.opacity));
-      updated.blur = Math.max(0, Math.min(30, parseFloat(blurSlider.value) || defaultProfile.blur));
-
-      updated.accentColor = accentInput.value || defaultProfile.accentColor;
-      updated.textColor = textInput.value || defaultProfile.textColor;
-      updated.bgColor = bgColorInput.value || defaultProfile.bgColor;
-
-      updated.gradientEnabled = !disableGradientCheckbox.checked;
-      updated.gradient1 = gradient1Input.value || defaultProfile.gradient1;
-      updated.gradient2 = gradient2Input.value || defaultProfile.gradient2;
-
-      updated.monochrome = monochromeCheckbox.checked;
-      updated.animatedTitle = animatedTitleCheckbox.checked;
-
-      updated.backgroundUrl = profile.backgroundUrl || defaultProfile.backgroundUrl;
-      updated.avatarUrl = profile.avatarUrl || defaultProfile.avatarUrl;
-
+      const updated = applyFormToProfile(profile);
       saveProfile(updated);
       profile = updated;
       fillFormFromProfile();
@@ -839,40 +870,11 @@
   if (saveAsDefaultBtn) {
     saveAsDefaultBtn.addEventListener('click', () => {
       try {
-        const updated = { ...profile };
-
-        updated.description = descriptionInput.value || defaultProfile.description;
-        updated.displayName = displayNameInput.value || defaultProfile.displayName;
-        updated.location = locationInput.value || defaultProfile.location;
-
-        const socials = [];
-        if (youtubeInput.value.trim()) socials.push({ name: 'youtube', url: youtubeInput.value.trim() });
-        if (discordInput.value.trim()) socials.push({ name: 'discord', url: discordInput.value.trim() });
-        updated.socials = socials.length ? socials : defaultProfile.socials;
-
-        updated.opacity = Math.max(0.5, Math.min(1, parseFloat(opacitySlider.value) || defaultProfile.opacity));
-        updated.blur = Math.max(0, Math.min(30, parseFloat(blurSlider.value) || defaultProfile.blur));
-
-        updated.accentColor = accentInput.value || defaultProfile.accentColor;
-        updated.textColor = textInput.value || defaultProfile.textColor;
-        updated.bgColor = bgColorInput.value || defaultProfile.bgColor;
-
-        updated.gradientEnabled = !disableGradientCheckbox.checked;
-        updated.gradient1 = gradient1Input.value || defaultProfile.gradient1;
-        updated.gradient2 = gradient2Input.value || defaultProfile.gradient2;
-
-        updated.monochrome = monochromeCheckbox.checked;
-        updated.animatedTitle = animatedTitleCheckbox.checked;
-
-        updated.backgroundUrl = profile.backgroundUrl || defaultProfile.backgroundUrl;
-        updated.avatarUrl = profile.avatarUrl || defaultProfile.avatarUrl;
-
-        // сохраняем как новый дефолт
-        localStorage.setItem(PROFILE_DEFAULT_KEY, JSON.stringify(updated)); // [web:55]
+        const updated = applyFormToProfile(profile);
+        localStorage.setItem(PROFILE_DEFAULT_KEY, JSON.stringify(updated)); // [web:51]
         saveProfile(updated);
         profile = updated;
         fillFormFromProfile();
-
         setStatus('Текущие настройки сохранены как дефолт.', 'ok');
       } catch (e) {
         console.error(e);
