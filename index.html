@@ -3,10 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lolekx's Card Настройки</title>
-
-  <!-- Иконка вкладки (favicon) -->
-  <link rel="icon" type="https://cdn.discordapp.com/attachments/1273682085646831717/1498771399144378369/png-transparent-traffic-cone-public-donations-miscellaneous-hat-orange_1.png?ex=69f25f23&is=69f10da3&hm=07a853962c48d85098a11b4a6e610c02cf53775c570e6810c542676f9defc458&">
+  <title>Lolekx228 Profile Card</title>
 
   <!-- Бегущая строка в заголовке вкладки -->
   <script>
@@ -147,7 +144,6 @@
       line-height: 1.2;
     }
 
-    /* тултип с полным названием */
     .location-tooltip {
       position: absolute;
       left: 50%;
@@ -419,14 +415,18 @@
     opacity: 0.9,
     monochrome: true,
     animatedTitle: true,
+    audioShuffle: false,
+    audioPlayerEnabled: true,
     audio: [
       { title: "Durnojj Vkus - Plastinki",
         url: "https://r2.guns.lol/e2040c07-063d-4f8d-bf4a-4a784e5cb3f2.mp3",
-        cover: "https://r2.guns.lol/8b57c2d3-3cd2-4915-ad39-431819946a45.webp"
+        cover: "https://r2.guns.lol/8b57c2d3-3cd2-4915-ad39-431819946a45.webp",
+        active: true
       },
       { title: "Kino - Spokojjnaya Noch",
         url: "https://r2.guns.lol/ef254576-8efc-4601-a39a-025acd7f50af.mp3",
-        cover: "https://r2.guns.lol/998a3ed5-4b5d-41c0-bdbe-c3ce107fc6b0.webp"
+        cover: "https://r2.guns.lol/998a3ed5-4b5d-41c0-bdbe-c3ce107fc6b0.webp",
+        active: false
       }
     ],
     socials: [
@@ -459,7 +459,7 @@
     }
   }
 
-  const profile = loadProfile();
+  let profile = loadProfile();
 
   const bgBlur = document.getElementById('bgBlur');
   const profileCard = document.getElementById('profileCard');
@@ -490,7 +490,7 @@
       : (parseFloat(profile.blur) || 10);
 
     profileCard.style.backdropFilter = `blur(${Math.max(blurValue - 2, 0)}px)`;
-    bgBlur.style.filter = `blur(${blurValue}px) brightness(0.7)`; // [web:110]
+    bgBlur.style.filter = `blur(${blurValue}px) brightness(0.7)`;
 
     profileCard.style.opacity = profile.opacity;
 
@@ -562,27 +562,63 @@
 
   applyProfile();
 
-  const audioPlayerContainer = document.getElementById('audioPlayerContainer');
-  const playlist = (profile.audio || []).map(track => ({
-    title: track.title,
-    url: track.url,
-    cover: track.cover
-  })).filter(t => t.url);
+  // Лайв-обновление при изменении профиля в другой вкладке (админке)
+  window.addEventListener('storage', (e) => {
+    if (e.key === PROFILE_KEY) {
+      profile = loadProfile();
+      applyProfile();
+      rebuildPlayerFromProfile();
+    }
+  });
 
-  let currentTrack = 0;
+  const audioPlayerContainer = document.getElementById('audioPlayerContainer');
+
+  function getPlaylistFromProfile() {
+    const list = (profile.audio || []).filter(t => t && t.url);
+    if (!list.length) return [];
+
+    const activeIndex = list.findIndex(t => t.active);
+    if (activeIndex === -1) {
+      if (profile.audioShuffle) {
+        const rnd = Math.floor(Math.random() * list.length);
+        list.forEach((t, i) => t.active = (i === rnd));
+      } else {
+        list.forEach((t, i) => t.active = (i === 0));
+      }
+    }
+    return list;
+  }
+
+  let playlist = getPlaylistFromProfile();
+  let currentTrackIndex = Math.max(
+    0,
+    playlist.findIndex(t => t.active)
+  );
+  if (currentTrackIndex === -1) currentTrackIndex = 0;
 
   const MAX_VOLUME = 1.0;
   let currentVolume = 0.5;
-
   let audio = null;
 
+  function rebuildPlayerFromProfile() {
+    playlist = getPlaylistFromProfile();
+    if (!playlist.length || profile.audioPlayerEnabled === false) {
+      audioPlayerContainer.innerHTML = "";
+      audio = null;
+      return;
+    }
+    const activeIdx = playlist.findIndex(t => t.active);
+    currentTrackIndex = activeIdx !== -1 ? activeIdx : 0;
+    renderAudioPlayer();
+  }
+
   function renderAudioPlayer() {
-    if (!playlist.length) {
+    if (!playlist.length || profile.audioPlayerEnabled === false) {
       audioPlayerContainer.innerHTML = "";
       return;
     }
 
-    const track = playlist[currentTrack];
+    const track = playlist[currentTrackIndex];
     audioPlayerContainer.innerHTML = `
       <div class="audio-player-card">
         <div class="audio-cover">
@@ -590,7 +626,7 @@
             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 24 24\\' fill=\\'white\\'%3E%3Cpath d=\\'M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z\\'/%3E%3C/svg%3E'">
         </div>
         <div class="audio-info">
-          <div class="audio-title" id="audioTitle">${track.title}</div>
+          <div class="audio-title" id="audioTitle">${track.title || ''}</div>
           <div class="progress-container">
             <span class="current-time" id="currentTime">0:00</span>
             <div class="progress-bar" id="progressBar">
@@ -688,7 +724,12 @@
   function initPlayer() {
     if (audio) audio.pause();
 
-    const track = playlist[currentTrack];
+    if (!playlist.length || profile.audioPlayerEnabled === false) {
+      audioPlayerContainer.innerHTML = "";
+      return;
+    }
+
+    const track = playlist[currentTrackIndex];
     audio = new Audio(track.url);
     audio.volume = currentVolume;
 
@@ -733,7 +774,13 @@
     });
 
     audio.addEventListener('ended', () => {
-      currentTrack = (currentTrack + 1) % playlist.length;
+      if (!playlist.length) return;
+      if (profile.audioShuffle) {
+        const rnd = Math.floor(Math.random() * playlist.length);
+        currentTrackIndex = rnd;
+      } else {
+        currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
+      }
       renderAudioPlayer();
     });
 
@@ -752,14 +799,18 @@
 
     if (prevBtn) {
       prevBtn.addEventListener('click', () => {
-        currentTrack = (currentTrack - 1 + playlist.length) % playlist.length;
+        if (!playlist.length) return;
+        currentTrackIndex =
+          (currentTrackIndex - 1 + playlist.length) % playlist.length;
         renderAudioPlayer();
       });
     }
 
     if (nextBtn) {
       nextBtn.addEventListener('click', () => {
-        currentTrack = (currentTrack + 1) % playlist.length;
+        if (!playlist.length) return;
+        currentTrackIndex =
+          (currentTrackIndex + 1) % playlist.length;
         renderAudioPlayer();
       });
     }
@@ -796,7 +847,7 @@
     }
   }
 
-  renderAudioPlayer();
+  rebuildPlayerFromProfile();
 </script>
 </body>
 </html>
