@@ -4,6 +4,33 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lolekx228 Profile Card</title>
+
+  <!-- Бегущая строка в заголовке вкладки -->
+  <script>
+    (function () {
+      let baseTitle = document.title || "@Lolekx228 | Profile Card";
+      const separator = " • ";
+      const speed = 250; // скорость в мс
+
+      let scrollTitle = baseTitle + separator;
+      let pos = 0;
+
+      function tick() {
+        const len = scrollTitle.length;
+        const view = scrollTitle.slice(pos) + scrollTitle.slice(0, pos);
+        document.title = view;
+        pos = (pos + 1) % len;
+        setTimeout(tick, speed);
+      }
+
+      if (document.readyState === "complete" || document.readyState === "interactive") {
+        tick();
+      } else {
+        document.addEventListener("DOMContentLoaded", tick);
+      }
+    })();
+  </script>
+
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -467,9 +494,8 @@
 
   let currentTrack = 0;
 
-  // громкость 50%
   const MAX_VOLUME = 1.0;
-  let currentVolume = 0.5;
+  let currentVolume = 0.5; // стартовая громкость 50%
 
   let audio = null;
 
@@ -516,7 +542,7 @@
 
     const track = playlist[currentTrack];
     audio = new Audio(track.url);
-    audio.volume = currentVolume; // стартовая громкость 0.5 [web:14]
+    audio.volume = currentVolume;
 
     const playPauseBtn = document.getElementById('playPauseBtn');
     const prevBtn = document.getElementById('prevBtn');
@@ -572,10 +598,10 @@
       playPauseBtn.addEventListener('click', () => {
         if (isPlaying) {
           audio.pause();
-          playPauseBtn.innerHTML = '&#9654;'; // ▶
+          playPauseBtn.innerHTML = '&#9654;';
         } else {
-          audio.play();                        // старт по клику [web:21]
-          playPauseBtn.innerHTML = '&#10074;&#10074;'; // ⏸
+          audio.play();
+          playPauseBtn.innerHTML = '&#10074;&#10074;';
         }
         isPlaying = !isPlaying;
       });
@@ -625,8 +651,6 @@
         audio.currentTime = percent * audio.duration;
       });
     }
-
-    // ВАЖНО: никаких audio.play() тут — только кнопка Play
   }
 
   renderAudioPlayer();
