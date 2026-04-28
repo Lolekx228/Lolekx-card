@@ -1,935 +1,646 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lolekx's Card Настройки</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lolekx's Card Настройки</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-      background: #0a0a0a;
-      font-family: 'Onest', 'Segoe UI', system-ui, -apple-system, sans-serif;
-      color: #ffffff;
-      padding: 40px 24px 80px;
-      display: flex;
-      justify-content: center;
-    }
+        body {
+            background: #0a0a0a;
+            font-family: 'Onest', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: #ffffff;
+            padding: 40px 24px;
+            display: flex;
+            justify-content: center;
+        }
 
-    .customize-container {
-      max-width: 1200px;
-      width: 100%;
-      margin: 0 auto;
-    }
+        .customize-container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
 
-    .settings-section {
-      margin-bottom: 48px;
-    }
+        .settings-section { margin-bottom: 48px; }
 
-    .section-title {
-      font-size: 1.8rem;
-      font-weight: 600;
-      letter-spacing: -0.5px;
-      margin-bottom: 24px;
-      display: block;
-    }
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            margin-bottom: 24px;
+            display: block;
+        }
 
-    .settings-card {
-      background: #111111;
-      border-radius: 28px;
-      padding: 28px 24px;
-      border: 1px solid #2a2a2a;
-    }
+        .settings-card {
+            background: #111111;
+            border-radius: 28px;
+            padding: 28px 24px;
+            border: 1px solid #2a2a2a;
+        }
 
-    .media-row-horizontal {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: space-between;
-    }
-    .media-item {
-      flex: 1;
-      min-width: 200px;
-      background: #1a1a1a;
-      border-radius: 20px;
-      padding: 16px;
-      text-align: center;
-    }
-    .media-label {
-      font-weight: 500;
-      color: #aaa;
-      margin-bottom: 12px;
-      font-size: 0.85rem;
-    }
-    .media-content {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-      cursor: pointer;
-    }
-    .file-badge {
-      display: flex;
-      gap: 8px;
-      font-size: 0.7rem;
-      color: #888;
-      background: #0a0a0a;
-      padding: 4px 10px;
-      border-radius: 20px;
-      align-items: center;
-    }
-    .file-badge span:nth-child(2) {
-      opacity: 0.7;
-    }
-    .media-preview {
-      width: 64px;
-      height: 64px;
-      border-radius: 16px;
-      object-fit: cover;
-    }
-    .audio-placeholder,
-    .cursor-placeholder {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      color: white;
-      font-size: 0.75rem;
-    }
-    .audio-placeholder svg,
-    .cursor-placeholder svg {
-      width: 32px;
-      height: 32px;
-    }
+        .media-row-horizontal {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
+        }
+        .media-item {
+            flex: 1;
+            min-width: 200px;
+            background: #1a1a1a;
+            border-radius: 20px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .media-item:hover { background: #252525; }
+        .media-label {
+            font-weight: 500;
+            color: #aaa;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+        }
+        .media-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        .file-badge {
+            display: flex;
+            gap: 8px;
+            font-size: 0.7rem;
+            color: #888;
+            background: #0a0a0a;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+        .media-preview {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            object-fit: cover;
+        }
+        .audio-placeholder, .cursor-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            font-size: 0.75rem;
+        }
+        .audio-placeholder svg, .cursor-placeholder svg {
+            width: 32px;
+            height: 32px;
+        }
 
-    .settings-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 28px;
-    }
-    .two-columns {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 40px;
-      justify-content: space-between;
-    }
-    .settings-column {
-      flex: 1;
-      min-width: 240px;
-    }
-    .setting-item {
-      margin-bottom: 24px;
-    }
-    .setting-label {
-      font-size: 0.9rem;
-      font-weight: 500;
-      margin-bottom: 8px;
-      color: #ddd;
-    }
-    .input-wrapper {
-      background: #1a1a1a;
-      border-radius: 16px;
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .input-wrapper input,
-    .input-wrapper select {
-      background: transparent;
-      border: none;
-      color: white;
-      width: 100%;
-      outline: none;
-      font-size: 0.9rem;
-    }
+        .settings-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+        .two-columns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            justify-content: space-between;
+        }
+        .settings-column {
+            flex: 1;
+            min-width: 240px;
+        }
+        .setting-item { margin-bottom: 24px; }
+        .setting-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #ddd;
+        }
+        .input-wrapper {
+            background: #1a1a1a;
+            border-radius: 16px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .input-wrapper input {
+            background: transparent;
+            border: none;
+            color: white;
+            width: 100%;
+            outline: none;
+            font-size: 0.9rem;
+        }
 
-    .slider-container {
-      margin-top: 8px;
-    }
-    .slider {
-      width: 100%;
-      height: 6px;
-      background: #333;
-      border-radius: 3px;
-      appearance: none;
-    }
-    .slider::-webkit-slider-thumb {
-      appearance: none;
-      width: 18px;
-      height: 18px;
-      background: #5b5b5b;
-      border-radius: 50%;
-      cursor: pointer;
-    }
+        .slider-container { margin-top: 8px; }
+        .slider {
+            width: 100%;
+            height: 6px;
+            background: #333;
+            border-radius: 3px;
+            appearance: none;
+        }
+        .slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: #5b5b5b;
+            border-radius: 50%;
+            cursor: pointer;
+        }
 
-    .color-picker-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
-    .color-swatch {
-      width: 36px;
-      height: 36px;
-      border-radius: 12px;
-      border: 2px solid #fff;
-    }
-    .color-input {
-      background: #1a1a1a;
-      border: none;
-      padding: 10px 14px;
-      border-radius: 16px;
-      color: white;
-      font-family: monospace;
-      flex: 1;
-    }
+        .color-picker-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        .color-swatch {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            border: 2px solid #fff;
+        }
+        .color-input {
+            background: #1a1a1a;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 16px;
+            color: white;
+            font-family: monospace;
+            flex: 1;
+        }
 
-    .checkbox-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-    .checkbox-label {
-      color: #ddd;
-    }
-    .custom-checkbox {
-      width: 44px;
-      height: 22px;
-      background: #3a3a3a;
-      border-radius: 22px;
-      appearance: none;
-      cursor: pointer;
-      position: relative;
-    }
-    .custom-checkbox:checked {
-      background: #5b5b5b;
-    }
-    .custom-checkbox:before {
-      content: '';
-      width: 18px;
-      height: 18px;
-      background: white;
-      border-radius: 50%;
-      position: absolute;
-      top: 2px;
-      left: 3px;
-      transition: 0.2s;
-    }
-    .custom-checkbox:checked:before {
-      transform: translateX(20px);
-    }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .checkbox-label { color: #ddd; }
+        .normal-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        hr {
+            border-color: #2a2a2a;
+            margin: 20px 0;
+        }
 
-    hr {
-      border-color: #2a2a2a;
-      margin: 20px 0;
-    }
-
-    .actions-row {
-      margin-top: 24px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-      align-items: center;
-    }
-
-    .btn {
-      border-radius: 999px;
-      border: 1px solid #2a2a2a;
-      background: #1a1a1a;
-      color: #fff;
-      padding: 10px 20px;
-      font-size: 0.85rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .btn-primary {
-      background: #c4442e;
-      border-color: #c4442e;
-    }
-    .btn-primary:hover {
-      background: #d6543c;
-    }
-    .btn-secondary:hover {
-      background: #252525;
-    }
-
-    .status-label {
-      font-size: 0.8rem;
-      opacity: 0.8;
-    }
-    .status-label.ok {
-      color: #7fd47f;
-    }
-    .status-label.err {
-      color: #ff7f7f;
-    }
-
-    .hidden-file-input {
-      display: none;
-    }
-
-    @media (max-width: 720px) {
-      body {
-        padding: 24px 12px 64px;
-      }
-      .settings-card {
-        padding: 22px 16px;
-      }
-      .section-title {
-        font-size: 1.5rem;
-      }
-    }
-  </style>
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .audio-manager-modal {
+            background: #111111;
+            border-radius: 32px;
+            width: 90%;
+            max-width: 560px;
+            border: 1px solid #2a2a2a;
+            overflow: hidden;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid #2a2a2a;
+        }
+        .modal-header h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+        .close-modal {
+            background: none;
+            border: none;
+            color: #aaa;
+            font-size: 28px;
+            cursor: pointer;
+            line-height: 1;
+        }
+        .modal-content { padding: 20px 24px; }
+        .audio-list {
+            margin-bottom: 24px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .audio-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px;
+            background: #1a1a1a;
+            border-radius: 20px;
+            margin-bottom: 12px;
+            border: 1px solid transparent;
+            cursor: pointer;
+        }
+        .audio-item.active {
+            background: #2a2a2a;
+            border-color: #5b5b5b;
+        }
+        .audio-cover-small {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background-size: cover;
+            background-position: center;
+            background-color: #2c2c2c;
+        }
+        .audio-info { flex: 1; }
+        .audio-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        .audio-badge {
+            font-size: 0.7rem;
+            background: #5b5b5b;
+            padding: 2px 8px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        .edit-audio-btn {
+            background: none;
+            border: 1px solid #444;
+            color: #ccc;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            transition: 0.2s;
+        }
+        .edit-audio-btn:hover {
+            background: #333;
+            color: white;
+            border-color: #666;
+        }
+        .add-audio-btn {
+            background: #5b5b5b;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 40px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            margin-top: 16px;
+            width: 100%;
+            justify-content: center;
+        }
+        .add-audio-btn:hover { background: #6c6c6c; }
+        .setting-switch {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #2a2a2a;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .setting-switch:last-child { border-bottom: none; }
+        .setting-left {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .setting-title { font-weight: 500; }
+        .setting-description {
+            font-size: 0.7rem;
+            color: #888;
+        }
+    </style>
 </head>
 <body>
 <div class="customize-container">
-
-  <!-- Загрузка медиа -->
-  <div class="settings-section">
-    <span class="section-title">Загрузка медиа</span>
-    <div class="settings-card">
-      <div class="media-row-horizontal">
-
-        <!-- Фон (заблокирован до нажатия ✕) -->
-        <div class="media-item" id="bgMediaItem" data-locked="true">
-          <div class="media-label">Фон</div>
-          <div class="media-content" id="bgMediaBtn">
-            <div class="file-badge">
-              <span>.WEBP / URL</span>
-              <span id="bgResetBtn" style="cursor:pointer;">✕</span>
+    <!-- Загрузка медиа -->
+    <div class="settings-section">
+        <span class="section-title">Загрузка медиа</span>
+        <div class="settings-card">
+            <div class="media-row-horizontal">
+                <div class="media-item">
+                    <div class="media-label">Фон</div>
+                    <div class="media-content">
+                        <div class="file-badge"><span>.WEBP</span><span>✕</span></div>
+                        <img class="media-preview" src="https://r2.guns.lol/404eaec9-de84-4ca0-b031-6059b171072a.webp" alt="фон">
+                    </div>
+                </div>
+                <div class="media-item" id="openAudioManagerBtn">
+                    <div class="media-label">Аудио</div>
+                    <div class="media-content">
+                        <div class="audio-placeholder">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="white"><path d="M14 22v-3.075l5.525-5.5q.225-.225.5-.325t.55-.1q.3 0 .575.113t.5.337l.925.925q.2.225.313.5t.112.55t-.1.563t-.325.512l-5.5 5.5zm6.575-5.6l.925-.975l-.925-.925l-.95.95zM4 20q-.825 0-1.412-.587T2 18V6q0-.825.588-1.412T4 4h6l2 2h8q.825 0 1.413.588T22 8v3.3q-.35-.15-.725-.225t-.75-.075q-.7 0-1.312.25T18.1 12L12 18.1V20z"/></svg>
+                            <span>Открыть менеджер</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="media-item">
+                    <div class="media-label">Аватар профиля</div>
+                    <div class="media-content">
+                        <div class="file-badge"><span>.WEBP</span><span>✕</span></div>
+                        <img class="media-preview" src="https://r2.guns.lol/a90d9caf-a563-4b08-a030-1febdba3397e.webp" alt="аватар">
+                    </div>
+                </div>
+                <div class="media-item">
+                    <div class="media-label">Пользовательский курсор</div>
+                    <div class="media-content">
+                        <div class="cursor-placeholder">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="white"><path d="M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21zm2-4h10q.3 0 .45-.275t-.05-.525l-2.75-3.675q-.15-.2-.4-.2t-.4.2L11.25 16L9.4 13.525q-.15-.2-.4-.2t-.4.2l-2 2.675q-.2.25-.05.525T7 17"/></svg>
+                            <span>Загрузить файл</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <img class="media-preview" id="bgPreview" src="" alt="фон">
-          </div>
-          <input type="file" accept="image/*" id="bgFileInput" class="hidden-file-input">
         </div>
-
-        <!-- Аудио -->
-        <div class="media-item" id="audioMediaItem">
-          <div class="media-label">Аудио</div>
-          <div class="media-content" id="audioManagerBtn">
-            <div class="audio-placeholder">
-              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
-                   viewBox="0 0 24 24" fill="white">
-                <path
-                  d="M14 22v-3.075l5.525-5.5q.225-.225.5-.325t.55-.1q.3 0 .575.113t.5.337l.925.925q.2.225.313.5t.112.55t-.1.563t-.325.512l-5.5 5.5zm6.575-5.6l.925-.975l-.925-.925l-.95.95zM4 20q-.825 0-1.412-.587T2 18V6q0-.825.588-1.412T4 4h6l2 2h8q.825 0 1.413.588T22 8v3.3q-.35-.15-.725-.225t-.75-.075q-.7 0-1.312.25T18.1 12L12 18.1V20z"/>
-              </svg>
-              <span id="audioSummary">Открыть менеджер (0 треков)</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Аватар (заблокирован до нажатия ✕) -->
-        <div class="media-item" id="avatarMediaItem" data-locked="true">
-          <div class="media-label">Аватар профиля</div>
-          <div class="media-content" id="avatarMediaBtn">
-            <div class="file-badge">
-              <span>.WEBP / URL</span>
-              <span id="avatarResetBtn" style="cursor:pointer;">✕</span>
-            </div>
-            <img class="media-preview" id="avatarPreview" src="" alt="аватар">
-          </div>
-          <input type="file" accept="image/*" id="avatarFileInput" class="hidden-file-input">
-        </div>
-
-        <!-- Курсор (визуал) -->
-        <div class="media-item">
-          <div class="media-label">Пользовательский курсор</div>
-          <div class="media-content">
-            <div class="cursor-placeholder">
-              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
-                   viewBox="0 0 24 24" fill="white">
-                <path
-                  d="M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21zm2-4h10q.3 0 .45-.275t-.05-.525l-2.75-3.675q-.15-.2-.4-.2t-.4.2L11.25 16L9.4 13.525q-.15-.2-.4-.2t-.4.2l-2 2.675q-.2.25-.05.525T7 17"/>
-              </svg>
-              <span>Загрузить файл</span>
-            </div>
-          </div>
-        </div>
-
-      </div>
     </div>
-  </div>
 
-  <!-- Общие настройки -->
-  <div class="settings-section">
-    <span class="section-title">Общие настройки</span>
-    <div class="settings-card">
-      <div class="settings-grid">
-
-        <div class="setting-item">
-          <div class="setting-label">Описание</div>
-          <div class="input-wrapper">
-            <input type="text" id="descriptionInput"
-                   placeholder="Описание профиля">
-          </div>
+    <!-- Общие настройки -->
+    <div class="settings-section">
+        <span class="section-title">Общие настройки</span>
+        <div class="settings-card">
+            <div class="settings-grid">
+                <div class="setting-item">
+                    <div class="setting-label">Описание</div>
+                    <div class="input-wrapper">
+                        <input type="text" value="Hiii Me: Animation artist, Voice actor, Programmer, Web Developer, Game Developer, 3D modeler">
+                    </div>
+                </div>
+                <div class="two-columns">
+                    <div class="settings-column">
+                        <div class="setting-label">Прозрачность профиля</div>
+                        <div class="slider-container"><input type="range" min="0" max="1" step="0.01" value="0.5" class="slider"></div>
+                    </div>
+                    <div class="settings-column">
+                        <div class="setting-label">Размытие фона</div>
+                        <div class="slider-container"><input type="range" min="0" max="100" value="10" class="slider"></div>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">Местоположение</div>
+                    <div class="input-wrapper"><input type="text" value="Україна, ДНР, Донецьк"></div>
+                </div>
+            </div>
         </div>
-
-        <div class="setting-item">
-          <div class="setting-label">Ник / отображаемое имя</div>
-          <div class="input-wrapper">
-            <input type="text" id="displayNameInput" placeholder="@Lolekx228">
-          </div>
-        </div>
-
-        <div class="two-columns">
-          <div class="settings-column">
-            <div class="setting-item">
-              <div class="setting-label">YouTube</div>
-              <div class="input-wrapper">
-                <input type="text" id="youtubeInput"
-                       placeholder="https://youtube.com/@...">
-              </div>
-            </div>
-          </div>
-          <div class="settings-column">
-            <div class="setting-item">
-              <div class="setting-label">Discord</div>
-              <div class="input-wrapper">
-                <input type="text" id="discordInput"
-                       placeholder="https://discord.com/users/...">
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Два поля для гео -->
-        <div class="two-columns">
-          <div class="settings-column">
-            <div class="setting-item">
-              <div class="setting-label">Местоположение (кратко)</div>
-              <div class="input-wrapper">
-                <input type="text" id="locationShortInput"
-                       placeholder="Україна, ДНР, Донецьк">
-              </div>
-            </div>
-          </div>
-          <div class="settings-column">
-            <div class="setting-item">
-              <div class="setting-label">Местоположение (полностью)</div>
-              <div class="input-wrapper">
-                <input type="text" id="locationFullInput"
-                       placeholder="Україна, Донецкая Народная Республика, город Донецьк">
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="two-columns">
-          <div class="settings-column">
-            <div class="setting-label">Прозрачность профиля</div>
-            <div class="slider-container">
-              <input type="range" min="0.5" max="1" step="0.01" value="0.9"
-                     class="slider" id="opacitySlider">
-            </div>
-          </div>
-          <div class="settings-column">
-            <div class="setting-label">Размытие фона</div>
-            <div class="slider-container">
-              <input type="range" min="0" max="30" step="1" value="10"
-                     class="slider" id="blurSlider">
-            </div>
-          </div>
-        </div>
-
-      </div>
     </div>
-  </div>
 
-  <!-- Настройка цветов -->
-  <div class="settings-section">
-    <span class="section-title">Настройка цветов</span>
-    <div class="settings-card">
-
-      <div class="two-columns">
-        <div class="settings-column">
-          <div class="setting-label">Акцентный цвет</div>
-          <div class="color-picker-row">
-            <div class="color-swatch" id="accentSwatch"></div>
-            <input class="color-input" id="accentInput" value="#5b5b5b">
-          </div>
-
-          <div class="setting-label">Цвет текста</div>
-          <div class="color-picker-row">
-            <div class="color-swatch" id="textSwatch"></div>
-            <input class="color-input" id="textInput" value="#ffffff">
-          </div>
+    <!-- Настройка цветов -->
+    <div class="settings-section">
+        <span class="section-title">Настройка цветов</span>
+        <div class="settings-card">
+            <div class="two-columns">
+                <div class="settings-column">
+                    <div class="setting-label">Акцентный цвет</div>
+                    <div class="color-picker-row"><div class="color-swatch" style="background:#5b5b5b;"></div><input class="color-input" value="#5b5b5b"></div>
+                    <div class="setting-label">Цвет текста</div>
+                    <div class="color-picker-row"><div class="color-swatch" style="background:#ffffff;"></div><input class="color-input" value="#ffffff"></div>
+                </div>
+                <div class="settings-column">
+                    <div class="setting-label">Цвет фона</div>
+                    <div class="color-picker-row"><div class="color-swatch" style="background:#080808;"></div><input class="color-input" value="#080808"></div>
+                    <div class="setting-label">Цвет иконок</div>
+                    <div class="color-picker-row"><div class="color-swatch" style="background:#ffffff;"></div><input class="color-input" value="#ffffff"></div>
+                </div>
+            </div>
+            <hr>
+            <div class="checkbox-item"><span class="checkbox-label">Выключить градиент профиля</span><input type="checkbox" class="normal-checkbox" checked></div>
+            <div class="two-columns">
+                <div class="settings-column"><div class="setting-label">Основной цвет</div><div class="color-picker-row"><div class="color-swatch" style="background:#6f0000;"></div><input class="color-input" value="#6f0000"></div></div>
+                <div class="settings-column"><div class="setting-label">Дополнительный цвет</div><div class="color-picker-row"><div class="color-swatch" style="background:#933800;"></div><input class="color-input" value="#933800"></div></div>
+            </div>
         </div>
-
-        <div class="settings-column">
-          <div class="setting-label">Цвет фона</div>
-          <div class="color-picker-row">
-            <div class="color-swatch" id="bgColorSwatch"></div>
-            <input class="color-input" id="bgColorInput" value="#080808">
-          </div>
-
-          <div class="setting-label">Цвет иконок</div>
-          <div class="color-picker-row">
-            <div class="color-swatch" id="iconColorSwatch"></div>
-            <input class="color-input" id="iconColorInput" value="#ffffff"
-                   disabled>
-          </div>
-        </div>
-      </div>
-
-      <hr>
-
-      <div class="checkbox-item">
-        <span class="checkbox-label">Выключить градиент профиля</span>
-        <input type="checkbox" class="custom-checkbox"
-               id="disableGradientCheckbox">
-      </div>
-
-      <div class="two-columns">
-        <div class="settings-column">
-          <div class="setting-label">Основной цвет (градиент 1)</div>
-          <div class="color-picker-row">
-            <div class="color-swatch" id="gradient1Swatch"></div>
-            <input class="color-input" id="gradient1Input" value="#6f0000">
-          </div>
-        </div>
-        <div class="settings-column">
-          <div class="setting-label">Дополнительный цвет (градиент 2)</div>
-          <div class="color-picker-row">
-            <div class="color-swatch" id="gradient2Swatch"></div>
-            <input class="color-input" id="gradient2Input" value="#933800">
-          </div>
-        </div>
-      </div>
-
     </div>
-  </div>
 
-  <!-- Другие настройки -->
-  <div class="settings-section">
-    <span class="section-title">Другие настройки</span>
-    <div class="settings-card">
-      <div class="two-columns">
-        <div class="settings-column">
-          <div class="checkbox-item">
-            <span class="checkbox-label">Монохромные иконки</span>
-            <input type="checkbox" class="custom-checkbox"
-                   id="monochromeCheckbox">
-          </div>
-          <div class="checkbox-item">
-            <span class="checkbox-label">Анимированный заголовок (ник)</span>
-            <input type="checkbox" class="custom-checkbox"
-                   id="animatedTitleCheckbox">
-          </div>
-          <div class="checkbox-item">
-            <span class="checkbox-label">Поменять цвета блоков (визуал)</span>
-            <input type="checkbox" class="custom-checkbox"
-                   id="swapBlocksCheckbox">
-          </div>
+    <!-- Другие настройки -->
+    <div class="settings-section">
+        <span class="section-title">Другие настройки</span>
+        <div class="settings-card">
+            <div class="two-columns">
+                <div class="settings-column">
+                    <div class="checkbox-item"><span class="checkbox-label">Монохромные иконки</span><input type="checkbox" class="normal-checkbox" checked></div>
+                    <div class="checkbox-item"><span class="checkbox-label">Анимированный заголовок</span><input type="checkbox" class="normal-checkbox" checked></div>
+                    <div class="checkbox-item"><span class="checkbox-label">Поменять цвета блоков</span><input type="checkbox" class="normal-checkbox"></div>
+                </div>
+                <div class="settings-column">
+                    <div class="checkbox-item"><span class="checkbox-label">Регулятор громкости</span><input type="checkbox" class="normal-checkbox" checked></div>
+                    <div class="checkbox-item"><span class="checkbox-label">Использовать аватар Discord</span><input type="checkbox" class="normal-checkbox"></div>
+                    <div class="checkbox-item"><span class="checkbox-label">Декор аватара Discord</span><input type="checkbox" class="normal-checkbox" checked></div>
+                </div>
+            </div>
         </div>
-        <div class="settings-column">
-          <div class="checkbox-item">
-            <span class="checkbox-label">Регулятор громкости</span>
-            <input type="checkbox" class="custom-checkbox"
-                   id="volumeControlCheckbox" checked>
-          </div>
-          <div class="checkbox-item">
-            <span class="checkbox-label">Использовать аватар Discord</span>
-            <input type="checkbox" class="custom-checkbox"
-                   id="discordAvatarCheckbox">
-          </div>
-          <div class="checkbox-item">
-            <span class="checkbox-label">Декор аватара Discord</span>
-            <input type="checkbox" class="custom-checkbox"
-                   id="discordAvatarDecorCheckbox" checked>
-          </div>
-        </div>
-      </div>
-
-      <div class="actions-row">
-        <span id="statusLabel" class="status-label"></span>
-
-        <button class="btn btn-secondary" type="button" id="resetBtn">
-          Сбросить к дефолту
-        </button>
-
-        <button class="btn btn-secondary" type="button" id="saveAsDefaultBtn">
-          Сохранить как дефолт
-        </button>
-
-        <button class="btn btn-primary" type="button" id="saveBtn">
-          <span>Сохранить профиль</span>
-        </button>
-      </div>
     </div>
-  </div>
+</div>
 
+<div id="audioManagerModal" class="modal-overlay">
+    <div class="audio-manager-modal">
+        <div class="modal-header">
+            <h2>Менеджер аудио</h2>
+            <button class="close-modal" id="closeModalBtn">×</button>
+        </div>
+        <div class="modal-content">
+            <div class="audio-list" id="audioList"></div>
+
+            <button class="add-audio-btn" id="addAudioBtn">+ Добавить аудио</button>
+
+            <div class="setting-switch">
+                <div class="setting-left">
+                    <span class="setting-title">Перемешивание аудио</span>
+                    <span class="setting-description">Проигрывать случайное аудио при каждом посещении страницы</span>
+                </div>
+                <input type="checkbox" class="normal-checkbox" id="shuffleCheckbox">
+            </div>
+
+            <div class="setting-switch">
+                <div class="setting-left">
+                    <span class="setting-title">Аудиоплеер</span>
+                    <span class="setting-description">Добавляет в профиль виджет аудиоплеера</span>
+                </div>
+                <input type="checkbox" class="normal-checkbox" id="playerEnabledCheckbox" checked>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
-  const PROFILE_KEY = 'Lolekx228_profile';
-  const PROFILE_DEFAULT_KEY = 'Lolekx228_profile_default';
+    const PROFILE_KEY = 'Lolekx228_profile';
 
-  const defaultProfile = {
-    displayName: "Lolekx228",
-    description: "Hiii Me: Animation artist, Voice actor, Programmer, Web Developer, Game Developer, 3D modeler",
-    locationShort: "Україна, ДНР, Донецьк",
-    locationFull: "Україна, Донецкая Народная Республика, город Донецьк",
-    location: "Україна, ДНР, Донецьк",
-    accentColor: "#5b5b5b",
-    textColor: "#ffffff",
-    bgColor: "#080808",
-    gradientEnabled: true,
-    gradient1: "#6f0000",
-    gradient2: "#933800",
-    backgroundEffect: "blurred",
-    blur: 10,
-    opacity: 0.9,
-    monochrome: true,
-    animatedTitle: true,
-    audio: [
-      { title: "Durnojj Vkus - Plastinki",
-        url: "https://r2.guns.lol/e2040c07-063d-4f8d-bf4a-4a784e5cb3f2.mp3",
-        cover: "https://r2.guns.lol/8b57c2d3-3cd2-4915-ad39-431819946a45.webp"
-      },
-      { title: "Kino - Spokojjnaya Noch",
-        url: "https://r2.guns.lol/ef254576-8efc-4601-a39a-025acd7f50af.mp3",
-        cover: "https://r2.guns.lol/998a3ed5-4b5d-41c0-bdbe-c3ce107fc6b0.webp"
-      }
-    ],
-    socials: [
-      { name: "youtube", url: "https://youtube.com/@Lolekx228" },
-      { name: "discord", url: "https://discord.com/users/919815468519391252" }
-    ],
-    backgroundUrl: "https://r2.guns.lol/404eaec9-de84-4ca0-b031-6059b171072a.webp",
-    avatarUrl: "https://r2.guns.lol/a90d9caf-a563-4b08-a030-1febdba3397e.webp"
-  };
+    const defaultProfile = {
+        audio: [
+            {
+                title: "Durnojj Vkus - Plastinki",
+                url: "https://r2.guns.lol/e2040c07-063d-4f8d-bf4a-4a784e5cb3f2.mp3",
+                cover: "https://r2.guns.lol/8b57c2d3-3cd2-4915-ad39-431819946a45.webp",
+                active: true
+            },
+            {
+                title: "Kino - Spokojjnaya Noch",
+                url: "https://r2.guns.lol/ef254576-8efc-4601-a39a-025acd7f50af.mp3",
+                cover: "https://r2.guns.lol/998a3ed5-4b5d-41c0-bdbe-c3ce107fc6b0.webp",
+                active: false
+            }
+        ],
+        audioShuffle: false,
+        audioPlayerEnabled: true
+    };
 
-  function loadDefaultProfile() {
-    try {
-      const raw = localStorage.getItem(PROFILE_DEFAULT_KEY);
-      if (!raw) return defaultProfile;
-      const parsed = JSON.parse(raw);
-      return { ...defaultProfile, ...parsed };
-    } catch {
-      return defaultProfile;
+    function loadProfile() {
+        try {
+            const raw = localStorage.getItem(PROFILE_KEY);
+            if (!raw) return { ...defaultProfile };
+            const parsed = JSON.parse(raw);
+            return { ...defaultProfile, ...parsed };
+        } catch {
+            return { ...defaultProfile };
+        }
     }
-  }
 
-  function loadProfile() {
-    try {
-      const raw = localStorage.getItem(PROFILE_KEY);
-      if (!raw) return loadDefaultProfile();
-      const parsed = JSON.parse(raw);
-      return { ...loadDefaultProfile(), ...parsed };
-    } catch {
-      return loadDefaultProfile();
+    function saveProfile(profile) {
+        localStorage.setItem(PROFILE_KEY, JSON.stringify(profile)); // [web:50][web:51][web:127]
     }
-  }
 
-  function saveProfile(profile) {
-    localStorage.setItem(PROFILE_KEY, JSON.stringify(profile)); // [web:51]
-  }
+    let profile = loadProfile();
 
-  function fileToDataURL(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
+    const openBtn = document.getElementById('openAudioManagerBtn');
+    const modal = document.getElementById('audioManagerModal');
+    const closeBtn = document.getElementById('closeModalBtn');
+    const audioList = document.getElementById('audioList');
+    const addAudioBtn = document.getElementById('addAudioBtn');
+    const shuffleCheckbox = document.getElementById('shuffleCheckbox');
+    const playerEnabledCheckbox = document.getElementById('playerEnabledCheckbox');
+
+    openBtn.addEventListener('click', () => {
+        profile = loadProfile();
+        renderAudioList();
+        shuffleCheckbox.checked = !!profile.audioShuffle;
+        playerEnabledCheckbox.checked = profile.audioPlayerEnabled !== false;
+        modal.classList.add('active');
     });
-  }
-
-  const statusLabel = document.getElementById('statusLabel');
-  function setStatus(text, type = 'ok') {
-    statusLabel.textContent = text;
-    statusLabel.className = 'status-label ' + type;
-    if (!text) return;
-    setTimeout(() => {
-      statusLabel.textContent = '';
-      statusLabel.className = 'status-label';
-    }, 2500);
-  }
-
-  let profile = loadProfile();
-
-  const descriptionInput = document.getElementById('descriptionInput');
-  const displayNameInput = document.getElementById('displayNameInput');
-  const youtubeInput = document.getElementById('youtubeInput');
-  const discordInput = document.getElementById('discordInput');
-
-  const locationShortInput = document.getElementById('locationShortInput');
-  const locationFullInput  = document.getElementById('locationFullInput');
-
-  const opacitySlider = document.getElementById('opacitySlider');
-  const blurSlider = document.getElementById('blurSlider');
-
-  const accentSwatch = document.getElementById('accentSwatch');
-  const accentInput = document.getElementById('accentInput');
-  const textSwatch = document.getElementById('textSwatch');
-  const textInput = document.getElementById('textInput');
-  const bgColorSwatch = document.getElementById('bgColorSwatch');
-  const bgColorInput = document.getElementById('bgColorInput');
-  const iconColorSwatch = document.getElementById('iconColorSwatch');
-  const iconColorInput = document.getElementById('iconColorInput');
-
-  const disableGradientCheckbox = document.getElementById('disableGradientCheckbox');
-  const gradient1Swatch = document.getElementById('gradient1Swatch');
-  const gradient1Input = document.getElementById('gradient1Input');
-  const gradient2Swatch = document.getElementById('gradient2Swatch');
-  const gradient2Input = document.getElementById('gradient2Input');
-
-  const monochromeCheckbox = document.getElementById('monochromeCheckbox');
-  const animatedTitleCheckbox = document.getElementById('animatedTitleCheckbox');
-  const swapBlocksCheckbox = document.getElementById('swapBlocksCheckbox');
-  const volumeControlCheckbox = document.getElementById('volumeControlCheckbox');
-  const discordAvatarCheckbox = document.getElementById('discordAvatarCheckbox');
-  const discordAvatarDecorCheckbox = document.getElementById('discordAvatarDecorCheckbox');
-
-  const bgPreview = document.getElementById('bgPreview');
-  const bgMediaBtn = document.getElementById('bgMediaBtn');
-  const bgFileInput = document.getElementById('bgFileInput');
-  const bgMediaItem = document.getElementById('bgMediaItem');
-  const bgResetBtn = document.getElementById('bgResetBtn');
-
-  const avatarPreview = document.getElementById('avatarPreview');
-  const avatarMediaBtn = document.getElementById('avatarMediaBtn');
-  const avatarFileInput = document.getElementById('avatarFileInput');
-  const avatarMediaItem = document.getElementById('avatarMediaItem');
-  const avatarResetBtn = document.getElementById('avatarResetBtn');
-
-  const audioSummary = document.getElementById('audioSummary');
-  const audioManagerBtn = document.getElementById('audioManagerBtn');
-
-  const saveBtn = document.getElementById('saveBtn');
-  const resetBtn = document.getElementById('resetBtn');
-  const saveAsDefaultBtn = document.getElementById('saveAsDefaultBtn');
-
-  function hexFromAny(color) {
-    return color && color.startsWith('#') ? color : '#ffffff';
-  }
-
-  function fillFormFromProfile() {
-    profile = loadProfile();
-
-    descriptionInput.value = profile.description || '';
-    displayNameInput.value = profile.displayName || '';
-
-    const socials = profile.socials || [];
-    youtubeInput.value = (socials.find(s => s.name === 'youtube') || {}).url || '';
-    discordInput.value = (socials.find(s => s.name === 'discord') || {}).url || '';
-
-    locationShortInput.value = profile.locationShort || profile.location || '';
-    locationFullInput.value  = profile.locationFull  || profile.location || '';
-
-    opacitySlider.value = profile.opacity ?? 0.9;
-    blurSlider.value = profile.blur ?? 10;
-
-    accentInput.value = hexFromAny(profile.accentColor || '#5b5b5b');
-    accentSwatch.style.background = accentInput.value;
-
-    textInput.value = hexFromAny(profile.textColor || '#ffffff');
-    textSwatch.style.background = textInput.value;
-
-    bgColorInput.value = hexFromAny(profile.bgColor || '#080808');
-    bgColorSwatch.style.background = bgColorInput.value;
-
-    iconColorInput.value = '#ffffff';
-    iconColorSwatch.style.background = '#ffffff';
-
-    disableGradientCheckbox.checked = !profile.gradientEnabled;
-    gradient1Input.value = hexFromAny(profile.gradient1 || '#6f0000');
-    gradient1Swatch.style.background = gradient1Input.value;
-    gradient2Input.value = hexFromAny(profile.gradient2 || '#933800');
-    gradient2Swatch.style.background = gradient2Input.value;
-
-    monochromeCheckbox.checked = !!profile.monochrome;
-    animatedTitleCheckbox.checked = !!profile.animatedTitle;
-
-    bgPreview.src = profile.backgroundUrl || '';
-    avatarPreview.src = profile.avatarUrl || '';
-
-    // при загрузке считаем, что фон/ава "зафиксированы"
-    bgMediaItem.dataset.locked = 'true';
-    avatarMediaItem.dataset.locked = 'true';
-
-    const audioLen = (profile.audio || []).length;
-    audioSummary.textContent = audioLen
-      ? `Открыть менеджер (${audioLen} треков)`
-      : 'Открыть менеджер (0 треков)';
-  }
-
-  fillFormFromProfile();
-
-  accentInput.addEventListener('input', () => {
-    accentSwatch.style.background = accentInput.value || '#5b5b5b';
-  });
-  textInput.addEventListener('input', () => {
-    textSwatch.style.background = textInput.value || '#ffffff';
-  });
-  bgColorInput.addEventListener('input', () => {
-    bgColorSwatch.style.background = bgColorInput.value || '#080808';
-  });
-  gradient1Input.addEventListener('input', () => {
-    gradient1Swatch.style.background = gradient1Input.value || '#6f0000';
-  });
-  gradient2Input.addEventListener('input', () => {
-    gradient2Swatch.style.background = gradient2Input.value || '#933800';
-  });
-
-  // Блокировка: фон
-  bgMediaBtn.addEventListener('click', () => {
-    const locked = bgMediaItem.dataset.locked === 'true';
-    if (locked) {
-      alert('Чтобы сменить фон, сначала нажми на крестик (сбросить текущую картинку).');
-      return;
-    }
-    bgFileInput.click();
-  });
-
-  bgResetBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    if (!confirm('Сбросить фон и разрешить выбрать новый файл?')) return;
-
-    bgMediaItem.dataset.locked = 'false';
-    bgPreview.src = '';
-    profile.backgroundUrl = '';
-    setStatus('Фон сброшен. Теперь можешь выбрать новый файл.', 'ok');
-  });
-
-  bgFileInput.addEventListener('change', async () => {
-    if (!bgFileInput.files || !bgFileInput.files[0]) return;
-    const file = bgFileInput.files[0];
-    try {
-      const dataUrl = await fileToDataURL(file);
-      bgPreview.src = dataUrl;
-      profile.backgroundUrl = dataUrl;
-    } catch (e) {
-      console.error(e);
-      setStatus('Ошибка чтения файла фона', 'err');
-    }
-  });
-
-  // Блокировка: аватар
-  avatarMediaBtn.addEventListener('click', () => {
-    const locked = avatarMediaItem.dataset.locked === 'true';
-    if (locked) {
-      alert('Чтобы сменить аватар, сначала нажми на крестик (сбросить текущую картинку).');
-      return;
-    }
-    avatarFileInput.click();
-  });
-
-  avatarResetBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    if (!confirm('Сбросить аватар и разрешить выбрать новый файл?')) return;
-
-    avatarMediaItem.dataset.locked = 'false';
-    avatarPreview.src = '';
-    profile.avatarUrl = '';
-    setStatus('Аватар сброшен. Теперь можешь выбрать новый файл.', 'ok');
-  });
-
-  avatarFileInput.addEventListener('change', async () => {
-    if (!avatarFileInput.files || !avatarFileInput.files[0]) return;
-    const file = avatarFileInput.files[0];
-    try {
-      const dataUrl = await fileToDataURL(file);
-      avatarPreview.src = dataUrl;
-      profile.avatarUrl = dataUrl;
-    } catch (e) {
-      console.error(e);
-      setStatus('Ошибка чтения файла аватара', 'err');
-    }
-  });
-
-  audioManagerBtn.addEventListener('click', () => {
-    const titles = (profile.audio || []).map(t => t.title || 'Без названия');
-    alert('Менеджер аудио пока в разработке.\nСейчас в профиле треков: ' + titles.length +
-      (titles.length ? '\n\nСписок:\n- ' + titles.join('\n- ') : ''));
-  });
-
-  function applyFormToProfile(baseProfile) {
-    const updated = { ...baseProfile };
-
-    updated.description = descriptionInput.value || defaultProfile.description;
-    updated.displayName = displayNameInput.value || defaultProfile.displayName;
-
-    const socials = [];
-    if (youtubeInput.value.trim()) socials.push({ name: 'youtube', url: youtubeInput.value.trim() });
-    if (discordInput.value.trim()) socials.push({ name: 'discord', url: discordInput.value.trim() });
-    updated.socials = socials.length ? socials : defaultProfile.socials;
-
-    const locShort = locationShortInput.value.trim();
-    const locFull  = locationFullInput.value.trim();
-
-    updated.locationShort = locShort || defaultProfile.locationShort;
-    updated.locationFull  = locFull  || defaultProfile.locationFull;
-    updated.location = updated.locationShort;
-
-    updated.opacity = Math.max(0.5, Math.min(1, parseFloat(opacitySlider.value) || defaultProfile.opacity));
-    updated.blur = Math.max(0, Math.min(30, parseFloat(blurSlider.value) || defaultProfile.blur));
-
-    updated.accentColor = accentInput.value || defaultProfile.accentColor;
-    updated.textColor = textInput.value || defaultProfile.textColor;
-    updated.bgColor = bgColorInput.value || defaultProfile.bgColor;
-
-    updated.gradientEnabled = !disableGradientCheckbox.checked;
-    updated.gradient1 = gradient1Input.value || defaultProfile.gradient1;
-    updated.gradient2 = gradient2Input.value || defaultProfile.gradient2;
-
-    updated.monochrome = monochromeCheckbox.checked;
-    updated.animatedTitle = animatedTitleCheckbox.checked;
-
-    updated.backgroundUrl = profile.backgroundUrl || defaultProfile.backgroundUrl;
-    updated.avatarUrl = profile.avatarUrl || defaultProfile.avatarUrl;
-
-    return updated;
-  }
-
-  saveBtn.addEventListener('click', () => {
-    try {
-      const updated = applyFormToProfile(profile);
-      saveProfile(updated);
-      profile = updated;
-      fillFormFromProfile();
-      setStatus('Профиль сохранён. Обнови страницу с карточкой.', 'ok');
-    } catch (e) {
-      console.error(e);
-      setStatus('Ошибка при сохранении профиля', 'err');
-    }
-  });
-
-  resetBtn.addEventListener('click', () => {
-    if (!confirm('Сбросить профиль к дефолтным значениям?')) return;
-    const currentDefault = loadDefaultProfile();
-    saveProfile(currentDefault);
-    profile = currentDefault;
-    fillFormFromProfile();
-    setStatus('Профиль сброшен к дефолту.', 'ok');
-  });
-
-  if (saveAsDefaultBtn) {
-    saveAsDefaultBtn.addEventListener('click', () => {
-      try {
-        const updated = applyFormToProfile(profile);
-        localStorage.setItem(PROFILE_DEFAULT_KEY, JSON.stringify(updated)); // [web:51]
-        saveProfile(updated);
-        profile = updated;
-        fillFormFromProfile();
-        setStatus('Текущие настройки сохранены как дефолт.', 'ok');
-      } catch (e) {
-        console.error(e);
-        setStatus('Ошибка при сохранении дефолта', 'err');
-      }
+    closeBtn.addEventListener('click', () => {
+        modal.classList.remove('active');
     });
-  }
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.classList.remove('active');
+    });
+
+    shuffleCheckbox.addEventListener('change', () => {
+        profile.audioShuffle = shuffleCheckbox.checked;
+        saveProfile(profile);
+    });
+    playerEnabledCheckbox.addEventListener('change', () => {
+        profile.audioPlayerEnabled = playerEnabledCheckbox.checked;
+        saveProfile(profile);
+    });
+
+    function escapeHtml(str) {
+        return String(str || '').replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    function createAudioItemElement(track, index) {
+        const div = document.createElement('div');
+        div.className = 'audio-item';
+        if (track.active) div.classList.add('active');
+        div.dataset.index = index;
+
+        const coverUrl = track.cover || 'https://via.placeholder.com/48/2a2a2a/ffffff?text=🎵';
+
+        div.innerHTML = `
+            <div class="audio-cover-small" style="background-image: url('${coverUrl}');"></div>
+            <div class="audio-info">
+                <div class="audio-title">${escapeHtml(track.title || 'Без названия')}</div>
+                ${track.active ? '<span class="audio-badge">Активно</span>' : ''}
+            </div>
+            <button class="edit-audio-btn">Редактировать</button>
+        `;
+
+        div.addEventListener('click', () => {
+            (profile.audio || []).forEach((t, i) => {
+                t.active = (i === index);
+            });
+            saveProfile(profile);
+            renderAudioList();
+        });
+
+        const editBtn = div.querySelector('.edit-audio-btn');
+        editBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const current = profile.audio[index] || {};
+
+            const newTitle = prompt('Название трека:', current.title || '');
+            if (newTitle === null) return;
+            const newUrl = prompt('URL аудио (mp3):', current.url || '');
+            if (newUrl === null) return;
+            const newCover = prompt('URL обложки (картинка):', current.cover || '');
+            if (newCover === null) return;
+
+            current.title = newTitle.trim() || current.title;
+            current.url = newUrl.trim() || current.url;
+            current.cover = newCover.trim() || current.cover;
+
+            profile.audio[index] = current;
+            saveProfile(profile);
+            renderAudioList();
+        });
+
+        return div;
+    }
+
+    function renderAudioList() {
+        audioList.innerHTML = '';
+        const list = profile.audio || [];
+        list.forEach((track, index) => {
+            const el = createAudioItemElement(track, index);
+            audioList.appendChild(el);
+        });
+    }
+
+    addAudioBtn.addEventListener('click', () => {
+        const title = prompt('Введите название нового аудио:', 'Новый трек');
+        if (!title || !title.trim()) return;
+
+        const url = prompt('Вставь URL аудио (mp3):', '');
+        if (url === null || !url.trim()) return;
+
+        const cover = prompt('Вставь URL обложки (картинка):', '');
+        if (cover === null) return;
+
+        const track = {
+            title: title.trim(),
+            url: url.trim(),
+            cover: cover.trim(),
+            active: false
+        };
+        profile.audio = profile.audio || [];
+        profile.audio.push(track);
+
+        saveProfile(profile);
+        renderAudioList();
+    });
 </script>
 </body>
 </html>
