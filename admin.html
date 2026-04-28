@@ -337,10 +337,11 @@
             border-color: #666;
         }
 
+        /* удаление чуть выше/правее карточки */
         .audio-delete-btn {
             position: absolute;
-            top: 8px;
-            right: 8px;
+            top: -10px;
+            right: -10px;
             width: 22px;
             height: 22px;
             border-radius: 50%;
@@ -499,6 +500,7 @@
             color: #eee;
             font-size: 0.8rem;
             cursor: pointer;
+            transition: transform 0.1s ease, background 0.15s ease, box-shadow 0.15s ease;
         }
         .btn-small.primary {
             background: #5b5b5b;
@@ -506,6 +508,10 @@
         }
         .btn-small.primary:hover {
             background: #6c6c6c;
+        }
+        .btn-small:active {
+            transform: scale(0.96);
+            box-shadow: 0 0 0 2px rgba(255,255,255,0.08);
         }
 
         .global-actions {
@@ -525,13 +531,57 @@
             color: #eee;
             font-size: 0.8rem;
             cursor: pointer;
+            transition: transform 0.1s ease, background 0.15s ease, box-shadow 0.15s ease;
         }
         .global-actions button.primary {
             background: #5b5b5b;
             border-color: #5b5b5b;
         }
+        .global-actions button:hover {
+            background: #2a2a2a;
+        }
         .global-actions button.primary:hover {
             background: #6c6c6c;
+        }
+        .global-actions button:active {
+            transform: scale(0.96);
+            box-shadow: 0 0 0 2px rgba(255,255,255,0.08);
+        }
+
+        /* Toast уведомление */
+        .toast {
+            position: fixed;
+            left: 50%;
+            bottom: 24px;
+            transform: translateX(-50%) translateY(20px);
+            padding: 10px 16px;
+            border-radius: 999px;
+            background: rgba(20,20,20,0.95);
+            border: 1px solid #444;
+            color: #eee;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            z-index: 2000;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+            pointer-events: auto;
+        }
+        .toast-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #3a7a3a;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
         }
 
         @media (max-width: 768px) {
@@ -543,6 +593,7 @@
 </head>
 <body>
 <div class="customize-container">
+    <!-- Загрузка медиа -->
     <div class="settings-section">
         <span class="section-title">Загрузка медиа</span>
         <div class="settings-card">
@@ -596,6 +647,7 @@
         </div>
     </div>
 
+    <!-- Общие настройки -->
     <div class="settings-section">
         <span class="section-title">Общие настройки</span>
         <div class="settings-card">
@@ -642,6 +694,7 @@
         </div>
     </div>
 
+    <!-- Настройка цветов -->
     <div class="settings-section">
         <span class="section-title">Настройка цветов</span>
         <div class="settings-card">
@@ -698,6 +751,7 @@
         </div>
     </div>
 
+    <!-- Другие настройки -->
     <div class="settings-section">
         <span class="section-title">Другие настройки</span>
         <div class="settings-card">
@@ -752,6 +806,7 @@
         </div>
     </div>
 
+    <!-- Глобальные кнопки сохранения профиля -->
     <div class="global-actions">
         <button id="resetProfileBtn">Сбросить</button>
         <button id="saveDefaultBtn">Сохранить как дефолт</button>
@@ -759,6 +814,13 @@
     </div>
 </div>
 
+<!-- Toast уведомление -->
+<div id="toast" class="toast">
+    <div class="toast-icon">✓</div>
+    <span id="toastText">Настройки сохранены</span>
+</div>
+
+<!-- Модал менеджера аудио -->
 <div id="audioManagerModal" class="modal-overlay">
     <div class="audio-manager-modal">
         <div class="modal-header">
@@ -795,6 +857,7 @@
     </div>
 </div>
 
+<!-- Модалка редактирования трека -->
 <div id="editAudioOverlay" class="modal-overlay">
     <div class="edit-audio-modal">
         <div class="edit-audio-modal-header">
@@ -956,7 +1019,20 @@
     const cancelEditBtn = document.getElementById('cancelEditBtn');
     const saveEditBtn = document.getElementById('saveEditBtn');
 
+    const toast = document.getElementById('toast');
+    const toastText = document.getElementById('toastText');
+
     let editingIndex = null;
+    let toastTimeout = null;
+
+    function showToast(message) {
+        toastText.textContent = message;
+        toast.classList.add('show');
+        if (toastTimeout) clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => {
+            toast.classList.remove('show');
+        }, 2200);
+    } // [web:290]
 
     function applyProfileToUI() {
         displayNameInput.value = profile.displayName;
@@ -1099,15 +1175,15 @@
         const coverUrl = track.cover || 'https://via.placeholder.com/48/2a2a2a/ffffff?text=🎵';
 
         div.innerHTML = `
+            <button class="audio-delete-btn" title="Удалить трек">
+                <span>×</span>
+            </button>
             <div class="audio-cover-small" style="background-image: url('${coverUrl}');"></div>
             <div class="audio-info">
                 <div class="audio-title">${escapeHtml(track.title || 'Без названия')}</div>
                 ${track.active ? '<span class="audio-badge">Активно</span>' : ''}
             </div>
             <button class="edit-audio-btn">Редактировать</button>
-            <button class="audio-delete-btn" title="Удалить трек">
-                <span>×</span>
-            </button>
         `;
 
         div.addEventListener('click', () => {
@@ -1132,7 +1208,7 @@
         });
 
         return div;
-    }
+    } // [web:291]
 
     function renderAudioList() {
         audioList.innerHTML = '';
@@ -1229,11 +1305,13 @@
     saveProfileBtn.addEventListener('click', () => {
         collectProfileFromUI();
         saveProfile(PROFILE_KEY, profile);
+        showToast('Настройки успешно сохранены в профиль');
     });
 
     saveDefaultBtn.addEventListener('click', () => {
         collectProfileFromUI();
         saveProfile(PROFILE_DEFAULT_KEY, profile);
+        showToast('Настройки сохранены как дефолт');
     });
 
     resetProfileBtn.addEventListener('click', () => {
@@ -1242,6 +1320,7 @@
         renderAudioList();
         saveProfile(PROFILE_KEY, profile);
         localStorage.removeItem(PROFILE_DEFAULT_KEY);
+        showToast('Настройки сброшены до дефолтных');
     });
 
     applyProfileToUI();
