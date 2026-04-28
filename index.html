@@ -516,7 +516,7 @@
 
     const track = playlist[currentTrack];
     audio = new Audio(track.url);
-    audio.volume = currentVolume;
+    audio.volume = currentVolume; // стартовая громкость 0.5 [web:14]
 
     const playPauseBtn = document.getElementById('playPauseBtn');
     const prevBtn = document.getElementById('prevBtn');
@@ -572,10 +572,10 @@
       playPauseBtn.addEventListener('click', () => {
         if (isPlaying) {
           audio.pause();
-          playPauseBtn.innerHTML = '&#9654;';
+          playPauseBtn.innerHTML = '&#9654;'; // ▶
         } else {
-          audio.play();
-          playPauseBtn.innerHTML = '&#10074;&#10074;';
+          audio.play();                        // старт по клику [web:21]
+          playPauseBtn.innerHTML = '&#10074;&#10074;'; // ⏸
         }
         isPlaying = !isPlaying;
       });
@@ -626,13 +626,7 @@
       });
     }
 
-    // Автоплей сразу при инициализации
-    audio.play().catch(() => {
-      // Если браузер не разрешил — включим при первом клике
-      document.body.addEventListener('click', () => {
-        audio.play().catch(() => {});
-      }, { once: true });
-    });
+    // ВАЖНО: никаких audio.play() тут — только кнопка Play
   }
 
   renderAudioPlayer();
