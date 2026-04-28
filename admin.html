@@ -153,14 +153,6 @@
       align-items: center;
       gap: 10px;
     }
-    .track-top-right label {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      margin: 0;
-      font-size: 11px;
-      opacity: 0.8;
-    }
     .track button.small {
       padding: 4px 10px;
       font-size: 11px;
@@ -188,7 +180,7 @@
 <div class="wrap">
   <h1>Админка Lolekx-card</h1>
   <div class="subtitle">
-    Настройка профиля, внешки и музыки. В «папке» аудио можно держать несколько треков, добавлять/удалять и выбирать дефолтный.
+    Настройка профиля, внешки и музыки. В «папке» аудио можно держать несколько треков, добавлять/удалять.
   </div>
 
   <!-- Профиль -->
@@ -293,7 +285,6 @@
     <legend>Музыка (папка треков)</legend>
     <div class="small-note">
       Можно добавить несколько треков. Каждый трек: название, аудио (файл или URL), обложка (файл или URL).
-      Один трек можно пометить как выбранный по умолчанию.
     </div>
 
     <div class="tracks-header">
@@ -331,11 +322,11 @@
     monochrome: true,
     animatedTitle: true,
     audio: [
-      { title: "Durnojj Vkus - Plastinki", selected: true,
+      { title: "Durnojj Vkus - Plastinki",
         url: "https://r2.guns.lol/e2040c07-063d-4f8d-bf4a-4a784e5cb3f2.mp3",
         cover: "https://r2.guns.lol/8b57c2d3-3cd2-4915-ad39-431819946a45.webp"
       },
-      { title: "Kino - Spokojjnaya Noch", selected: false,
+      { title: "Kino - Spokojjnaya Noch",
         url: "https://r2.guns.lol/ef254576-8efc-4601-a39a-025acd7f50af.mp3",
         cover: "https://r2.guns.lol/998a3ed5-4b5d-41c0-bdbe-c3ce107fc6b0.webp"
       }
@@ -360,7 +351,7 @@
   }
 
   function saveProfile(profile) {
-    localStorage.setItem(PROFILE_KEY, JSON.stringify(profile)); // [web:188]
+    localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
   }
 
   const statusEl = document.getElementById('status');
@@ -378,7 +369,7 @@
   // File -> dataURL
   function fileToDataURL(file) {
     return new Promise((resolve, reject) => {
-      const reader = new FileReader(); // [web:175]
+      const reader = new FileReader();
       reader.onload = () => resolve(reader.result);
       reader.onerror = reject;
       reader.readAsDataURL(file);
@@ -402,10 +393,6 @@
           <div>${track.title ? track.title : 'Без названия'}</div>
         </div>
         <div class="track-top-right">
-          <label>
-            <input type="radio" name="selectedTrack" value="${index}" ${track.selected ? 'checked' : ''}>
-            по умолчанию
-          </label>
           <button type="button" class="small remove-track-btn">Удалить</button>
         </div>
       </div>
@@ -443,22 +430,6 @@
     });
   }
 
-  function getTracksFromDOM() {
-    const blocks = Array.from(tracksListEl.querySelectorAll('.track'));
-    return blocks.map((block, i) => {
-      const title = block.querySelector('.track-title').value.trim();
-      const urlField = block.querySelector('.track-url').value.trim();
-      const coverField = block.querySelector('.track-cover').value.trim();
-      const radio = block.querySelector('input[type="radio"]');
-      return {
-        title: title || `Track ${i + 1}`,
-        url: urlField,
-        cover: coverField,
-        selected: radio.checked
-      };
-    });
-  }
-
   function attachTrackHandlers() {
     tracksListEl.addEventListener('click', (e) => {
       const btn = e.target;
@@ -472,28 +443,10 @@
           el.dataset.index = i;
           const idxBadge = el.querySelector('.track-index');
           if (idxBadge) idxBadge.textContent = '#' + (i + 1);
-          const radio = el.querySelector('input[type="radio"]');
-          if (radio) radio.value = i;
         });
-
-        const radios = Array.from(tracksListEl.querySelectorAll('input[name="selectedTrack"]'));
-        if (radios.length && !radios.some(r => r.checked)) {
-          radios[0].checked = true;
-        }
       }
     });
   }
-
-  addTrackBtn.addEventListener('click', () => {
-    const currentTracks = getTracksFromDOM();
-    currentTracks.push({
-      title: '',
-      url: '',
-      cover: '',
-      selected: currentTracks.length === 0
-    });
-    renderTracks(currentTracks);
-  });
 
   // ===== Профиль =====
 
@@ -577,14 +530,13 @@
       const title = block.querySelector('.track-title').value.trim();
       let url = block.querySelector('.track-url').value.trim();
       let cover = block.querySelector('.track-cover').value.trim();
-      const radio = block.querySelector('input[type="radio"]');
 
       const audioFileInput = block.querySelector('.track-audio-file');
       const coverFileInput = block.querySelector('.track-cover-file');
 
       if (audioFileInput.files && audioFileInput.files[0]) {
         try {
-          url = await fileToDataURL(audioFileInput.files[0]); // [web:175]
+          url = await fileToDataURL(audioFileInput.files[0]);
         } catch (e) {
           console.error('Ошибка чтения аудио-файла', e);
         }
@@ -592,7 +544,7 @@
 
       if (coverFileInput.files && coverFileInput.files[0]) {
         try {
-          cover = await fileToDataURL(coverFileInput.files[0]); // [web:180]
+          cover = await fileToDataURL(coverFileInput.files[0]);
         } catch (e) {
           console.error('Ошибка чтения обложки', e);
         }
@@ -603,19 +555,11 @@
       audio.push({
         title: title || `Track ${i + 1}`,
         url,
-        cover,
-        selected: radio.checked
+        cover
       });
     }
 
-    if (!audio.length) {
-      profile.audio = defaultProfile.audio;
-    } else {
-      if (!audio.some(t => t.selected)) {
-        audio[0].selected = true;
-      }
-      profile.audio = audio;
-    }
+    profile.audio = audio.length ? audio : defaultProfile.audio;
 
     return profile;
   }
