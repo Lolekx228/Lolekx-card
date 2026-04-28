@@ -534,9 +534,15 @@
 
       <div class="actions-row">
         <span id="statusLabel" class="status-label"></span>
+
         <button class="btn btn-secondary" type="button" id="resetBtn">
           Сбросить к дефолту
         </button>
+
+        <button class="btn btn-secondary" type="button" id="saveAsDefaultBtn">
+          Сохранить как дефолт
+        </button>
+
         <button class="btn btn-primary" type="button" id="saveBtn">
           <span>Сохранить профиль</span>
         </button>
@@ -548,6 +554,7 @@
 
 <script>
   const PROFILE_KEY = 'Lolekx228_profile';
+  const PROFILE_DEFAULT_KEY = 'Lolekx228_profile_default';
 
   const defaultProfile = {
     displayName: "Lolekx228",
@@ -582,9 +589,9 @@
     avatarUrl: "https://r2.guns.lol/a90d9caf-a563-4b08-a030-1febdba3397e.webp"
   };
 
-  function loadProfile() {
+  function loadDefaultProfile() {
     try {
-      const raw = localStorage.getItem(PROFILE_KEY);
+      const raw = localStorage.getItem(PROFILE_DEFAULT_KEY);
       if (!raw) return defaultProfile;
       const parsed = JSON.parse(raw);
       return { ...defaultProfile, ...parsed };
@@ -593,8 +600,19 @@
     }
   }
 
+  function loadProfile() {
+    try {
+      const raw = localStorage.getItem(PROFILE_KEY);
+      if (!raw) return loadDefaultProfile();
+      const parsed = JSON.parse(raw);
+      return { ...loadDefaultProfile(), ...parsed };
+    } catch {
+      return loadDefaultProfile();
+    }
+  }
+
   function saveProfile(profile) {
-    localStorage.setItem(PROFILE_KEY, JSON.stringify(profile)); // [web:51]
+    localStorage.setItem(PROFILE_KEY, JSON.stringify(profile)); // [web:55]
   }
 
   function fileToDataURL(file) {
@@ -663,6 +681,7 @@
 
   const saveBtn = document.getElementById('saveBtn');
   const resetBtn = document.getElementById('resetBtn');
+  const saveAsDefaultBtn = document.getElementById('saveAsDefaultBtn');
 
   function hexFromAny(color) {
     return color && color.startsWith('#') ? color : '#ffffff';
@@ -810,11 +829,57 @@
 
   resetBtn.addEventListener('click', () => {
     if (!confirm('Сбросить профиль к дефолтным значениям?')) return;
-    saveProfile(defaultProfile);
-    profile = defaultProfile;
+    const currentDefault = loadDefaultProfile();
+    saveProfile(currentDefault);
+    profile = currentDefault;
     fillFormFromProfile();
     setStatus('Профиль сброшен к дефолту.', 'ok');
   });
+
+  if (saveAsDefaultBtn) {
+    saveAsDefaultBtn.addEventListener('click', () => {
+      try {
+        const updated = { ...profile };
+
+        updated.description = descriptionInput.value || defaultProfile.description;
+        updated.displayName = displayNameInput.value || defaultProfile.displayName;
+        updated.location = locationInput.value || defaultProfile.location;
+
+        const socials = [];
+        if (youtubeInput.value.trim()) socials.push({ name: 'youtube', url: youtubeInput.value.trim() });
+        if (discordInput.value.trim()) socials.push({ name: 'discord', url: discordInput.value.trim() });
+        updated.socials = socials.length ? socials : defaultProfile.socials;
+
+        updated.opacity = Math.max(0.5, Math.min(1, parseFloat(opacitySlider.value) || defaultProfile.opacity));
+        updated.blur = Math.max(0, Math.min(30, parseFloat(blurSlider.value) || defaultProfile.blur));
+
+        updated.accentColor = accentInput.value || defaultProfile.accentColor;
+        updated.textColor = textInput.value || defaultProfile.textColor;
+        updated.bgColor = bgColorInput.value || defaultProfile.bgColor;
+
+        updated.gradientEnabled = !disableGradientCheckbox.checked;
+        updated.gradient1 = gradient1Input.value || defaultProfile.gradient1;
+        updated.gradient2 = gradient2Input.value || defaultProfile.gradient2;
+
+        updated.monochrome = monochromeCheckbox.checked;
+        updated.animatedTitle = animatedTitleCheckbox.checked;
+
+        updated.backgroundUrl = profile.backgroundUrl || defaultProfile.backgroundUrl;
+        updated.avatarUrl = profile.avatarUrl || defaultProfile.avatarUrl;
+
+        // сохраняем как новый дефолт
+        localStorage.setItem(PROFILE_DEFAULT_KEY, JSON.stringify(updated)); // [web:55]
+        saveProfile(updated);
+        profile = updated;
+        fillFormFromProfile();
+
+        setStatus('Текущие настройки сохранены как дефолт.', 'ok');
+      } catch (e) {
+        console.error(e);
+        setStatus('Ошибка при сохранении дефолта', 'err');
+      }
+    });
+  }
 </script>
 </body>
 </html>
