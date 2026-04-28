@@ -302,11 +302,14 @@
     <div class="settings-card">
       <div class="media-row-horizontal">
 
-        <!-- Фон -->
-        <div class="media-item" id="bgMediaItem">
+        <!-- Фон (заблокирован до нажатия ✕) -->
+        <div class="media-item" id="bgMediaItem" data-locked="true">
           <div class="media-label">Фон</div>
           <div class="media-content" id="bgMediaBtn">
-            <div class="file-badge"><span>.WEBP / URL</span><span>✕</span></div>
+            <div class="file-badge">
+              <span>.WEBP / URL</span>
+              <span id="bgResetBtn" style="cursor:pointer;">✕</span>
+            </div>
             <img class="media-preview" id="bgPreview" src="" alt="фон">
           </div>
           <input type="file" accept="image/*" id="bgFileInput" class="hidden-file-input">
@@ -327,11 +330,14 @@
           </div>
         </div>
 
-        <!-- Аватар -->
-        <div class="media-item" id="avatarMediaItem">
+        <!-- Аватар (заблокирован до нажатия ✕) -->
+        <div class="media-item" id="avatarMediaItem" data-locked="true">
           <div class="media-label">Аватар профиля</div>
           <div class="media-content" id="avatarMediaBtn">
-            <div class="file-badge"><span>.WEBP / URL</span><span>✕</span></div>
+            <div class="file-badge">
+              <span>.WEBP / URL</span>
+              <span id="avatarResetBtn" style="cursor:pointer;">✕</span>
+            </div>
             <img class="media-preview" id="avatarPreview" src="" alt="аватар">
           </div>
           <input type="file" accept="image/*" id="avatarFileInput" class="hidden-file-input">
@@ -689,10 +695,14 @@
   const bgPreview = document.getElementById('bgPreview');
   const bgMediaBtn = document.getElementById('bgMediaBtn');
   const bgFileInput = document.getElementById('bgFileInput');
+  const bgMediaItem = document.getElementById('bgMediaItem');
+  const bgResetBtn = document.getElementById('bgResetBtn');
 
   const avatarPreview = document.getElementById('avatarPreview');
   const avatarMediaBtn = document.getElementById('avatarMediaBtn');
   const avatarFileInput = document.getElementById('avatarFileInput');
+  const avatarMediaItem = document.getElementById('avatarMediaItem');
+  const avatarResetBtn = document.getElementById('avatarResetBtn');
 
   const audioSummary = document.getElementById('audioSummary');
   const audioManagerBtn = document.getElementById('audioManagerBtn');
@@ -745,6 +755,10 @@
     bgPreview.src = profile.backgroundUrl || '';
     avatarPreview.src = profile.avatarUrl || '';
 
+    // при загрузке считаем, что фон/ава "зафиксированы"
+    bgMediaItem.dataset.locked = 'true';
+    avatarMediaItem.dataset.locked = 'true';
+
     const audioLen = (profile.audio || []).length;
     audioSummary.textContent = audioLen
       ? `Открыть менеджер (${audioLen} треков)`
@@ -769,9 +783,26 @@
     gradient2Swatch.style.background = gradient2Input.value || '#933800';
   });
 
+  // Блокировка: фон
   bgMediaBtn.addEventListener('click', () => {
+    const locked = bgMediaItem.dataset.locked === 'true';
+    if (locked) {
+      alert('Чтобы сменить фон, сначала нажми на крестик (сбросить текущую картинку).');
+      return;
+    }
     bgFileInput.click();
   });
+
+  bgResetBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (!confirm('Сбросить фон и разрешить выбрать новый файл?')) return;
+
+    bgMediaItem.dataset.locked = 'false';
+    bgPreview.src = '';
+    profile.backgroundUrl = '';
+    setStatus('Фон сброшен. Теперь можешь выбрать новый файл.', 'ok');
+  });
+
   bgFileInput.addEventListener('change', async () => {
     if (!bgFileInput.files || !bgFileInput.files[0]) return;
     const file = bgFileInput.files[0];
@@ -785,9 +816,26 @@
     }
   });
 
+  // Блокировка: аватар
   avatarMediaBtn.addEventListener('click', () => {
+    const locked = avatarMediaItem.dataset.locked === 'true';
+    if (locked) {
+      alert('Чтобы сменить аватар, сначала нажми на крестик (сбросить текущую картинку).');
+      return;
+    }
     avatarFileInput.click();
   });
+
+  avatarResetBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (!confirm('Сбросить аватар и разрешить выбрать новый файл?')) return;
+
+    avatarMediaItem.dataset.locked = 'false';
+    avatarPreview.src = '';
+    profile.avatarUrl = '';
+    setStatus('Аватар сброшен. Теперь можешь выбрать новый файл.', 'ok');
+  });
+
   avatarFileInput.addEventListener('change', async () => {
     if (!avatarFileInput.files || !avatarFileInput.files[0]) return;
     const file = avatarFileInput.files[0];
