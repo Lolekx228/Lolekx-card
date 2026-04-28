@@ -124,6 +124,7 @@
       background: rgba(0,0,0,0.6);
       padding: 3px 10px;
       border-radius: 999px;
+      position: relative;
     }
 
     .location-icon {
@@ -141,6 +142,41 @@
     .location-text {
       display: inline-block;
       line-height: 1.2;
+    }
+
+    /* тултип с полным названием */
+    .location-tooltip {
+      position: absolute;
+      left: 50%;
+      bottom: 120%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.85);
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      border: 1px solid rgba(255,255,255,0.15);
+      z-index: 10;
+    }
+
+    .location-tooltip::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 5px;
+      border-style: solid;
+      border-color: rgba(0,0,0,0.85) transparent transparent transparent;
+    }
+
+    .location:hover .location-tooltip {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-2px);
     }
 
     .social-links {
@@ -348,6 +384,7 @@
         </svg>
       </span>
       <span class="location-text"></span>
+      <span class="location-tooltip" id="locationTooltip"></span>
     </div>
   </div>
 
@@ -365,6 +402,8 @@
   const defaultProfile = {
     displayName: "Lolekx228",
     description: "Hiii Me: Animation artist, Voice actor, Programmer, Web Developer, Game Developer, 3D modeler",
+    locationShort: "Україна, ДНР, Донецьк",
+    locationFull: "Україна, Донецкая Народная Республика, город Донецьк",
     location: "Україна, ДНР, Донецьк",
     accentColor: "#5b5b5b",
     textColor: "#ffffff",
@@ -426,6 +465,7 @@
   const descriptionEl = document.getElementById('description');
   const locationEl = document.getElementById('location');
   const locationTextEl = locationEl.querySelector('.location-text');
+  const locationTooltipEl = document.getElementById('locationTooltip');
   const socialLinksEl = document.getElementById('socialLinks');
 
   function applyProfile() {
@@ -447,7 +487,15 @@
 
     usernameEl.textContent = profile.displayName;
     descriptionEl.textContent = profile.description;
-    locationTextEl.textContent = profile.location;
+
+    const locShort = profile.locationShort || profile.location || "";
+    const locFull  = profile.locationFull || profile.location || locShort;
+
+    locationTextEl.textContent = locShort;
+    if (locationTooltipEl) {
+      locationTooltipEl.textContent = locFull;
+    }
+
     profileCard.style.color = profile.textColor;
 
     avatar.src = profile.avatarUrl;
