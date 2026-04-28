@@ -296,7 +296,7 @@
 <body>
 <div class="customize-container">
 
-  <!-- ============== ЗАГРУЗКА МЕДИА ============== -->
+  <!-- Загрузка медиа -->
   <div class="settings-section">
     <span class="section-title">Загрузка медиа</span>
     <div class="settings-card">
@@ -312,20 +312,22 @@
           <input type="file" accept="image/*" id="bgFileInput" class="hidden-file-input">
         </div>
 
-        <!-- Аудио (менеджер) -->
+        <!-- Аудио -->
         <div class="media-item" id="audioMediaItem">
           <div class="media-label">Аудио</div>
           <div class="media-content" id="audioManagerBtn">
             <div class="audio-placeholder">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
-                <path d="M14 22v-3.075l5.525-5.5q.225-.225.5-.325t.55-.1q.3 0 .575.113t.5.337l.925.925q.2.225.313.5t.112.55t-.1.563t-.325.512l-5.5 5.5zm6.575-5.6l.925-.975l-.925-.925l-.95.95zM4 20q-.825 0-1.412-.587T2 18V6q0-.825.588-1.412T4 4h6l2 2h8q.825 0 1.413.588T22 8v3.3q-.35-.15-.725-.225t-.75-.075q-.7 0-1.312.25T18.1 12L12 18.1V20z"/>
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                   viewBox="0 0 24 24" fill="white">
+                <path
+                  d="M14 22v-3.075l5.525-5.5q.225-.225.5-.325t.55-.1q.3 0 .575.113t.5.337l.925.925q.2.225.313.5t.112.55t-.1.563t-.325.512l-5.5 5.5zm6.575-5.6l.925-.975l-.925-.925l-.95.95zM4 20q-.825 0-1.412-.587T2 18V6q0-.825.588-1.412T4 4h6l2 2h8q.825 0 1.413.588T22 8v3.3q-.35-.15-.725-.225t-.75-.075q-.7 0-1.312.25T18.1 12L12 18.1V20z"/>
               </svg>
               <span id="audioSummary">Открыть менеджер (0 треков)</span>
             </div>
           </div>
         </div>
 
-        <!-- Аватар профиля -->
+        <!-- Аватар -->
         <div class="media-item" id="avatarMediaItem">
           <div class="media-label">Аватар профиля</div>
           <div class="media-content" id="avatarMediaBtn">
@@ -335,13 +337,15 @@
           <input type="file" accept="image/*" id="avatarFileInput" class="hidden-file-input">
         </div>
 
-        <!-- Пользовательский курсор (пока только визуал, без логики) -->
+        <!-- Курсор (визуал) -->
         <div class="media-item">
           <div class="media-label">Пользовательский курсор</div>
           <div class="media-content">
             <div class="cursor-placeholder">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
-                <path d="M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21zm2-4h10q.3 0 .45-.275t-.05-.525l-2.75-3.675q-.15-.2-.4-.2t-.4.2L11.25 16L9.4 13.525q-.15-.2-.4-.2t-.4.2l-2 2.675q-.2.25-.05.525T7 17"/>
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                   viewBox="0 0 24 24" fill="white">
+                <path
+                  d="M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21zm2-4h10q.3 0 .45-.275t-.05-.525l-2.75-3.675q-.15-.2-.4-.2t-.4.2L11.25 16L9.4 13.525q-.15-.2-.4-.2t-.4.2l-2 2.675q-.2.25-.05.525T7 17"/>
               </svg>
               <span>Загрузить файл</span>
             </div>
@@ -352,21 +356,20 @@
     </div>
   </div>
 
-  <!-- ============== ОБЩИЕ НАСТРОЙКИ ============== -->
+  <!-- Общие настройки -->
   <div class="settings-section">
     <span class="section-title">Общие настройки</span>
     <div class="settings-card">
       <div class="settings-grid">
 
-        <!-- Описание -->
         <div class="setting-item">
           <div class="setting-label">Описание</div>
           <div class="input-wrapper">
-            <input type="text" id="descriptionInput" placeholder="Описание профиля">
+            <input type="text" id="descriptionInput"
+                   placeholder="Описание профиля">
           </div>
         </div>
 
-        <!-- Ник -->
         <div class="setting-item">
           <div class="setting-label">Ник / отображаемое имя</div>
           <div class="input-wrapper">
@@ -374,13 +377,13 @@
           </div>
         </div>
 
-        <!-- Соцсети -->
         <div class="two-columns">
           <div class="settings-column">
             <div class="setting-item">
               <div class="setting-label">YouTube</div>
               <div class="input-wrapper">
-                <input type="text" id="youtubeInput" placeholder="https://youtube.com/@...">
+                <input type="text" id="youtubeInput"
+                       placeholder="https://youtube.com/@...">
               </div>
             </div>
           </div>
@@ -388,33 +391,35 @@
             <div class="setting-item">
               <div class="setting-label">Discord</div>
               <div class="input-wrapper">
-                <input type="text" id="discordInput" placeholder="https://discord.com/users/...">
+                <input type="text" id="discordInput"
+                       placeholder="https://discord.com/users/...">
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Ползунки -->
         <div class="two-columns">
           <div class="settings-column">
             <div class="setting-label">Прозрачность профиля</div>
             <div class="slider-container">
-              <input type="range" min="0.5" max="1" step="0.01" value="0.9" class="slider" id="opacitySlider">
+              <input type="range" min="0.5" max="1" step="0.01" value="0.9"
+                     class="slider" id="opacitySlider">
             </div>
           </div>
           <div class="settings-column">
             <div class="setting-label">Размытие фона</div>
             <div class="slider-container">
-              <input type="range" min="0" max="30" step="1" value="10" class="slider" id="blurSlider">
+              <input type="range" min="0" max="30" step="1" value="10"
+                     class="slider" id="blurSlider">
             </div>
           </div>
         </div>
 
-        <!-- Местоположение -->
         <div class="setting-item">
           <div class="setting-label">Местоположение</div>
           <div class="input-wrapper">
-            <input type="text" id="locationInput" placeholder="Страна, город">
+            <input type="text" id="locationInput"
+                   placeholder="Страна, город">
           </div>
         </div>
 
@@ -422,7 +427,7 @@
     </div>
   </div>
 
-  <!-- ============== НАСТРОЙКА ЦВЕТОВ ============== -->
+  <!-- Настройка цветов -->
   <div class="settings-section">
     <span class="section-title">Настройка цветов</span>
     <div class="settings-card">
@@ -452,7 +457,8 @@
           <div class="setting-label">Цвет иконок</div>
           <div class="color-picker-row">
             <div class="color-swatch" id="iconColorSwatch"></div>
-            <input class="color-input" id="iconColorInput" value="#ffffff" disabled>
+            <input class="color-input" id="iconColorInput" value="#ffffff"
+                   disabled>
           </div>
         </div>
       </div>
@@ -461,7 +467,8 @@
 
       <div class="checkbox-item">
         <span class="checkbox-label">Выключить градиент профиля</span>
-        <input type="checkbox" class="custom-checkbox" id="disableGradientCheckbox">
+        <input type="checkbox" class="custom-checkbox"
+               id="disableGradientCheckbox">
       </div>
 
       <div class="two-columns">
@@ -484,7 +491,7 @@
     </div>
   </div>
 
-  <!-- ============== ДРУГИЕ НАСТРОЙКИ ============== -->
+  <!-- Другие настройки -->
   <div class="settings-section">
     <span class="section-title">Другие настройки</span>
     <div class="settings-card">
@@ -492,36 +499,44 @@
         <div class="settings-column">
           <div class="checkbox-item">
             <span class="checkbox-label">Монохромные иконки</span>
-            <input type="checkbox" class="custom-checkbox" id="monochromeCheckbox">
+            <input type="checkbox" class="custom-checkbox"
+                   id="monochromeCheckbox">
           </div>
           <div class="checkbox-item">
             <span class="checkbox-label">Анимированный заголовок (ник)</span>
-            <input type="checkbox" class="custom-checkbox" id="animatedTitleCheckbox">
+            <input type="checkbox" class="custom-checkbox"
+                   id="animatedTitleCheckbox">
           </div>
           <div class="checkbox-item">
             <span class="checkbox-label">Поменять цвета блоков (визуал)</span>
-            <input type="checkbox" class="custom-checkbox" id="swapBlocksCheckbox">
+            <input type="checkbox" class="custom-checkbox"
+                   id="swapBlocksCheckbox">
           </div>
         </div>
         <div class="settings-column">
           <div class="checkbox-item">
             <span class="checkbox-label">Регулятор громкости</span>
-            <input type="checkbox" class="custom-checkbox" id="volumeControlCheckbox" checked>
+            <input type="checkbox" class="custom-checkbox"
+                   id="volumeControlCheckbox" checked>
           </div>
           <div class="checkbox-item">
             <span class="checkbox-label">Использовать аватар Discord</span>
-            <input type="checkbox" class="custom-checkbox" id="discordAvatarCheckbox">
+            <input type="checkbox" class="custom-checkbox"
+                   id="discordAvatarCheckbox">
           </div>
           <div class="checkbox-item">
             <span class="checkbox-label">Декор аватара Discord</span>
-            <input type="checkbox" class="custom-checkbox" id="discordAvatarDecorCheckbox" checked>
+            <input type="checkbox" class="custom-checkbox"
+                   id="discordAvatarDecorCheckbox" checked>
           </div>
         </div>
       </div>
 
       <div class="actions-row">
         <span id="statusLabel" class="status-label"></span>
-        <button class="btn btn-secondary" type="button" id="resetBtn">Сбросить к дефолту</button>
+        <button class="btn btn-secondary" type="button" id="resetBtn">
+          Сбросить к дефолту
+        </button>
         <button class="btn btn-primary" type="button" id="saveBtn">
           <span>Сохранить профиль</span>
         </button>
@@ -531,7 +546,6 @@
 
 </div>
 
-<!-- ============== JS ЛОГИКА ============== -->
 <script>
   const PROFILE_KEY = 'Lolekx228_profile';
 
@@ -580,7 +594,7 @@
   }
 
   function saveProfile(profile) {
-    localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+    localStorage.setItem(PROFILE_KEY, JSON.stringify(profile)); // [web:51]
   }
 
   function fileToDataURL(file) {
@@ -605,7 +619,6 @@
 
   let profile = loadProfile();
 
-  // DOM refs
   const descriptionInput = document.getElementById('descriptionInput');
   const displayNameInput = document.getElementById('displayNameInput');
   const locationInput = document.getElementById('locationInput');
