@@ -2,307 +2,536 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Админка Lolekx-card</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lolekx's Card Настройки</title>
   <style>
-    :root { color-scheme: dark; }
-    body {
+    * {
       margin: 0;
-      padding: 20px;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #050505;
-      color: #fff;
-    }
-    .wrap { max-width: 880px; margin: 0 auto; }
-    h1 { margin-bottom: 4px; font-size: 24px; }
-    .subtitle {
-      font-size: 13px;
-      opacity: 0.7;
-      margin-bottom: 18px;
-    }
-    fieldset {
-      border: 1px solid #333;
-      border-radius: 10px;
-      padding: 12px 14px 14px;
-      margin-bottom: 14px;
-    }
-    legend {
-      padding: 0 6px;
-      font-size: 13px;
-      opacity: 0.9;
-    }
-    label {
-      display: block;
-      font-size: 13px;
-      margin-bottom: 4px;
-      opacity: 0.9;
-    }
-    input[type="text"],
-    input[type="url"],
-    textarea {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 6px 8px;
-      border-radius: 6px;
-      border: 1px solid #444;
-      background: #111;
-      color: #fff;
-      font-size: 13px;
-      margin-bottom: 8px;
-    }
-    textarea {
-      resize: vertical;
-      min-height: 60px;
-    }
-    .row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .row > .col {
-      flex: 1 1 0;
-      min-width: 140px;
-    }
-    .checkbox-line {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      margin-bottom: 8px;
-    }
-    input[type="color"] {
-      width: 60px;
-      height: 26px;
       padding: 0;
-      border-radius: 4px;
-      border: 1px solid #444;
-      background: #111;
+      box-sizing: border-box;
     }
-    .btn-row {
-      display: flex;
-      gap: 8px;
-      margin-top: 12px;
-      flex-wrap: wrap;
-    }
-    button {
-      padding: 7px 14px;
-      border-radius: 999px;
-      border: 1px solid #444;
-      background: #161616;
-      color: #fff;
-      cursor: pointer;
-      font-size: 13px;
-    }
-    button:hover { background: #202020; }
-    button.primary {
-      border-color: #c4442e;
-      background: #c4442e;
-    }
-    button.primary:hover { background: #d6543c; }
-    .status {
-      margin-top: 8px;
-      font-size: 12px;
-      opacity: 0.8;
-      min-height: 16px;
-    }
-    .status.ok { color: #7fd47f; }
-    .status.err { color: #ff7f7f; }
 
-    /* Аудио «папка» */
-    .tracks-header {
+    body {
+      background: #0a0a0a;
+      font-family: 'Onest', 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: #ffffff;
+      padding: 40px 24px 80px;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
-      font-size: 13px;
+      justify-content: center;
     }
-    .tracks-list {
+
+    .customize-container {
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .settings-section {
+      margin-bottom: 48px;
+    }
+
+    .section-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      margin-bottom: 24px;
+      display: block;
+    }
+
+    .settings-card {
+      background: #111111;
+      border-radius: 28px;
+      padding: 28px 24px;
+      border: 1px solid #2a2a2a;
+    }
+
+    .media-row-horizontal {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: space-between;
+    }
+    .media-item {
+      flex: 1;
+      min-width: 200px;
+      background: #1a1a1a;
+      border-radius: 20px;
+      padding: 16px;
+      text-align: center;
+    }
+    .media-label {
+      font-weight: 500;
+      color: #aaa;
+      margin-bottom: 12px;
+      font-size: 0.85rem;
+    }
+    .media-content {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
     }
-    .track {
-      border-radius: 8px;
-      border: 1px solid #333;
-      padding: 8px;
-      background: #0c0c0c;
-    }
-    .track-top {
+    .file-badge {
       display: flex;
-      justify-content: space-between;
+      gap: 8px;
+      font-size: 0.7rem;
+      color: #888;
+      background: #0a0a0a;
+      padding: 4px 10px;
+      border-radius: 20px;
+      align-items: center;
+    }
+    .file-badge span:nth-child(2) {
+      opacity: 0.7;
+    }
+    .media-preview {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      object-fit: cover;
+    }
+    .audio-placeholder,
+    .cursor-placeholder {
+      display: flex;
+      flex-direction: column;
       align-items: center;
       gap: 8px;
-      margin-bottom: 6px;
-      font-size: 12px;
+      color: white;
+      font-size: 0.75rem;
     }
-    .track-top-left {
+    .audio-placeholder svg,
+    .cursor-placeholder svg {
+      width: 32px;
+      height: 32px;
+    }
+
+    .settings-grid {
       display: flex;
-      align-items: center;
-      gap: 6px;
+      flex-direction: column;
+      gap: 28px;
     }
-    .track-index {
-      font-size: 11px;
-      opacity: 0.7;
-      padding: 2px 6px;
-      border-radius: 999px;
-      background: #151515;
-    }
-    .track-top-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .track button.small {
-      padding: 4px 10px;
-      font-size: 11px;
-      border-radius: 999px;
-    }
-    .file-row {
+    .two-columns {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
+      gap: 40px;
+      justify-content: space-between;
+    }
+    .settings-column {
+      flex: 1;
+      min-width: 240px;
+    }
+    .setting-item {
+      margin-bottom: 24px;
+    }
+    .setting-label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: #ddd;
+    }
+    .input-wrapper {
+      background: #1a1a1a;
+      border-radius: 16px;
+      padding: 12px 16px;
+      display: flex;
       align-items: center;
-      margin-bottom: 4px;
+      gap: 12px;
     }
-    .file-row input[type="file"] {
-      font-size: 11px;
-      max-width: 290px;
+    .input-wrapper input,
+    .input-wrapper select {
+      background: transparent;
+      border: none;
+      color: white;
+      width: 100%;
+      outline: none;
+      font-size: 0.9rem;
     }
-    .small-note {
-      font-size: 11px;
-      opacity: 0.65;
-      margin-bottom: 6px;
+
+    .slider-container {
+      margin-top: 8px;
+    }
+    .slider {
+      width: 100%;
+      height: 6px;
+      background: #333;
+      border-radius: 3px;
+      appearance: none;
+    }
+    .slider::-webkit-slider-thumb {
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      background: #5b5b5b;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .color-picker-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .color-swatch {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      border: 2px solid #fff;
+    }
+    .color-input {
+      background: #1a1a1a;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 16px;
+      color: white;
+      font-family: monospace;
+      flex: 1;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .checkbox-label {
+      color: #ddd;
+    }
+    .custom-checkbox {
+      width: 44px;
+      height: 22px;
+      background: #3a3a3a;
+      border-radius: 22px;
+      appearance: none;
+      cursor: pointer;
+      position: relative;
+    }
+    .custom-checkbox:checked {
+      background: #5b5b5b;
+    }
+    .custom-checkbox:before {
+      content: '';
+      width: 18px;
+      height: 18px;
+      background: white;
+      border-radius: 50%;
+      position: absolute;
+      top: 2px;
+      left: 3px;
+      transition: 0.2s;
+    }
+    .custom-checkbox:checked:before {
+      transform: translateX(20px);
+    }
+
+    hr {
+      border-color: #2a2a2a;
+      margin: 20px 0;
+    }
+
+    .actions-row {
+      margin-top: 24px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: 1px solid #2a2a2a;
+      background: #1a1a1a;
+      color: #fff;
+      padding: 10px 20px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary {
+      background: #c4442e;
+      border-color: #c4442e;
+    }
+    .btn-primary:hover {
+      background: #d6543c;
+    }
+    .btn-secondary:hover {
+      background: #252525;
+    }
+
+    .status-label {
+      font-size: 0.8rem;
+      opacity: 0.8;
+    }
+    .status-label.ok {
+      color: #7fd47f;
+    }
+    .status-label.err {
+      color: #ff7f7f;
+    }
+
+    .hidden-file-input {
+      display: none;
+    }
+
+    @media (max-width: 720px) {
+      body {
+        padding: 24px 12px 64px;
+      }
+      .settings-card {
+        padding: 22px 16px;
+      }
+      .section-title {
+        font-size: 1.5rem;
+      }
     }
   </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>Админка Lolekx-card</h1>
-  <div class="subtitle">
-    Настройка профиля, внешки и музыки. В «папке» аудио можно держать несколько треков, добавлять/удалять.
+<div class="customize-container">
+
+  <!-- ============== ЗАГРУЗКА МЕДИА ============== -->
+  <div class="settings-section">
+    <span class="section-title">Загрузка медиа</span>
+    <div class="settings-card">
+      <div class="media-row-horizontal">
+
+        <!-- Фон -->
+        <div class="media-item" id="bgMediaItem">
+          <div class="media-label">Фон</div>
+          <div class="media-content" id="bgMediaBtn">
+            <div class="file-badge"><span>.WEBP / URL</span><span>✕</span></div>
+            <img class="media-preview" id="bgPreview" src="" alt="фон">
+          </div>
+          <input type="file" accept="image/*" id="bgFileInput" class="hidden-file-input">
+        </div>
+
+        <!-- Аудио (менеджер) -->
+        <div class="media-item" id="audioMediaItem">
+          <div class="media-label">Аудио</div>
+          <div class="media-content" id="audioManagerBtn">
+            <div class="audio-placeholder">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
+                <path d="M14 22v-3.075l5.525-5.5q.225-.225.5-.325t.55-.1q.3 0 .575.113t.5.337l.925.925q.2.225.313.5t.112.55t-.1.563t-.325.512l-5.5 5.5zm6.575-5.6l.925-.975l-.925-.925l-.95.95zM4 20q-.825 0-1.412-.587T2 18V6q0-.825.588-1.412T4 4h6l2 2h8q.825 0 1.413.588T22 8v3.3q-.35-.15-.725-.225t-.75-.075q-.7 0-1.312.25T18.1 12L12 18.1V20z"/>
+              </svg>
+              <span id="audioSummary">Открыть менеджер (0 треков)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Аватар профиля -->
+        <div class="media-item" id="avatarMediaItem">
+          <div class="media-label">Аватар профиля</div>
+          <div class="media-content" id="avatarMediaBtn">
+            <div class="file-badge"><span>.WEBP / URL</span><span>✕</span></div>
+            <img class="media-preview" id="avatarPreview" src="" alt="аватар">
+          </div>
+          <input type="file" accept="image/*" id="avatarFileInput" class="hidden-file-input">
+        </div>
+
+        <!-- Пользовательский курсор (пока только визуал, без логики) -->
+        <div class="media-item">
+          <div class="media-label">Пользовательский курсор</div>
+          <div class="media-content">
+            <div class="cursor-placeholder">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
+                <path d="M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21zm2-4h10q.3 0 .45-.275t-.05-.525l-2.75-3.675q-.15-.2-.4-.2t-.4.2L11.25 16L9.4 13.525q-.15-.2-.4-.2t-.4.2l-2 2.675q-.2.25-.05.525T7 17"/>
+              </svg>
+              <span>Загрузить файл</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
   </div>
 
-  <!-- Профиль -->
-  <fieldset>
-    <legend>Профиль</legend>
-    <label for="displayName">Ник</label>
-    <input type="text" id="displayName" placeholder="@Lolekx228">
+  <!-- ============== ОБЩИЕ НАСТРОЙКИ ============== -->
+  <div class="settings-section">
+    <span class="section-title">Общие настройки</span>
+    <div class="settings-card">
+      <div class="settings-grid">
 
-    <label for="description">Описание</label>
-    <textarea id="description" placeholder="Кто ты, что делаешь и т.п."></textarea>
+        <!-- Описание -->
+        <div class="setting-item">
+          <div class="setting-label">Описание</div>
+          <div class="input-wrapper">
+            <input type="text" id="descriptionInput" placeholder="Описание профиля">
+          </div>
+        </div>
 
-    <label for="location">Локация</label>
-    <input type="text" id="location" placeholder="Страна, город">
-  </fieldset>
+        <!-- Ник -->
+        <div class="setting-item">
+          <div class="setting-label">Ник / отображаемое имя</div>
+          <div class="input-wrapper">
+            <input type="text" id="displayNameInput" placeholder="@Lolekx228">
+          </div>
+        </div>
 
-  <!-- Аватар и фон -->
-  <fieldset>
-    <legend>Аватар и фон</legend>
-    <label for="avatarUrl">Ссылка на аватар (или dataURL)</label>
-    <input type="url" id="avatarUrl" placeholder="https://...">
+        <!-- Соцсети -->
+        <div class="two-columns">
+          <div class="settings-column">
+            <div class="setting-item">
+              <div class="setting-label">YouTube</div>
+              <div class="input-wrapper">
+                <input type="text" id="youtubeInput" placeholder="https://youtube.com/@...">
+              </div>
+            </div>
+          </div>
+          <div class="settings-column">
+            <div class="setting-item">
+              <div class="setting-label">Discord</div>
+              <div class="input-wrapper">
+                <input type="text" id="discordInput" placeholder="https://discord.com/users/...">
+              </div>
+            </div>
+          </div>
+        </div>
 
-    <label for="backgroundUrl">Ссылка на фон (BG, или dataURL)</label>
-    <input type="url" id="backgroundUrl" placeholder="https://...">
-  </fieldset>
+        <!-- Ползунки -->
+        <div class="two-columns">
+          <div class="settings-column">
+            <div class="setting-label">Прозрачность профиля</div>
+            <div class="slider-container">
+              <input type="range" min="0.5" max="1" step="0.01" value="0.9" class="slider" id="opacitySlider">
+            </div>
+          </div>
+          <div class="settings-column">
+            <div class="setting-label">Размытие фона</div>
+            <div class="slider-container">
+              <input type="range" min="0" max="30" step="1" value="10" class="slider" id="blurSlider">
+            </div>
+          </div>
+        </div>
 
-  <!-- Цвета и эффекты -->
-  <fieldset>
-    <legend>Цвета и эффекты</legend>
-    <div class="row">
-      <div class="col">
-        <label for="textColor">Цвет текста</label>
-        <input type="color" id="textColor">
-      </div>
-      <div class="col">
-        <label for="accentColor">Цвет подсветки ника</label>
-        <input type="color" id="accentColor">
-      </div>
-    </div>
+        <!-- Местоположение -->
+        <div class="setting-item">
+          <div class="setting-label">Местоположение</div>
+          <div class="input-wrapper">
+            <input type="text" id="locationInput" placeholder="Страна, город">
+          </div>
+        </div>
 
-    <div class="row">
-      <div class="col">
-        <label for="gradient1">Градиент 1</label>
-        <input type="color" id="gradient1">
-      </div>
-      <div class="col">
-        <label for="gradient2">Градиент 2</label>
-        <input type="color" id="gradient2">
-      </div>
-    </div>
-
-    <div class="checkbox-line">
-      <input type="checkbox" id="gradientEnabled">
-      <label for="gradientEnabled">Включить градиент (иначе фон — bgColor)</label>
-    </div>
-
-    <div class="row">
-      <div class="col">
-        <label for="bgColor">Фон карточки (bgColor)</label>
-        <input type="color" id="bgColor">
-      </div>
-      <div class="col">
-        <label for="opacity">Прозрачность карточки (0.5–1)</label>
-        <input type="text" id="opacity" placeholder="0.9">
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col">
-        <label for="blur">Blur карточки (px, примерно 0–20)</label>
-        <input type="text" id="blur" placeholder="10">
       </div>
     </div>
-
-    <div class="checkbox-line">
-      <input type="checkbox" id="monochrome">
-      <label for="monochrome">Соц.ссылки чёрно-белые</label>
-    </div>
-
-    <div class="checkbox-line">
-      <input type="checkbox" id="animatedTitle">
-      <label for="animatedTitle">Мерцающий ник (анимация glow)</label>
-    </div>
-  </fieldset>
-
-  <!-- Соц.сети -->
-  <fieldset>
-    <legend>Соц.сети</legend>
-    <div class="row">
-      <div class="col">
-        <label for="youtubeUrl">YouTube</label>
-        <input type="url" id="youtubeUrl" placeholder="https://youtube.com/@...">
-      </div>
-      <div class="col">
-        <label for="discordUrl">Discord (user / server)</label>
-        <input type="url" id="discordUrl" placeholder="https://discord.com/users/...">
-      </div>
-    </div>
-  </fieldset>
-
-  <!-- Музыка (папка) -->
-  <fieldset>
-    <legend>Музыка (папка треков)</legend>
-    <div class="small-note">
-      Можно добавить несколько треков. Каждый трек: название, аудио (файл или URL), обложка (файл или URL).
-    </div>
-
-    <div class="tracks-header">
-      <span>Треки</span>
-      <button type="button" id="addTrackBtn">Добавить трек</button>
-    </div>
-
-    <div id="tracksList" class="tracks-list"></div>
-  </fieldset>
-
-  <div class="btn-row">
-    <button class="primary" id="saveBtn">Сохранить в профиль</button>
-    <button id="resetBtn">Сбросить к дефолтному профилю</button>
-    <button id="reloadBtn">Перечитать из localStorage</button>
   </div>
-  <div class="status" id="status"></div>
+
+  <!-- ============== НАСТРОЙКА ЦВЕТОВ ============== -->
+  <div class="settings-section">
+    <span class="section-title">Настройка цветов</span>
+    <div class="settings-card">
+
+      <div class="two-columns">
+        <div class="settings-column">
+          <div class="setting-label">Акцентный цвет</div>
+          <div class="color-picker-row">
+            <div class="color-swatch" id="accentSwatch"></div>
+            <input class="color-input" id="accentInput" value="#5b5b5b">
+          </div>
+
+          <div class="setting-label">Цвет текста</div>
+          <div class="color-picker-row">
+            <div class="color-swatch" id="textSwatch"></div>
+            <input class="color-input" id="textInput" value="#ffffff">
+          </div>
+        </div>
+
+        <div class="settings-column">
+          <div class="setting-label">Цвет фона</div>
+          <div class="color-picker-row">
+            <div class="color-swatch" id="bgColorSwatch"></div>
+            <input class="color-input" id="bgColorInput" value="#080808">
+          </div>
+
+          <div class="setting-label">Цвет иконок</div>
+          <div class="color-picker-row">
+            <div class="color-swatch" id="iconColorSwatch"></div>
+            <input class="color-input" id="iconColorInput" value="#ffffff" disabled>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="checkbox-item">
+        <span class="checkbox-label">Выключить градиент профиля</span>
+        <input type="checkbox" class="custom-checkbox" id="disableGradientCheckbox">
+      </div>
+
+      <div class="two-columns">
+        <div class="settings-column">
+          <div class="setting-label">Основной цвет (градиент 1)</div>
+          <div class="color-picker-row">
+            <div class="color-swatch" id="gradient1Swatch"></div>
+            <input class="color-input" id="gradient1Input" value="#6f0000">
+          </div>
+        </div>
+        <div class="settings-column">
+          <div class="setting-label">Дополнительный цвет (градиент 2)</div>
+          <div class="color-picker-row">
+            <div class="color-swatch" id="gradient2Swatch"></div>
+            <input class="color-input" id="gradient2Input" value="#933800">
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============== ДРУГИЕ НАСТРОЙКИ ============== -->
+  <div class="settings-section">
+    <span class="section-title">Другие настройки</span>
+    <div class="settings-card">
+      <div class="two-columns">
+        <div class="settings-column">
+          <div class="checkbox-item">
+            <span class="checkbox-label">Монохромные иконки</span>
+            <input type="checkbox" class="custom-checkbox" id="monochromeCheckbox">
+          </div>
+          <div class="checkbox-item">
+            <span class="checkbox-label">Анимированный заголовок (ник)</span>
+            <input type="checkbox" class="custom-checkbox" id="animatedTitleCheckbox">
+          </div>
+          <div class="checkbox-item">
+            <span class="checkbox-label">Поменять цвета блоков (визуал)</span>
+            <input type="checkbox" class="custom-checkbox" id="swapBlocksCheckbox">
+          </div>
+        </div>
+        <div class="settings-column">
+          <div class="checkbox-item">
+            <span class="checkbox-label">Регулятор громкости</span>
+            <input type="checkbox" class="custom-checkbox" id="volumeControlCheckbox" checked>
+          </div>
+          <div class="checkbox-item">
+            <span class="checkbox-label">Использовать аватар Discord</span>
+            <input type="checkbox" class="custom-checkbox" id="discordAvatarCheckbox">
+          </div>
+          <div class="checkbox-item">
+            <span class="checkbox-label">Декор аватара Discord</span>
+            <input type="checkbox" class="custom-checkbox" id="discordAvatarDecorCheckbox" checked>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions-row">
+        <span id="statusLabel" class="status-label"></span>
+        <button class="btn btn-secondary" type="button" id="resetBtn">Сбросить к дефолту</button>
+        <button class="btn btn-primary" type="button" id="saveBtn">
+          <span>Сохранить профиль</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
 </div>
 
+<!-- ============== JS ЛОГИКА ============== -->
 <script>
   const PROFILE_KEY = 'Lolekx228_profile';
 
@@ -354,19 +583,6 @@
     localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
   }
 
-  const statusEl = document.getElementById('status');
-
-  function setStatus(text, type = 'ok') {
-    statusEl.textContent = text;
-    statusEl.className = 'status ' + type;
-    if (!text) return;
-    setTimeout(() => {
-      statusEl.textContent = '';
-      statusEl.className = 'status';
-    }, 2000);
-  }
-
-  // File -> dataURL
   function fileToDataURL(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -376,227 +592,215 @@
     });
   }
 
-  // ===== Рендер треков (папка) =====
-
-  const tracksListEl = document.getElementById('tracksList');
-  const addTrackBtn = document.getElementById('addTrackBtn');
-
-  function createTrackElement(track, index) {
-    const div = document.createElement('div');
-    div.className = 'track';
-    div.dataset.index = index;
-
-    div.innerHTML = `
-      <div class="track-top">
-        <div class="track-top-left">
-          <div class="track-index">#${index + 1}</div>
-          <div>${track.title ? track.title : 'Без названия'}</div>
-        </div>
-        <div class="track-top-right">
-          <button type="button" class="small remove-track-btn">Удалить</button>
-        </div>
-      </div>
-
-      <label>Название</label>
-      <input type="text" class="track-title" value="${track.title || ''}" placeholder="Название трека">
-
-      <label>URL аудио (mp3) — можно не заполнять, если выберешь файл ниже</label>
-      <input type="url" class="track-url" value="${track.url && track.url.startsWith('data:') ? '' : (track.url || '')}" placeholder="https://...mp3">
-
-      <div class="file-row">
-        <label style="margin-bottom:0;">Аудио-файл:</label>
-        <input type="file" accept="audio/*" class="track-audio-file">
-      </div>
-
-      <label>Обложка (URL картинки — можно не заполнять, если выберешь файл ниже)</label>
-      <input type="url" class="track-cover" value="${track.cover && track.cover.startsWith('data:') ? '' : (track.cover || '')}" placeholder="https://...">
-
-      <div class="file-row">
-        <label style="margin-bottom:0;">Файл обложки:</label>
-        <input type="file" accept="image/*" class="track-cover-file">
-      </div>
-    `;
-    return div;
+  const statusLabel = document.getElementById('statusLabel');
+  function setStatus(text, type = 'ok') {
+    statusLabel.textContent = text;
+    statusLabel.className = 'status-label ' + type;
+    if (!text) return;
+    setTimeout(() => {
+      statusLabel.textContent = '';
+      statusLabel.className = 'status-label';
+    }, 2500);
   }
 
-  function renderTracks(audioArray) {
-    tracksListEl.innerHTML = '';
-    if (!audioArray || !audioArray.length) {
-      audioArray = [];
-    }
-    audioArray.forEach((track, idx) => {
-      const el = createTrackElement(track, idx);
-      tracksListEl.appendChild(el);
-    });
-  }
+  let profile = loadProfile();
 
-  function attachTrackHandlers() {
-    tracksListEl.addEventListener('click', (e) => {
-      const btn = e.target;
-      if (btn.classList.contains('remove-track-btn')) {
-        const trackEl = btn.closest('.track');
-        if (!trackEl) return;
-        trackEl.remove();
+  // DOM refs
+  const descriptionInput = document.getElementById('descriptionInput');
+  const displayNameInput = document.getElementById('displayNameInput');
+  const locationInput = document.getElementById('locationInput');
+  const youtubeInput = document.getElementById('youtubeInput');
+  const discordInput = document.getElementById('discordInput');
 
-        const blocks = Array.from(tracksListEl.querySelectorAll('.track'));
-        blocks.forEach((el, i) => {
-          el.dataset.index = i;
-          const idxBadge = el.querySelector('.track-index');
-          if (idxBadge) idxBadge.textContent = '#' + (i + 1);
-        });
-      }
-    });
-  }
+  const opacitySlider = document.getElementById('opacitySlider');
+  const blurSlider = document.getElementById('blurSlider');
 
-  // ===== Профиль =====
+  const accentSwatch = document.getElementById('accentSwatch');
+  const accentInput = document.getElementById('accentInput');
+  const textSwatch = document.getElementById('textSwatch');
+  const textInput = document.getElementById('textInput');
+  const bgColorSwatch = document.getElementById('bgColorSwatch');
+  const bgColorInput = document.getElementById('bgColorInput');
+  const iconColorSwatch = document.getElementById('iconColorSwatch');
+  const iconColorInput = document.getElementById('iconColorInput');
 
-  function fillFormFromProfile(profile) {
-    document.getElementById('displayName').value = profile.displayName || '';
-    document.getElementById('description').value = profile.description || '';
-    document.getElementById('location').value = profile.location || '';
+  const disableGradientCheckbox = document.getElementById('disableGradientCheckbox');
+  const gradient1Swatch = document.getElementById('gradient1Swatch');
+  const gradient1Input = document.getElementById('gradient1Input');
+  const gradient2Swatch = document.getElementById('gradient2Swatch');
+  const gradient2Input = document.getElementById('gradient2Input');
 
-    document.getElementById('avatarUrl').value = profile.avatarUrl || '';
-    document.getElementById('backgroundUrl').value = profile.backgroundUrl || '';
+  const monochromeCheckbox = document.getElementById('monochromeCheckbox');
+  const animatedTitleCheckbox = document.getElementById('animatedTitleCheckbox');
+  const swapBlocksCheckbox = document.getElementById('swapBlocksCheckbox');
+  const volumeControlCheckbox = document.getElementById('volumeControlCheckbox');
+  const discordAvatarCheckbox = document.getElementById('discordAvatarCheckbox');
+  const discordAvatarDecorCheckbox = document.getElementById('discordAvatarDecorCheckbox');
 
-    document.getElementById('textColor').value = profile.textColor || '#ffffff';
-    document.getElementById('accentColor').value = profile.accentColor || '#5b5b5b';
-    document.getElementById('gradient1').value = profile.gradient1 || '#6f0000';
-    document.getElementById('gradient2').value = profile.gradient2 || '#933800';
-    document.getElementById('bgColor').value = profile.bgColor || '#080808';
+  const bgPreview = document.getElementById('bgPreview');
+  const bgMediaBtn = document.getElementById('bgMediaBtn');
+  const bgFileInput = document.getElementById('bgFileInput');
 
-    document.getElementById('gradientEnabled').checked = !!profile.gradientEnabled;
-    document.getElementById('monochrome').checked = !!profile.monochrome;
-    document.getElementById('animatedTitle').checked = !!profile.animatedTitle;
+  const avatarPreview = document.getElementById('avatarPreview');
+  const avatarMediaBtn = document.getElementById('avatarMediaBtn');
+  const avatarFileInput = document.getElementById('avatarFileInput');
 
-    document.getElementById('opacity').value = String(profile.opacity ?? 0.9);
-    document.getElementById('blur').value = String(profile.blur ?? 10);
-
-    let youtubeUrl = '';
-    let discordUrl = '';
-    (profile.socials || []).forEach(s => {
-      if (s.name === 'youtube') youtubeUrl = s.url || '';
-      if (s.name === 'discord') discordUrl = s.url || '';
-    });
-    document.getElementById('youtubeUrl').value = youtubeUrl;
-    document.getElementById('discordUrl').value = discordUrl;
-
-    renderTracks(profile.audio || []);
-  }
-
-  async function collectProfileFromForm(prevProfile) {
-    const profile = { ...defaultProfile, ...prevProfile };
-
-    profile.displayName = document.getElementById('displayName').value || defaultProfile.displayName;
-    profile.description = document.getElementById('description').value || defaultProfile.description;
-    profile.location = document.getElementById('location').value || defaultProfile.location;
-
-    profile.avatarUrl = document.getElementById('avatarUrl').value || defaultProfile.avatarUrl;
-    profile.backgroundUrl = document.getElementById('backgroundUrl').value || defaultProfile.backgroundUrl;
-
-    profile.textColor = document.getElementById('textColor').value || defaultProfile.textColor;
-    profile.accentColor = document.getElementById('accentColor').value || defaultProfile.accentColor;
-    profile.gradient1 = document.getElementById('gradient1').value || defaultProfile.gradient1;
-    profile.gradient2 = document.getElementById('gradient2').value || defaultProfile.gradient2;
-    profile.bgColor = document.getElementById('bgColor').value || defaultProfile.bgColor;
-
-    profile.gradientEnabled = document.getElementById('gradientEnabled').checked;
-    profile.monochrome = document.getElementById('monochrome').checked;
-    profile.animatedTitle = document.getElementById('animatedTitle').checked;
-
-    const opacityStr = document.getElementById('opacity').value.trim();
-    let opacity = parseFloat(opacityStr);
-    if (isNaN(opacity)) opacity = defaultProfile.opacity;
-    opacity = Math.max(0.5, Math.min(1, opacity));
-    profile.opacity = opacity;
-
-    const blurStr = document.getElementById('blur').value.trim();
-    let blur = parseFloat(blurStr);
-    if (isNaN(blur)) blur = defaultProfile.blur;
-    blur = Math.max(0, Math.min(30, blur));
-    profile.blur = blur;
-
-    const youtubeUrl = document.getElementById('youtubeUrl').value.trim();
-    const discordUrl = document.getElementById('discordUrl').value.trim();
-    const socials = [];
-    if (youtubeUrl) socials.push({ name: 'youtube', url: youtubeUrl });
-    if (discordUrl) socials.push({ name: 'discord', url: discordUrl });
-    profile.socials = socials.length ? socials : defaultProfile.socials;
-
-    const trackEls = Array.from(tracksListEl.querySelectorAll('.track'));
-    const audio = [];
-
-    for (let i = 0; i < trackEls.length; i++) {
-      const block = trackEls[i];
-      const title = block.querySelector('.track-title').value.trim();
-      let url = block.querySelector('.track-url').value.trim();
-      let cover = block.querySelector('.track-cover').value.trim();
-
-      const audioFileInput = block.querySelector('.track-audio-file');
-      const coverFileInput = block.querySelector('.track-cover-file');
-
-      if (audioFileInput.files && audioFileInput.files[0]) {
-        try {
-          url = await fileToDataURL(audioFileInput.files[0]);
-        } catch (e) {
-          console.error('Ошибка чтения аудио-файла', e);
-        }
-      }
-
-      if (coverFileInput.files && coverFileInput.files[0]) {
-        try {
-          cover = await fileToDataURL(coverFileInput.files[0]);
-        } catch (e) {
-          console.error('Ошибка чтения обложки', e);
-        }
-      }
-
-      if (!title && !url) continue;
-
-      audio.push({
-        title: title || `Track ${i + 1}`,
-        url,
-        cover
-      });
-    }
-
-    profile.audio = audio.length ? audio : defaultProfile.audio;
-
-    return profile;
-  }
+  const audioSummary = document.getElementById('audioSummary');
+  const audioManagerBtn = document.getElementById('audioManagerBtn');
 
   const saveBtn = document.getElementById('saveBtn');
   const resetBtn = document.getElementById('resetBtn');
-  const reloadBtn = document.getElementById('reloadBtn');
 
-  document.addEventListener('DOMContentLoaded', () => {
-    const prof = loadProfile();
-    fillFormFromProfile(prof);
-    attachTrackHandlers();
+  function hexFromAny(color) {
+    return color && color.startsWith('#') ? color : '#ffffff';
+  }
+
+  function fillFormFromProfile() {
+    profile = loadProfile();
+
+    descriptionInput.value = profile.description || '';
+    displayNameInput.value = profile.displayName || '';
+    locationInput.value = profile.location || '';
+
+    const socials = profile.socials || [];
+    youtubeInput.value = (socials.find(s => s.name === 'youtube') || {}).url || '';
+    discordInput.value = (socials.find(s => s.name === 'discord') || {}).url || '';
+
+    opacitySlider.value = profile.opacity ?? 0.9;
+    blurSlider.value = profile.blur ?? 10;
+
+    accentInput.value = hexFromAny(profile.accentColor || '#5b5b5b');
+    accentSwatch.style.background = accentInput.value;
+
+    textInput.value = hexFromAny(profile.textColor || '#ffffff');
+    textSwatch.style.background = textInput.value;
+
+    bgColorInput.value = hexFromAny(profile.bgColor || '#080808');
+    bgColorSwatch.style.background = bgColorInput.value;
+
+    iconColorInput.value = '#ffffff';
+    iconColorSwatch.style.background = '#ffffff';
+
+    disableGradientCheckbox.checked = !profile.gradientEnabled;
+    gradient1Input.value = hexFromAny(profile.gradient1 || '#6f0000');
+    gradient1Swatch.style.background = gradient1Input.value;
+    gradient2Input.value = hexFromAny(profile.gradient2 || '#933800');
+    gradient2Swatch.style.background = gradient2Input.value;
+
+    monochromeCheckbox.checked = !!profile.monochrome;
+    animatedTitleCheckbox.checked = !!profile.animatedTitle;
+
+    bgPreview.src = profile.backgroundUrl || '';
+    avatarPreview.src = profile.avatarUrl || '';
+
+    const audioLen = (profile.audio || []).length;
+    audioSummary.textContent = audioLen
+      ? `Открыть менеджер (${audioLen} треков)`
+      : 'Открыть менеджер (0 треков)';
+  }
+
+  fillFormFromProfile();
+
+  accentInput.addEventListener('input', () => {
+    accentSwatch.style.background = accentInput.value || '#5b5b5b';
+  });
+  textInput.addEventListener('input', () => {
+    textSwatch.style.background = textInput.value || '#ffffff';
+  });
+  bgColorInput.addEventListener('input', () => {
+    bgColorSwatch.style.background = bgColorInput.value || '#080808';
+  });
+  gradient1Input.addEventListener('input', () => {
+    gradient1Swatch.style.background = gradient1Input.value || '#6f0000';
+  });
+  gradient2Input.addEventListener('input', () => {
+    gradient2Swatch.style.background = gradient2Input.value || '#933800';
   });
 
-  saveBtn.addEventListener('click', async () => {
+  bgMediaBtn.addEventListener('click', () => {
+    bgFileInput.click();
+  });
+  bgFileInput.addEventListener('change', async () => {
+    if (!bgFileInput.files || !bgFileInput.files[0]) return;
+    const file = bgFileInput.files[0];
     try {
-      const current = loadProfile();
-      const updated = await collectProfileFromForm(current);
-      saveProfile(updated);
-      setStatus('Профиль сохранён. Обнови главную страницу с карточкой.', 'ok');
+      const dataUrl = await fileToDataURL(file);
+      bgPreview.src = dataUrl;
+      profile.backgroundUrl = dataUrl;
     } catch (e) {
       console.error(e);
-      setStatus('Ошибка при сохранении профиля: ' + e, 'err');
+      setStatus('Ошибка чтения файла фона', 'err');
+    }
+  });
+
+  avatarMediaBtn.addEventListener('click', () => {
+    avatarFileInput.click();
+  });
+  avatarFileInput.addEventListener('change', async () => {
+    if (!avatarFileInput.files || !avatarFileInput.files[0]) return;
+    const file = avatarFileInput.files[0];
+    try {
+      const dataUrl = await fileToDataURL(file);
+      avatarPreview.src = dataUrl;
+      profile.avatarUrl = dataUrl;
+    } catch (e) {
+      console.error(e);
+      setStatus('Ошибка чтения файла аватара', 'err');
+    }
+  });
+
+  audioManagerBtn.addEventListener('click', () => {
+    const titles = (profile.audio || []).map(t => t.title || 'Без названия');
+    alert('Менеджер аудио пока в разработке.\nСейчас в профиле треков: ' + titles.length +
+      (titles.length ? '\n\nСписок:\n- ' + titles.join('\n- ') : ''));
+  });
+
+  saveBtn.addEventListener('click', () => {
+    try {
+      const updated = { ...profile };
+
+      updated.description = descriptionInput.value || defaultProfile.description;
+      updated.displayName = displayNameInput.value || defaultProfile.displayName;
+      updated.location = locationInput.value || defaultProfile.location;
+
+      const socials = [];
+      if (youtubeInput.value.trim()) socials.push({ name: 'youtube', url: youtubeInput.value.trim() });
+      if (discordInput.value.trim()) socials.push({ name: 'discord', url: discordInput.value.trim() });
+      updated.socials = socials.length ? socials : defaultProfile.socials;
+
+      updated.opacity = Math.max(0.5, Math.min(1, parseFloat(opacitySlider.value) || defaultProfile.opacity));
+      updated.blur = Math.max(0, Math.min(30, parseFloat(blurSlider.value) || defaultProfile.blur));
+
+      updated.accentColor = accentInput.value || defaultProfile.accentColor;
+      updated.textColor = textInput.value || defaultProfile.textColor;
+      updated.bgColor = bgColorInput.value || defaultProfile.bgColor;
+
+      updated.gradientEnabled = !disableGradientCheckbox.checked;
+      updated.gradient1 = gradient1Input.value || defaultProfile.gradient1;
+      updated.gradient2 = gradient2Input.value || defaultProfile.gradient2;
+
+      updated.monochrome = monochromeCheckbox.checked;
+      updated.animatedTitle = animatedTitleCheckbox.checked;
+
+      updated.backgroundUrl = profile.backgroundUrl || defaultProfile.backgroundUrl;
+      updated.avatarUrl = profile.avatarUrl || defaultProfile.avatarUrl;
+
+      saveProfile(updated);
+      profile = updated;
+      fillFormFromProfile();
+      setStatus('Профиль сохранён. Обнови страницу с карточкой.', 'ok');
+    } catch (e) {
+      console.error(e);
+      setStatus('Ошибка при сохранении профиля', 'err');
     }
   });
 
   resetBtn.addEventListener('click', () => {
     if (!confirm('Сбросить профиль к дефолтным значениям?')) return;
     saveProfile(defaultProfile);
-    fillFormFromProfile(defaultProfile);
-    setStatus('Профиль сброшен к дефолтному.', 'ok');
-  });
-
-  reloadBtn.addEventListener('click', () => {
-    const prof = loadProfile();
-    fillFormFromProfile(prof);
-    setStatus('Профиль перечитан из localStorage.', 'ok');
+    profile = defaultProfile;
+    fillFormFromProfile();
+    setStatus('Профиль сброшен к дефолту.', 'ok');
   });
 </script>
 </body>
