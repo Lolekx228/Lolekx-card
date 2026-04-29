@@ -294,15 +294,17 @@
             max-height: 360px;
             overflow-y: auto;
         }
+
+        /* Ужата карточка трека */
         .audio-item {
             position: relative;
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 8px 9px;
+            gap: 8px;
+            padding: 6px 8px;
             background: #1a1a1a;
-            border-radius: 14px;
-            margin-bottom: 8px;
+            border-radius: 12px;
+            margin-bottom: 6px;
             border: 1px solid transparent;
             cursor: pointer;
         }
@@ -311,9 +313,9 @@
             border-color: #5b5b5b;
         }
         .audio-cover-small {
-            width: 40px;
-            height: 40px;
-            border-radius: 9px;
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
             background-size: cover;
             background-position: center;
             background-color: #2c2c2c;
@@ -322,8 +324,8 @@
         .audio-info { flex: 1; min-width: 0; }
         .audio-title {
             font-weight: 500;
-            margin-bottom: 2px;
-            font-size: 0.8rem;
+            margin-bottom: 1px;
+            font-size: 0.78rem;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -340,8 +342,8 @@
             border: 1px solid #444;
             color: #ccc;
             cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 14px;
+            padding: 3px 7px;
+            border-radius: 12px;
             font-size: 0.7rem;
             transition: 0.2s;
             flex-shrink: 0;
@@ -354,8 +356,8 @@
 
         .audio-delete-btn {
             position: absolute;
-            top: -8px;
-            right: -8px;
+            top: -10px;
+            right: -10px;
             width: 20px;
             height: 20px;
             border-radius: 50%;
@@ -628,7 +630,7 @@
                 <div class="media-item" id="openAudioManagerBtn">
                     <div class="media-label">Аудио</div>
                     <div class="media-content audio-placeholder">
-                        <svg viewBox="0 0 24 24" fill="white"><path d="M14 22v-3.075l5.525-5.5q.225-.225.5-.325t.55-.1q.3 0 .575.113t.5.337l.925.925q.2.225.313.5t.112.55t-.1.563t-.325.512l-5.5 5.5zm6.575-5.6l.925-.975l-.925-.925l-.95.95zM4 20q-.825 0-1.412-.587T2 18V6q0-.825.588-1.412T4 4h6l2 2h8q.825 0 1.413.588T22 8v3.3q-.35-.15-.725-.225t-.75-.075q-.7 0-1.312.25T18.1 12L12 18.1V20z"/></svg>
+                        <svg viewBox="0 0 24 24" fill="white"><path d="M14 22v-3.075l5.525-5.5q.225-.225.5-.325t.5-.1q.3 0 .575.113t.5.337l.925.925q.2.225.313.5t.112.55t-.1.563t-.325.512l-5.5 5.5zm6.575-5.6l.925-.975l-.925-.925l-.95.95zM4 20q-.825 0-1.412-.587T2 18V6q0-.825.588-1.412T4 4h6l2 2h8q.825 0 1.413.588T22 8v3.3q-.35-.15-.725-.225t-.75-.075q-.7 0-1.312.25T18.1 12L12 18.1V20z"/></svg>
                         <span>Открыть менеджер</span>
                     </div>
                 </div>
@@ -965,8 +967,8 @@
     }
 
     function saveProfile(key, data) {
-        localStorage.setItem(key, JSON.stringify(data)); // [web:329]
-    }
+        localStorage.setItem(key, JSON.stringify(data));
+    } // [web:329]
 
     let profile = loadProfile(PROFILE_KEY, baseProfile);
 
@@ -1000,7 +1002,7 @@
 
     const bgPreview = document.getElementById('bgPreview');
     const bgFileInput = document.getElementById('bgFileInput');
-    const bgFileName = document.getElementById('bgFileName');
+       const bgFileName = document.getElementById('bgFileName');
     const avatarPreview = document.getElementById('avatarPreview');
     const avatarFileInput = document.getElementById('avatarFileInput');
     const avatarFileName = document.getElementById('avatarFileName');
@@ -1113,11 +1115,13 @@
         profile.audioPlayerEnabled = playerEnabledCheckbox.checked;
     }
 
+    // Валидация hex (#rrggbb или rrggbb)
     function bindColorInput(inputEl, swatchEl, key) {
         function setFromHex() {
             let val = inputEl.value.trim();
+            if (!val) return;
             if (!val.startsWith('#')) val = '#' + val;
-            if (/^#[0-9a-fA-F]{6}$/.test(val)) {
+            if (/^#([0-9a-fA-F]{6})$/.test(val)) {
                 val = val.toLowerCase();
                 inputEl.value = val;
                 swatchEl.style.background = val;
@@ -1126,14 +1130,14 @@
         }
         inputEl.addEventListener('change', setFromHex);
         inputEl.addEventListener('blur', setFromHex);
-    }
+    } // [web:335][web:343]
 
     bindColorInput(accentInput, accentSwatch, 'accentColor');
     bindColorInput(textInput, textSwatch, 'textColor');
     bindColorInput(bgColorInput, bgColorSwatch, 'bgColor');
     bindColorInput(iconColorInput, iconColorSwatch, 'iconColor');
     bindColorInput(grad1Input, grad1Swatch, 'gradient1');
-    bindColorInput(grad2Input, grad2Swatch, 'gradient2'); // [web:309]
+    bindColorInput(grad2Input, grad2Swatch, 'gradient2');
 
     function handleImageFile(input, previewImg, nameLabel, profileKey) {
         const file = input.files[0];
@@ -1155,7 +1159,6 @@
     });
 
     openAudioManagerBtn.addEventListener('click', () => {
-        // не перезатираем profile из baseProfile, только обновляем UI
         renderAudioList();
         audioManagerModal.classList.add('active');
     });
@@ -1224,7 +1227,7 @@
         });
 
         return div;
-    } // [web:331][web:332]
+    } // [web:331][web:342]
 
     function renderAudioList() {
         audioList.innerHTML = '';
@@ -1326,7 +1329,6 @@
 
     saveDefaultBtn.addEventListener('click', () => {
         collectProfileFromUI();
-        // сохраняем текущий профиль как дефолт, но не трогаем сохранённый PROFILE_KEY
         saveProfile(PROFILE_DEFAULT_KEY, profile);
         showToast('Настройки сохранены как дефолт');
     });
