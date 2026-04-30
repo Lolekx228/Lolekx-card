@@ -294,7 +294,7 @@
         }
 
         .audio-list {
-            margin-top: 24px;
+            margin-top: 34px;        /* опускаем ВСЮ ленту, чтобы самый верхний крест не упирался в край */
             margin-bottom: 24px;
             max-height: 360px;
             overflow-y: auto;
@@ -306,7 +306,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 8px 14px;
+            padding: 10px 14px 8px;
             background: #1a1a1a;
             border-radius: 12px;
             margin-bottom: 10px;
@@ -367,7 +367,7 @@
 
         .audio-delete-btn {
             position: absolute;
-            top: -10px;
+            top: 4px;              /* внутри карточки, но визуально "сверху" */
             right: 6px;
             width: 20px;
             height: 20px;
@@ -613,11 +613,14 @@
         }
 
         .color-wheel-wrapper {
-            display: flex;
+            display: none;
             flex-direction: column;
             align-items: center;
             gap: 8px;
             margin-top: 8px;
+        }
+        .color-wheel-wrapper.active {
+            display: flex;
         }
         #accentColorWheel {
             border-radius: 50%;
@@ -1059,6 +1062,10 @@
     const toast = document.getElementById('toast');
     const toastText = document.getElementById('toastText');
 
+    const wheelCanvas = document.getElementById('accentColorWheel');
+    const wheelCtx = wheelCanvas.getContext('2d');
+    const colorWheelWrapper = document.querySelector('.color-wheel-wrapper');
+
     let editingIndex = null;
     let toastTimeout = null;
 
@@ -1346,8 +1353,6 @@
         closeEditModal();
     });
 
-    const toastSaveProfileBtn = document.getElementById('saveProfileBtn');
-
     saveProfileBtn.addEventListener('click', () => {
         collectProfileFromUI();
         saveProfile(PROFILE_KEY, profile);
@@ -1373,9 +1378,7 @@
         showToast('Настройки сброшены до дефолтных');
     });
 
-    const wheelCanvas = document.getElementById('accentColorWheel');
-    const wheelCtx = wheelCanvas.getContext('2d');
-
+    // color wheel
     function hslToRgb(h, s, l) {
         let r, g, b;
         if (s === 0) {
@@ -1449,6 +1452,17 @@
     });
     window.addEventListener('mouseup', () => {
         wheelDragging = false;
+    });
+
+    // показать/спрятать круг по клику на swatch
+    accentSwatch.addEventListener('click', (e) => {
+        e.stopPropagation();
+        colorWheelWrapper.classList.toggle('active');
+    });
+    document.addEventListener('click', (e) => {
+        if (!colorWheelWrapper.contains(e.target) && e.target !== accentSwatch) {
+            colorWheelWrapper.classList.remove('active');
+        }
     });
 
     drawColorWheel();
