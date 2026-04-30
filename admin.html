@@ -299,7 +299,10 @@
             max-height: 360px;
             overflow-y: auto;
             padding-right: 4px;
-            padding-top: 24px; /* опускаем первую плашку ниже верхнего края, чтобы крест не упирался */
+            padding-top: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
 
         .audio-item {
@@ -314,7 +317,7 @@
             border: 1px solid transparent;
             cursor: pointer;
             width: 100%;
-            max-width: none;
+            max-width: 380px; /* сузил карточку трека */
             box-sizing: border-box;
         }
         .audio-item.active {
@@ -368,8 +371,8 @@
 
         .audio-delete-btn {
             position: absolute;
-            top: -10px;      /* торчит сверху */
-            right: -10px;    /* и справа */
+            top: -10px;
+            right: -10px;
             width: 20px;
             height: 20px;
             border-radius: 50%;
@@ -1455,7 +1458,6 @@
         wheelDragging = false;
     });
 
-    // показать/спрятать круг по клику на swatch
     accentSwatch.addEventListener('click', (e) => {
         e.stopPropagation();
         colorWheelWrapper.classList.toggle('active');
