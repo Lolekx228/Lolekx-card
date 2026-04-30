@@ -170,10 +170,16 @@
 
         .color-picker-row {
             display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-            flex-wrap: wrap;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+        .color-slider-row {
+            display: flex;
+            gap: 6px;
+        }
+        .color-slider-row input[type="range"] {
+            flex: 1;
         }
         .color-swatch {
             width: 30px;
@@ -181,6 +187,11 @@
             border-radius: 10px;
             border: 2px solid #fff;
             cursor: pointer;
+        }
+        .color-hex-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
         }
         .color-input {
             background: #1a1a1a;
@@ -190,7 +201,7 @@
             color: white;
             font-family: monospace;
             font-size: 0.8rem;
-            flex: 1 1 80px;
+            flex: 1;
         }
 
         .checkbox-row {
@@ -295,7 +306,7 @@
             overflow-y: auto;
         }
 
-        /* Ужата карточка трека */
+        /* Карточка трека – ужата по ширине */
         .audio-item {
             position: relative;
             display: flex;
@@ -307,6 +318,7 @@
             margin-bottom: 6px;
             border: 1px solid transparent;
             cursor: pointer;
+            max-width: 260px; /* ключевое: ограничиваем ширину */
         }
         .audio-item.active {
             background: #2a2a2a;
@@ -321,7 +333,10 @@
             background-color: #2c2c2c;
             flex-shrink: 0;
         }
-        .audio-info { flex: 1; min-width: 0; }
+        .audio-info {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
         .audio-title {
             font-weight: 500;
             margin-bottom: 1px;
@@ -713,30 +728,63 @@
             <div class="two-columns">
                 <div class="settings-column">
                     <div class="setting-label">Акцентный цвет</div>
-                    <div class="color-picker-row">
-                        <div id="accentSwatch" class="color-swatch" style="background:#5b5b5b;"></div>
-                        <input id="accentInput" class="color-input" value="#5b5b5b">
+                    <div class="color-picker-row" data-color-key="accentColor">
+                        <div class="color-slider-row">
+                            <input type="range" min="0" max="255" value="91" class="slider slider-r">
+                            <input type="range" min="0" max="255" value="91" class="slider slider-g">
+                            <input type="range" min="0" max="255" value="91" class="slider slider-b">
+                        </div>
+                        <div class="color-hex-row">
+                            <div id="accentSwatch" class="color-swatch"></div>
+                            <input id="accentInput" class="color-input" value="#5b5b5b">
+                        </div>
                     </div>
+
                     <div class="setting-label">Цвет текста</div>
-                    <div class="color-picker-row">
-                        <div id="textSwatch" class="color-swatch" style="background:#ffffff;"></div>
-                        <input id="textInput" class="color-input" value="#ffffff">
+                    <div class="color-picker-row" data-color-key="textColor">
+                        <div class="color-slider-row">
+                            <input type="range" min="0" max="255" value="255" class="slider slider-r">
+                            <input type="range" min="0" max="255" value="255" class="slider slider-g">
+                            <input type="range" min="0" max="255" value="255" class="slider slider-b">
+                        </div>
+                        <div class="color-hex-row">
+                            <div id="textSwatch" class="color-swatch"></div>
+                            <input id="textInput" class="color-input" value="#ffffff">
+                        </div>
                     </div>
                 </div>
+
                 <div class="settings-column">
                     <div class="setting-label">Цвет фона</div>
-                    <div class="color-picker-row">
-                        <div id="bgColorSwatch" class="color-swatch" style="background:#080808;"></div>
-                        <input id="bgColorInput" class="color-input" value="#080808">
+                    <div class="color-picker-row" data-color-key="bgColor">
+                        <div class="color-slider-row">
+                            <input type="range" min="0" max="255" value="8" class="slider slider-r">
+                            <input type="range" min="0" max="255" value="8" class="slider slider-g">
+                            <input type="range" min="0" max="255" value="8" class="slider slider-b">
+                        </div>
+                        <div class="color-hex-row">
+                            <div id="bgColorSwatch" class="color-swatch"></div>
+                            <input id="bgColorInput" class="color-input" value="#080808">
+                        </div>
                     </div>
+
                     <div class="setting-label">Цвет иконок (соц. сети)</div>
-                    <div class="color-picker-row">
-                        <div id="iconColorSwatch" class="color-swatch" style="background:#ffffff;"></div>
-                        <input id="iconColorInput" class="color-input" value="#ffffff">
+                    <div class="color-picker-row" data-color-key="iconColor">
+                        <div class="color-slider-row">
+                            <input type="range" min="0" max="255" value="255" class="slider slider-r">
+                            <input type="range" min="0" max="255" value="255" class="slider slider-g">
+                            <input type="range" min="0" max="255" value="255" class="slider slider-b">
+                        </div>
+                        <div class="color-hex-row">
+                            <div id="iconColorSwatch" class="color-swatch"></div>
+                            <input id="iconColorInput" class="color-input" value="#ffffff">
+                        </div>
                     </div>
                 </div>
             </div>
+
             <hr>
+
             <div class="checkbox-row">
                 <span class="checkbox-label">Выключить градиент профиля</span>
                 <label class="toggle-switch">
@@ -744,19 +792,34 @@
                     <span class="toggle-slider"></span>
                 </label>
             </div>
+
             <div class="two-columns">
                 <div class="settings-column">
                     <div class="setting-label">Основной цвет градиента</div>
-                    <div class="color-picker-row">
-                        <div id="grad1Swatch" class="color-swatch" style="background:#6f0000;"></div>
-                        <input id="grad1Input" class="color-input" value="#6f0000">
+                    <div class="color-picker-row" data-color-key="gradient1">
+                        <div class="color-slider-row">
+                            <input type="range" min="0" max="255" value="111" class="slider slider-r">
+                            <input type="range" min="0" max="255" value="0" class="slider slider-g">
+                            <input type="range" min="0" max="255" value="0" class="slider slider-b">
+                        </div>
+                        <div class="color-hex-row">
+                            <div id="grad1Swatch" class="color-swatch"></div>
+                            <input id="grad1Input" class="color-input" value="#6f0000">
+                        </div>
                     </div>
                 </div>
                 <div class="settings-column">
                     <div class="setting-label">Дополнительный цвет градиента</div>
-                    <div class="color-picker-row">
-                        <div id="grad2Swatch" class="color-swatch" style="background:#933800;"></div>
-                        <input id="grad2Input" class="color-input" value="#933800">
+                    <div class="color-picker-row" data-color-key="gradient2">
+                        <div class="color-slider-row">
+                            <input type="range" min="0" max="255" value="147" class="slider slider-r">
+                            <input type="range" min="0" max="255" value="56" class="slider slider-g">
+                            <input type="range" min="0" max="255" value="0" class="slider slider-b">
+                        </div>
+                        <div class="color-hex-row">
+                            <div id="grad2Swatch" class="color-swatch"></div>
+                            <input id="grad2Input" class="color-input" value="#933800">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1002,7 +1065,7 @@
 
     const bgPreview = document.getElementById('bgPreview');
     const bgFileInput = document.getElementById('bgFileInput');
-       const bgFileName = document.getElementById('bgFileName');
+    const bgFileName = document.getElementById('bgFileName');
     const avatarPreview = document.getElementById('avatarPreview');
     const avatarFileInput = document.getElementById('avatarFileInput');
     const avatarFileName = document.getElementById('avatarFileName');
@@ -1085,6 +1148,9 @@
 
         shuffleCheckbox.checked = profile.audioShuffle;
         playerEnabledCheckbox.checked = profile.audioPlayerEnabled;
+
+        // инициализация RGB-ползунков из hex
+        initColorSlidersFromHex();
     }
 
     function collectProfileFromUI() {
@@ -1115,29 +1181,80 @@
         profile.audioPlayerEnabled = playerEnabledCheckbox.checked;
     }
 
-    // Валидация hex (#rrggbb или rrggbb)
-    function bindColorInput(inputEl, swatchEl, key) {
-        function setFromHex() {
-            let val = inputEl.value.trim();
-            if (!val) return;
-            if (!val.startsWith('#')) val = '#' + val;
-            if (/^#([0-9a-fA-F]{6})$/.test(val)) {
-                val = val.toLowerCase();
-                inputEl.value = val;
-                swatchEl.style.background = val;
-                profile[key] = val;
-            }
-        }
-        inputEl.addEventListener('change', setFromHex);
-        inputEl.addEventListener('blur', setFromHex);
-    } // [web:335][web:343]
+    // ===== Цвета: hex <-> RGB sliders =====
+    function hexToRgb(hex) {
+        hex = hex.replace('#', '');
+        if (hex.length !== 6) return null;
+        const r = parseInt(hex.slice(0, 2), 16);
+        const g = parseInt(hex.slice(2, 4), 16);
+        const b = parseInt(hex.slice(4, 6), 16);
+        if (Number.isNaN(r) || Number.isNaN(g) || Number.isNaN(b)) return null;
+        return { r, g, b };
+    }
 
-    bindColorInput(accentInput, accentSwatch, 'accentColor');
-    bindColorInput(textInput, textSwatch, 'textColor');
-    bindColorInput(bgColorInput, bgColorSwatch, 'bgColor');
-    bindColorInput(iconColorInput, iconColorSwatch, 'iconColor');
-    bindColorInput(grad1Input, grad1Swatch, 'gradient1');
-    bindColorInput(grad2Input, grad2Swatch, 'gradient2');
+    function rgbToHex(r, g, b) {
+        const toHex = v => v.toString(16).padStart(2, '0');
+        return '#' + toHex(r) + toHex(g) + toHex(b);
+    } // [web:345][web:348]
+
+    function initColorSlidersFromHex() {
+        document.querySelectorAll('.color-picker-row').forEach(row => {
+            const key = row.dataset.colorKey;
+            let hex = profile[key] || '#ffffff';
+            const rgb = hexToRgb(hex);
+            if (!rgb) return;
+            const rSlider = row.querySelector('.slider-r');
+            const gSlider = row.querySelector('.slider-g');
+            const bSlider = row.querySelector('.slider-b');
+            rSlider.value = rgb.r;
+            gSlider.value = rgb.g;
+            bSlider.value = rgb.b;
+            const input = row.querySelector('.color-input');
+            const swatch = row.querySelector('.color-swatch');
+            input.value = hex.toLowerCase();
+            swatch.style.background = hex.toLowerCase();
+        });
+    }
+
+    function bindColorRow(row) {
+        const key = row.dataset.colorKey;
+        const rSlider = row.querySelector('.slider-r');
+        const gSlider = row.querySelector('.slider-g');
+        const bSlider = row.querySelector('.slider-b');
+        const input = row.querySelector('.color-input');
+        const swatch = row.querySelector('.color-swatch');
+
+        function updateFromSliders() {
+            const r = parseInt(rSlider.value, 10);
+            const g = parseInt(gSlider.value, 10);
+            const b = parseInt(bSlider.value, 10);
+            const hex = rgbToHex(r, g, b);
+            input.value = hex;
+            swatch.style.background = hex;
+            profile[key] = hex;
+        }
+
+        function updateFromHex() {
+            let val = input.value.trim();
+            if (!val.startsWith('#')) val = '#' + val;
+            input.value = val;
+            const rgb = hexToRgb(val);
+            if (!rgb) return;
+            rSlider.value = rgb.r;
+            gSlider.value = rgb.g;
+            bSlider.value = rgb.b;
+            swatch.style.background = val;
+            profile[key] = val;
+        }
+
+        rSlider.addEventListener('input', updateFromSliders);
+        gSlider.addEventListener('input', updateFromSliders);
+        bSlider.addEventListener('input', updateFromSliders);
+        input.addEventListener('change', updateFromHex);
+        input.addEventListener('blur', updateFromHex);
+    } // [web:347][web:351][web:352]
+
+    document.querySelectorAll('.color-picker-row').forEach(bindColorRow);
 
     function handleImageFile(input, previewImg, nameLabel, profileKey) {
         const file = input.files[0];
@@ -1227,7 +1344,7 @@
         });
 
         return div;
-    } // [web:331][web:342]
+    } // [web:304][web:353]
 
     function renderAudioList() {
         audioList.innerHTML = '';
