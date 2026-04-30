@@ -267,7 +267,7 @@
             width: 90%;
             max-width: 520px;
             border: 1px solid #2a2a2a;
-            overflow: visible; /* чтобы крестики не резались */
+            overflow: visible; /* крестики не режутся */
         }
         .modal-header {
             display: flex;
@@ -290,18 +290,18 @@
         }
         .modal-content {
             padding: 16px 20px;
-            overflow: visible; /* тоже на всякий случай */
+            overflow: visible;
         }
 
         .audio-list {
-            margin-top: 24px;
+            margin-top: 24px;      /* ниже, чтобы верхний крестик был виден */
             margin-bottom: 24px;
             max-height: 360px;
             overflow-y: auto;
             padding-right: 4px;
         }
 
-        /* Карточка трека – шире (на всю ширину) */
+        /* Плашка трека шире — на всю ширину */
         .audio-item {
             position: relative;
             display: flex;
@@ -313,7 +313,7 @@
             margin-bottom: 10px;
             border: 1px solid transparent;
             cursor: pointer;
-            width: 100%;      /* на всю ширину списка */
+            width: 100%;
             max-width: none;
             box-sizing: border-box;
         }
@@ -366,10 +366,10 @@
             border-color: #666;
         }
 
-        /* Крестик – снаружи, но видимый */
+        /* Крестик торчит наружу, но виден */
         .audio-delete-btn {
             position: absolute;
-            top: -10px;      /* наружу вверх */
+            top: -10px;   /* наружу вверх */
             right: 6px;
             width: 20px;
             height: 20px;
@@ -588,4 +588,376 @@
             border-radius: 999px;
             background: rgba(20,20,20,0.95);
             border: 1px solid #444;
-            color: #
+            color: #eee;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            z-index: 2000;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+            pointer-events: auto;
+        }
+        .toast-icon {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #3a7a3a;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 24px 12px 70px; }
+            .settings-card { padding: 18px 14px; }
+            .section-title { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="customize-container">
+    <!-- тут оставь твои остальные секции настроек, как раньше -->
+    <!-- Важно: менеджер аудио ниже использовать из этого файла -->
+
+    <!-- Пример: кнопка открыть менеджер аудио -->
+    <!-- ... твой существующий HTML настроек ... -->
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast">
+    <div class="toast-icon">✓</div>
+    <span id="toastText">Настройки сохранены</span>
+</div>
+
+<!-- Менеджер аудио -->
+<div id="audioManagerModal" class="modal-overlay">
+    <div class="audio-manager-modal">
+        <div class="modal-header">
+            <h2>Менеджер аудио</h2>
+            <button class="close-modal" id="closeModalBtn">×</button>
+        </div>
+        <div class="modal-content">
+            <div class="audio-list" id="audioList"></div>
+
+            <button class="add-audio-btn" id="addAudioBtn">+ Добавить аудио</button>
+
+            <div class="setting-switch">
+                <div class="setting-left">
+                    <span class="setting-title">Перемешивание аудио</span>
+                    <span class="setting-description">Проигрывать случайное аудио при каждом посещении страницы</span>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="shuffleCheckbox">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-switch">
+                <div class="setting-left">
+                    <span class="setting-title">Аудиоплеер</span>
+                    <span class="setting-description">Добавляет в профиль виджет аудиоплеера</span>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="playerEnabledCheckbox" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Редактор трека -->
+<div id="editAudioOverlay" class="modal-overlay">
+    <div class="edit-audio-modal">
+        <div class="edit-audio-modal-header">
+            <h3>Редактировать аудио</h3>
+            <button class="edit-audio-close" id="closeEditModalBtn">×</button>
+        </div>
+        <div class="edit-row">
+            <div class="edit-label">Название</div>
+            <input type="text" id="editTitleInput" class="edit-input-text" placeholder="Название трека">
+        </div>
+
+        <div class="edit-row">
+            <div class="edit-label">Файл аудио (.mp3)</div>
+            <div class="file-input-wrapper">
+                <span class="file-input-button">Выбрать аудио</span>
+                <span class="file-input-name" id="editAudioFileName">Файл не выбран</span>
+                <input type="file" id="editAudioFile" accept="audio/mpeg,audio/mp3">
+            </div>
+        </div>
+
+        <div class="edit-row">
+            <div class="edit-label">Обложка</div>
+            <div class="file-input-wrapper">
+                <span class="file-input-button">Выбрать обложку</span>
+                <span class="file-input-name" id="editCoverFileName">Файл не выбран</span>
+                <input type="file" id="editCoverFile" accept="image/*">
+                <div class="edit-cover-preview" id="editCoverPreview"></div>
+            </div>
+        </div>
+
+        <div class="edit-modal-actions">
+            <button class="btn-small" id="cancelEditBtn">Отмена</button>
+            <button class="btn-small primary" id="saveEditBtn">Сохранить</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // здесь используй твой текущий рабочий JS (менеджер профиля и пр.)
+    // Важная часть — логика менеджера аудио:
+
+    const audioList = document.getElementById('audioList');
+    const addAudioBtn = document.getElementById('addAudioBtn');
+    const audioManagerModal = document.getElementById('audioManagerModal');
+    const openAudioManagerBtn = document.getElementById('openAudioManagerBtn');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+
+    const editOverlay = document.getElementById('editAudioOverlay');
+    const closeEditModalBtn = document.getElementById('closeEditModalBtn');
+    const editTitleInput = document.getElementById('editTitleInput');
+    const editAudioFile = document.getElementById('editAudioFile');
+    const editCoverFile = document.getElementById('editCoverFile');
+    const editAudioFileName = document.getElementById('editAudioFileName');
+    const editCoverFileName = document.getElementById('editCoverFileName');
+    const editCoverPreview = document.getElementById('editCoverPreview');
+    const cancelEditBtn = document.getElementById('cancelEditBtn');
+    const saveEditBtn = document.getElementById('saveEditBtn');
+
+    const shuffleCheckbox = document.getElementById('shuffleCheckbox');
+    const playerEnabledCheckbox = document.getElementById('playerEnabledCheckbox');
+
+    const toast = document.getElementById('toast');
+    const toastText = document.getElementById('toastText');
+
+    const PROFILE_KEY = 'Lolekx228_profile';
+
+    const baseProfile = {
+        audioShuffle: false,
+        audioPlayerEnabled: true,
+        audio: [
+            {
+                title: "Durnojj Vkus - Plastinki",
+                url: "",
+                cover: "",
+                active: true
+            }
+        ]
+    };
+
+    function deepClone(obj) {
+        return JSON.parse(JSON.stringify(obj));
+    }
+
+    function loadProfile(key, fallback) {
+        try {
+            const raw = localStorage.getItem(key);
+            if (!raw) return deepClone(fallback);
+            const parsed = JSON.parse(raw);
+            return { ...fallback, ...parsed };
+        } catch {
+            return deepClone(fallback);
+        }
+    }
+
+    function saveProfile(key, data) {
+        localStorage.setItem(key, JSON.stringify(data));
+    }
+
+    let profile = loadProfile(PROFILE_KEY, baseProfile);
+
+    function showToast(message) {
+        toastText.textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    function escapeHtml(str) {
+        return String(str || '').replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    function createAudioItemElement(track, index) {
+        const div = document.createElement('div');
+        div.className = 'audio-item';
+        if (track.active) div.classList.add('active');
+        div.dataset.index = index;
+
+        const coverUrl = track.cover || 'https://via.placeholder.com/40/2a2a2a/ffffff?text=🎵';
+
+        div.innerHTML = `
+            <button class="audio-delete-btn" title="Удалить трек">
+                <span>×</span>
+            </button>
+            <div class="audio-cover-small" style="background-image: url('${coverUrl}');"></div>
+            <div class="audio-info">
+                <div class="audio-title">${escapeHtml(track.title || 'Без названия')}</div>
+                ${track.active ? '<span class="audio-badge">Активно</span>' : ''}
+            </div>
+            <button class="edit-audio-btn">Редактировать</button>
+        `;
+
+        div.addEventListener('click', () => {
+            (profile.audio || []).forEach((t, i) => {
+                t.active = (i === index);
+            });
+            renderAudioList();
+        });
+
+        const editBtn = div.querySelector('.edit-audio-btn');
+        editBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openEditModal(index);
+        });
+
+        const deleteBtn = div.querySelector('.audio-delete-btn');
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (!Array.isArray(profile.audio)) return;
+            profile.audio.splice(index, 1);
+            renderAudioList();
+        });
+
+        return div;
+    }
+
+    function renderAudioList() {
+        audioList.innerHTML = '';
+        const list = profile.audio || [];
+        list.forEach((track, index) => {
+            const el = createAudioItemElement(track, index);
+            audioList.appendChild(el);
+        });
+        shuffleCheckbox.checked = profile.audioShuffle;
+        playerEnabledCheckbox.checked = profile.audioPlayerEnabled;
+    }
+
+    function openEditModal(index) {
+        editingIndex = index;
+        const track = profile.audio[index] || {};
+        editTitleInput.value = track.title || '';
+        editAudioFile.value = '';
+        editCoverFile.value = '';
+        editAudioFileName.textContent = 'Файл не выбран';
+        editCoverFileName.textContent = 'Файл не выбран';
+        editCoverPreview.style.backgroundImage = track.cover ? `url('${track.cover}')` : 'none';
+        editOverlay.classList.add('active');
+    }
+
+    function closeEditModal() {
+        editingIndex = null;
+        editOverlay.classList.remove('active');
+    }
+
+    let editingIndex = null;
+
+    // события модалок
+    if (openAudioManagerBtn) {
+        openAudioManagerBtn.addEventListener('click', () => {
+            renderAudioList();
+            audioManagerModal.classList.add('active');
+        });
+    }
+
+    closeModalBtn.addEventListener('click', () => {
+        audioManagerModal.classList.remove('active');
+    });
+
+    audioManagerModal.addEventListener('click', (e) => {
+        if (e.target === audioManagerModal) audioManagerModal.classList.remove('active');
+    });
+
+    closeEditModalBtn.addEventListener('click', closeEditModal);
+    cancelEditBtn.addEventListener('click', closeEditModal);
+    editOverlay.addEventListener('click', (e) => {
+        if (e.target === editOverlay) closeEditModal();
+    });
+
+    addAudioBtn.addEventListener('click', () => {
+        profile.audio = profile.audio || [];
+        profile.audio.push({
+            title: 'Новый трек',
+            url: '',
+            cover: '',
+            active: false
+        });
+        renderAudioList();
+    });
+
+    editAudioFile.addEventListener('change', () => {
+        const file = editAudioFile.files[0];
+        if (!file) return;
+        editAudioFileName.textContent = file.name;
+    });
+
+    editCoverFile.addEventListener('change', () => {
+        const file = editCoverFile.files[0];
+        if (!file) return;
+        editCoverFileName.textContent = file.name;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            editCoverPreview.style.backgroundImage = `url('${e.target.result}')`;
+        };
+        reader.readAsDataURL(file);
+    });
+
+    saveEditBtn.addEventListener('click', () => {
+        if (editingIndex === null) return;
+        const track = profile.audio[editingIndex] || {};
+
+        if (editTitleInput.value.trim()) {
+            track.title = editTitleInput.value.trim();
+        }
+
+        const audioFile = editAudioFile.files[0];
+        if (audioFile) {
+            const audioUrl = URL.createObjectURL(audioFile);
+            track.url = audioUrl;
+        }
+
+        const coverFile = editCoverFile.files[0];
+        if (coverFile) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                track.cover = e.target.result;
+                profile.audio[editingIndex] = track;
+                renderAudioList();
+                closeEditModal();
+                saveProfile(PROFILE_KEY, profile);
+            };
+            reader.readAsDataURL(coverFile);
+            return;
+        }
+
+        profile.audio[editingIndex] = track;
+        renderAudioList();
+        closeEditModal();
+        saveProfile(PROFILE_KEY, profile);
+    });
+
+    shuffleCheckbox.addEventListener('change', () => {
+        profile.audioShuffle = shuffleCheckbox.checked;
+        saveProfile(PROFILE_KEY, profile);
+    });
+
+    playerEnabledCheckbox.addEventListener('change', () => {
+        profile.audioPlayerEnabled = playerEnabledCheckbox.checked;
+        saveProfile(PROFILE_KEY, profile);
+    });
+
+    renderAudioList();
+</script>
+</body>
+</html>
