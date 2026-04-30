@@ -267,7 +267,7 @@
             width: 90%;
             max-width: 520px;
             border: 1px solid #2a2a2a;
-            overflow: visible; /* крестики не режутся */
+            overflow: visible;
         }
         .modal-header {
             display: flex;
@@ -294,14 +294,14 @@
         }
 
         .audio-list {
-            margin-top: 24px;      /* ниже, чтобы верхний крестик был виден */
+            margin-top: 24px;
             margin-bottom: 24px;
             max-height: 360px;
             overflow-y: auto;
             padding-right: 4px;
         }
 
-        /* Плашка трека шире — на всю ширину */
+        /* Плашка трека на всю ширину */
         .audio-item {
             position: relative;
             display: flex;
@@ -366,10 +366,10 @@
             border-color: #666;
         }
 
-        /* Крестик торчит наружу, но виден */
+        /* Крестик торчит наружу вверх */
         .audio-delete-btn {
             position: absolute;
-            top: -10px;   /* наружу вверх */
+            top: -10px;
             right: 6px;
             width: 20px;
             height: 20px;
@@ -545,40 +545,6 @@
             box-shadow: 0 0 0 2px rgba(255,255,255,0.08);
         }
 
-        .global-actions {
-            position: sticky;
-            bottom: 12px;
-            margin-top: 10px;
-            display: flex;
-            justify-content: flex-end;
-            gap: 8px;
-            z-index: 5;
-        }
-        .global-actions button {
-            border-radius: 999px;
-            padding: 7px 14px;
-            border: 1px solid #444;
-            background: #1a1a1a;
-            color: #eee;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: transform 0.1s ease, background 0.15s ease, box-shadow 0.15s ease;
-        }
-        .global-actions button.primary {
-            background: #5b5b5b;
-            border-color: #5b5b5b;
-        }
-        .global-actions button:hover {
-            background: #2a2a2a;
-        }
-        .global-actions button.primary:hover {
-            background: #6c6c6c;
-        }
-        .global-actions button:active {
-            transform: scale(0.96);
-            box-shadow: 0 0 0 2px rgba(255,255,255,0.08);
-        }
-
         .toast {
             position: fixed;
             left: 50%;
@@ -623,20 +589,19 @@
 </head>
 <body>
 <div class="customize-container">
-    <!-- тут оставь твои остальные секции настроек, как раньше -->
-    <!-- Важно: менеджер аудио ниже использовать из этого файла -->
-
-    <!-- Пример: кнопка открыть менеджер аудио -->
-    <!-- ... твой существующий HTML настроек ... -->
+    <div class="settings-section">
+        <span class="section-title">Пример настроек</span>
+        <div class="settings-card">
+            <button id="openAudioManagerBtn" class="add-audio-btn">Открыть менеджер аудио</button>
+        </div>
+    </div>
 </div>
 
-<!-- Toast -->
 <div id="toast" class="toast">
     <div class="toast-icon">✓</div>
-    <span id="toastText">Настройки сохранены</span>
+    <span id="toastText">Ок</span>
 </div>
 
-<!-- Менеджер аудио -->
 <div id="audioManagerModal" class="modal-overlay">
     <div class="audio-manager-modal">
         <div class="modal-header">
@@ -673,7 +638,6 @@
     </div>
 </div>
 
-<!-- Редактор трека -->
 <div id="editAudioOverlay" class="modal-overlay">
     <div class="edit-audio-modal">
         <div class="edit-audio-modal-header">
@@ -712,9 +676,6 @@
 </div>
 
 <script>
-    // здесь используй твой текущий рабочий JS (менеджер профиля и пр.)
-    // Важная часть — логика менеджера аудио:
-
     const audioList = document.getElementById('audioList');
     const addAudioBtn = document.getElementById('addAudioBtn');
     const audioManagerModal = document.getElementById('audioManagerModal');
@@ -738,7 +699,7 @@
     const toast = document.getElementById('toast');
     const toastText = document.getElementById('toastText');
 
-    const PROFILE_KEY = 'Lolekx228_profile';
+    const PROFILE_KEY = 'Lolekx228_profile_audio';
 
     const baseProfile = {
         audioShuffle: false,
@@ -749,6 +710,12 @@
                 url: "",
                 cover: "",
                 active: true
+            },
+            {
+                title: "Kino - Spokojjnaya Noch",
+                url: "",
+                cover: "",
+                active: false
             }
         ]
     };
@@ -814,6 +781,7 @@
                 t.active = (i === index);
             });
             renderAudioList();
+            saveProfile(PROFILE_KEY, profile);
         });
 
         const editBtn = div.querySelector('.edit-audio-btn');
@@ -828,6 +796,7 @@
             if (!Array.isArray(profile.audio)) return;
             profile.audio.splice(index, 1);
             renderAudioList();
+            saveProfile(PROFILE_KEY, profile);
         });
 
         return div;
@@ -843,6 +812,8 @@
         shuffleCheckbox.checked = profile.audioShuffle;
         playerEnabledCheckbox.checked = profile.audioPlayerEnabled;
     }
+
+    let editingIndex = null;
 
     function openEditModal(index) {
         editingIndex = index;
@@ -861,15 +832,11 @@
         editOverlay.classList.remove('active');
     }
 
-    let editingIndex = null;
-
-    // события модалок
-    if (openAudioManagerBtn) {
-        openAudioManagerBtn.addEventListener('click', () => {
-            renderAudioList();
-            audioManagerModal.classList.add('active');
-        });
-    }
+    // модалки
+    openAudioManagerBtn.addEventListener('click', () => {
+        renderAudioList();
+        audioManagerModal.classList.add('active');
+    });
 
     closeModalBtn.addEventListener('click', () => {
         audioManagerModal.classList.remove('active');
@@ -885,6 +852,7 @@
         if (e.target === editOverlay) closeEditModal();
     });
 
+    // добавление
     addAudioBtn.addEventListener('click', () => {
         profile.audio = profile.audio || [];
         profile.audio.push({
@@ -894,6 +862,7 @@
             active: false
         });
         renderAudioList();
+        saveProfile(PROFILE_KEY, profile);
     });
 
     editAudioFile.addEventListener('change', () => {
