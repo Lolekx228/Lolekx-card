@@ -294,11 +294,12 @@
         }
 
         .audio-list {
-            margin-top: 34px;        /* опускаем ВСЮ ленту, чтобы самый верхний крест не упирался в край */
+            margin-top: 16px;
             margin-bottom: 24px;
             max-height: 360px;
             overflow-y: auto;
             padding-right: 4px;
+            padding-top: 18px; /* опускаем первую плашку ниже верхнего края, чтобы крест НЕ упирался */
         }
 
         .audio-item {
@@ -306,7 +307,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 10px 14px 8px;
+            padding: 8px 14px;
             background: #1a1a1a;
             border-radius: 12px;
             margin-bottom: 10px;
@@ -367,7 +368,7 @@
 
         .audio-delete-btn {
             position: absolute;
-            top: 4px;              /* внутри карточки, но визуально "сверху" */
+            top: -10px;          /* крестик снаружи сверху */
             right: 6px;
             width: 20px;
             height: 20px;
