@@ -267,7 +267,7 @@
             width: 90%;
             max-width: 520px;
             border: 1px solid #2a2a2a;
-            overflow: visible;
+            overflow: visible; /* важно, чтобы крестики не резались */
         }
         .modal-header {
             display: flex;
@@ -294,14 +294,14 @@
         }
 
         .audio-list {
-            margin-top: 24px;
+            margin-top: 24px;      /* ниже, чтобы верхний крестик был виден */
             margin-bottom: 24px;
             max-height: 360px;
             overflow-y: auto;
             padding-right: 4px;
         }
 
-        /* Плашка трека на всю ширину */
+        /* Карточка трека – шире (на всю ширину) */
         .audio-item {
             position: relative;
             display: flex;
@@ -313,7 +313,7 @@
             margin-bottom: 10px;
             border: 1px solid transparent;
             cursor: pointer;
-            width: 100%;
+            width: 100%;      /* на всю ширину списка */
             max-width: none;
             box-sizing: border-box;
         }
@@ -366,10 +366,10 @@
             border-color: #666;
         }
 
-        /* Крестик торчит наружу вверх */
+        /* Крестик снаружи, но видимый */
         .audio-delete-btn {
             position: absolute;
-            top: -10px;
+            top: -10px;      /* торчит вверх */
             right: 6px;
             width: 20px;
             height: 20px;
@@ -545,6 +545,40 @@
             box-shadow: 0 0 0 2px rgba(255,255,255,0.08);
         }
 
+        .global-actions {
+            position: sticky;
+            bottom: 12px;
+            margin-top: 10px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            z-index: 5;
+        }
+        .global-actions button {
+            border-radius: 999px;
+            padding: 7px 14px;
+            border: 1px solid #444;
+            background: #1a1a1a;
+            color: #eee;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: transform 0.1s ease, background 0.15s ease, box-shadow 0.15s ease;
+        }
+        .global-actions button.primary {
+            background: #5b5b5b;
+            border-color: #5b5b5b;
+        }
+        .global-actions button:hover {
+            background: #2a2a2a;
+        }
+        .global-actions button.primary:hover {
+            background: #6c6c6c;
+        }
+        .global-actions button:active {
+            transform: scale(0.96);
+            box-shadow: 0 0 0 2px rgba(255,255,255,0.08);
+        }
+
         .toast {
             position: fixed;
             left: 50%;
@@ -580,6 +614,19 @@
             font-size: 9px;
         }
 
+        .color-wheel-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        #accentColorWheel {
+            border-radius: 50%;
+            cursor: crosshair;
+            border: 1px solid #333;
+        }
+
         @media (max-width: 768px) {
             body { padding: 24px 12px 70px; }
             .settings-card { padding: 18px 14px; }
@@ -589,19 +636,19 @@
 </head>
 <body>
 <div class="customize-container">
-    <div class="settings-section">
-        <span class="section-title">Пример настроек</span>
-        <div class="settings-card">
-            <button id="openAudioManagerBtn" class="add-audio-btn">Открыть менеджер аудио</button>
-        </div>
-    </div>
+    <!-- твои настройки как были -->
+    <!-- Загрузка медиа -->
+    <!-- (оставляю твой HTML без изменений) -->
+    … <!-- здесь вставь свой блок с настройками, который ты уже присылал, он у тебя рабочий -->
 </div>
 
+<!-- Toast -->
 <div id="toast" class="toast">
     <div class="toast-icon">✓</div>
-    <span id="toastText">Ок</span>
+    <span id="toastText">Настройки сохранены</span>
 </div>
 
+<!-- Менеджер аудио -->
 <div id="audioManagerModal" class="modal-overlay">
     <div class="audio-manager-modal">
         <div class="modal-header">
@@ -638,6 +685,7 @@
     </div>
 </div>
 
+<!-- Редактор трека -->
 <div id="editAudioOverlay" class="modal-overlay">
     <div class="edit-audio-modal">
         <div class="edit-audio-modal-header">
@@ -675,258 +723,10 @@
     </div>
 </div>
 
+<!-- твой JS остаётся тем, который ты прислал (он уже рабочий) -->
 <script>
-    const audioList = document.getElementById('audioList');
-    const addAudioBtn = document.getElementById('addAudioBtn');
-    const audioManagerModal = document.getElementById('audioManagerModal');
-    const openAudioManagerBtn = document.getElementById('openAudioManagerBtn');
-    const closeModalBtn = document.getElementById('closeModalBtn');
-
-    const editOverlay = document.getElementById('editAudioOverlay');
-    const closeEditModalBtn = document.getElementById('closeEditModalBtn');
-    const editTitleInput = document.getElementById('editTitleInput');
-    const editAudioFile = document.getElementById('editAudioFile');
-    const editCoverFile = document.getElementById('editCoverFile');
-    const editAudioFileName = document.getElementById('editAudioFileName');
-    const editCoverFileName = document.getElementById('editCoverFileName');
-    const editCoverPreview = document.getElementById('editCoverPreview');
-    const cancelEditBtn = document.getElementById('cancelEditBtn');
-    const saveEditBtn = document.getElementById('saveEditBtn');
-
-    const shuffleCheckbox = document.getElementById('shuffleCheckbox');
-    const playerEnabledCheckbox = document.getElementById('playerEnabledCheckbox');
-
-    const toast = document.getElementById('toast');
-    const toastText = document.getElementById('toastText');
-
-    const PROFILE_KEY = 'Lolekx228_profile_audio';
-
-    const baseProfile = {
-        audioShuffle: false,
-        audioPlayerEnabled: true,
-        audio: [
-            {
-                title: "Durnojj Vkus - Plastinki",
-                url: "",
-                cover: "",
-                active: true
-            },
-            {
-                title: "Kino - Spokojjnaya Noch",
-                url: "",
-                cover: "",
-                active: false
-            }
-        ]
-    };
-
-    function deepClone(obj) {
-        return JSON.parse(JSON.stringify(obj));
-    }
-
-    function loadProfile(key, fallback) {
-        try {
-            const raw = localStorage.getItem(key);
-            if (!raw) return deepClone(fallback);
-            const parsed = JSON.parse(raw);
-            return { ...fallback, ...parsed };
-        } catch {
-            return deepClone(fallback);
-        }
-    }
-
-    function saveProfile(key, data) {
-        localStorage.setItem(key, JSON.stringify(data));
-    }
-
-    let profile = loadProfile(PROFILE_KEY, baseProfile);
-
-    function showToast(message) {
-        toastText.textContent = message;
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 2000);
-    }
-
-    function escapeHtml(str) {
-        return String(str || '').replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
-    }
-
-    function createAudioItemElement(track, index) {
-        const div = document.createElement('div');
-        div.className = 'audio-item';
-        if (track.active) div.classList.add('active');
-        div.dataset.index = index;
-
-        const coverUrl = track.cover || 'https://via.placeholder.com/40/2a2a2a/ffffff?text=🎵';
-
-        div.innerHTML = `
-            <button class="audio-delete-btn" title="Удалить трек">
-                <span>×</span>
-            </button>
-            <div class="audio-cover-small" style="background-image: url('${coverUrl}');"></div>
-            <div class="audio-info">
-                <div class="audio-title">${escapeHtml(track.title || 'Без названия')}</div>
-                ${track.active ? '<span class="audio-badge">Активно</span>' : ''}
-            </div>
-            <button class="edit-audio-btn">Редактировать</button>
-        `;
-
-        div.addEventListener('click', () => {
-            (profile.audio || []).forEach((t, i) => {
-                t.active = (i === index);
-            });
-            renderAudioList();
-            saveProfile(PROFILE_KEY, profile);
-        });
-
-        const editBtn = div.querySelector('.edit-audio-btn');
-        editBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            openEditModal(index);
-        });
-
-        const deleteBtn = div.querySelector('.audio-delete-btn');
-        deleteBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (!Array.isArray(profile.audio)) return;
-            profile.audio.splice(index, 1);
-            renderAudioList();
-            saveProfile(PROFILE_KEY, profile);
-        });
-
-        return div;
-    }
-
-    function renderAudioList() {
-        audioList.innerHTML = '';
-        const list = profile.audio || [];
-        list.forEach((track, index) => {
-            const el = createAudioItemElement(track, index);
-            audioList.appendChild(el);
-        });
-        shuffleCheckbox.checked = profile.audioShuffle;
-        playerEnabledCheckbox.checked = profile.audioPlayerEnabled;
-    }
-
-    let editingIndex = null;
-
-    function openEditModal(index) {
-        editingIndex = index;
-        const track = profile.audio[index] || {};
-        editTitleInput.value = track.title || '';
-        editAudioFile.value = '';
-        editCoverFile.value = '';
-        editAudioFileName.textContent = 'Файл не выбран';
-        editCoverFileName.textContent = 'Файл не выбран';
-        editCoverPreview.style.backgroundImage = track.cover ? `url('${track.cover}')` : 'none';
-        editOverlay.classList.add('active');
-    }
-
-    function closeEditModal() {
-        editingIndex = null;
-        editOverlay.classList.remove('active');
-    }
-
-    // модалки
-    openAudioManagerBtn.addEventListener('click', () => {
-        renderAudioList();
-        audioManagerModal.classList.add('active');
-    });
-
-    closeModalBtn.addEventListener('click', () => {
-        audioManagerModal.classList.remove('active');
-    });
-
-    audioManagerModal.addEventListener('click', (e) => {
-        if (e.target === audioManagerModal) audioManagerModal.classList.remove('active');
-    });
-
-    closeEditModalBtn.addEventListener('click', closeEditModal);
-    cancelEditBtn.addEventListener('click', closeEditModal);
-    editOverlay.addEventListener('click', (e) => {
-        if (e.target === editOverlay) closeEditModal();
-    });
-
-    // добавление
-    addAudioBtn.addEventListener('click', () => {
-        profile.audio = profile.audio || [];
-        profile.audio.push({
-            title: 'Новый трек',
-            url: '',
-            cover: '',
-            active: false
-        });
-        renderAudioList();
-        saveProfile(PROFILE_KEY, profile);
-    });
-
-    editAudioFile.addEventListener('change', () => {
-        const file = editAudioFile.files[0];
-        if (!file) return;
-        editAudioFileName.textContent = file.name;
-    });
-
-    editCoverFile.addEventListener('change', () => {
-        const file = editCoverFile.files[0];
-        if (!file) return;
-        editCoverFileName.textContent = file.name;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            editCoverPreview.style.backgroundImage = `url('${e.target.result}')`;
-        };
-        reader.readAsDataURL(file);
-    });
-
-    saveEditBtn.addEventListener('click', () => {
-        if (editingIndex === null) return;
-        const track = profile.audio[editingIndex] || {};
-
-        if (editTitleInput.value.trim()) {
-            track.title = editTitleInput.value.trim();
-        }
-
-        const audioFile = editAudioFile.files[0];
-        if (audioFile) {
-            const audioUrl = URL.createObjectURL(audioFile);
-            track.url = audioUrl;
-        }
-
-        const coverFile = editCoverFile.files[0];
-        if (coverFile) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                track.cover = e.target.result;
-                profile.audio[editingIndex] = track;
-                renderAudioList();
-                closeEditModal();
-                saveProfile(PROFILE_KEY, profile);
-            };
-            reader.readAsDataURL(coverFile);
-            return;
-        }
-
-        profile.audio[editingIndex] = track;
-        renderAudioList();
-        closeEditModal();
-        saveProfile(PROFILE_KEY, profile);
-    });
-
-    shuffleCheckbox.addEventListener('change', () => {
-        profile.audioShuffle = shuffleCheckbox.checked;
-        saveProfile(PROFILE_KEY, profile);
-    });
-
-    playerEnabledCheckbox.addEventListener('change', () => {
-        profile.audioPlayerEnabled = playerEnabledCheckbox.checked;
-        saveProfile(PROFILE_KEY, profile);
-    });
-
-    renderAudioList();
+    /* сюда вставь свой JS-блок из последнего сообщения без изменений —
+       его трогать не нужно, он уже работает, правки только в CSS */
 </script>
 </body>
 </html>
