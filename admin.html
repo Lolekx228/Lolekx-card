@@ -653,235 +653,731 @@
             .settings-card { padding: 18px 14px; }
             .section-title { font-size: 1.4rem; }
         }
+    
+
+        /* ===== Admin UI v0.3.0 ===== */
+        :root {
+            --admin-bg: #090a0d;
+            --admin-panel: rgba(18, 20, 25, 0.88);
+            --admin-panel-strong: #121419;
+            --admin-panel-soft: #171a20;
+            --admin-border: rgba(255,255,255,0.08);
+            --admin-border-strong: rgba(255,255,255,0.13);
+            --admin-text: #f7f7f8;
+            --admin-muted: #8e949f;
+            --admin-accent: #7c6cff;
+            --admin-accent-soft: rgba(124,108,255,0.15);
+            --admin-success: #53d88c;
+            --admin-danger: #ff6677;
+            --admin-radius: 22px;
+        }
+
+        html { scroll-behavior: smooth; }
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 18% -10%, rgba(124,108,255,0.13), transparent 34%),
+                radial-gradient(circle at 92% 8%, rgba(73,162,255,0.08), transparent 28%),
+                var(--admin-bg);
+            color: var(--admin-text);
+            padding: 0;
+            display: block;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: .18;
+            background-image: linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+            background-size: 48px 48px;
+            mask-image: linear-gradient(to bottom, #000, transparent 72%);
+        }
+
+        .admin-shell {
+            width: min(1460px, calc(100% - 36px));
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 238px minmax(0, 1fr);
+            gap: 26px;
+            padding: 22px 0 88px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .admin-sidebar {
+            position: sticky;
+            top: 22px;
+            align-self: start;
+            min-height: calc(100vh - 44px);
+            background: rgba(14,16,20,.78);
+            border: 1px solid var(--admin-border);
+            border-radius: 26px;
+            padding: 18px 14px;
+            backdrop-filter: blur(22px);
+            box-shadow: 0 24px 70px rgba(0,0,0,.26);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-block {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 7px 8px 20px;
+        }
+        .brand-mark {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(145deg, #8c7cff, #6657e8);
+            box-shadow: 0 10px 24px rgba(124,108,255,.28);
+            font-weight: 800;
+            font-size: .88rem;
+        }
+        .brand-copy strong { display: block; font-size: .93rem; letter-spacing: -.02em; }
+        .brand-copy span { display: block; color: var(--admin-muted); font-size: .7rem; margin-top: 2px; }
+
+        .sidebar-label {
+            padding: 0 10px;
+            margin: 9px 0 7px;
+            color: #646b76;
+            font-size: .62rem;
+            font-weight: 700;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+        .sidebar-nav { display: grid; gap: 4px; }
+        .sidebar-nav a {
+            color: #aeb3bc;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 11px;
+            border-radius: 13px;
+            font-size: .79rem;
+            font-weight: 550;
+            transition: .16s ease;
+        }
+        .sidebar-nav a:hover,
+        .sidebar-nav a:focus-visible,
+        .sidebar-nav a.active {
+            color: #fff;
+            background: rgba(124,108,255,.13);
+            outline: none;
+        }
+        .sidebar-nav a.active .nav-icon { background: rgba(124,108,255,.2); color: #c6c0ff; }
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            display: grid;
+            place-items: center;
+            border-radius: 8px;
+            background: rgba(255,255,255,.045);
+            font-size: .72rem;
+        }
+        .sidebar-foot {
+            margin-top: auto;
+            border-top: 1px solid var(--admin-border);
+            padding: 15px 8px 2px;
+            color: var(--admin-muted);
+            font-size: .68rem;
+            line-height: 1.45;
+        }
+        .sidebar-foot b { color: #d8dbe1; font-weight: 600; }
+
+        .admin-main { min-width: 0; }
+        .admin-hero {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 24px;
+            margin: 9px 2px 24px;
+        }
+        .hero-kicker {
+            color: #9188ff;
+            font-size: .7rem;
+            font-weight: 750;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            margin-bottom: 7px;
+        }
+        .admin-hero h1 {
+            font-size: clamp(1.9rem, 4vw, 3.2rem);
+            line-height: .98;
+            letter-spacing: -.055em;
+            font-weight: 750;
+            margin: 0;
+        }
+        .admin-hero p {
+            color: var(--admin-muted);
+            font-size: .82rem;
+            line-height: 1.55;
+            max-width: 630px;
+            margin-top: 11px;
+        }
+        .hero-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+        .hero-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 38px;
+            padding: 0 13px;
+            border-radius: 12px;
+            border: 1px solid var(--admin-border-strong);
+            background: rgba(255,255,255,.035);
+            color: #e9eaf0;
+            text-decoration: none;
+            font-size: .74rem;
+            font-weight: 600;
+            transition: .15s ease;
+        }
+        .hero-link:hover { background: rgba(255,255,255,.07); transform: translateY(-1px); }
+        .hero-link.primary { background: var(--admin-accent); border-color: transparent; color: #fff; }
+        .hero-link.primary:hover { background: #8b7cff; }
+
+        .status-strip {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 22px;
+        }
+        .status-card {
+            min-height: 78px;
+            border: 1px solid var(--admin-border);
+            background: rgba(17,19,24,.66);
+            border-radius: 17px;
+            padding: 13px 15px;
+        }
+        .status-card span { display: block; color: var(--admin-muted); font-size: .67rem; margin-bottom: 7px; }
+        .status-card strong { font-size: .82rem; font-weight: 650; }
+        .status-dot { width: 7px; height: 7px; display: inline-block; border-radius: 50%; background: var(--admin-success); margin-right: 7px; box-shadow: 0 0 12px rgba(83,216,140,.6); }
+
+        .customize-container { max-width: none; width: auto; margin: 0; }
+        .settings-section {
+            margin: 0 0 18px;
+            scroll-margin-top: 24px;
+            border: 1px solid var(--admin-border);
+            background: rgba(14,16,20,.66);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 55px rgba(0,0,0,.14);
+            backdrop-filter: blur(18px);
+        }
+        .section-heading {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 20px 22px 0;
+        }
+        .section-heading-copy { min-width: 0; }
+        .section-title {
+            display: block;
+            margin: 0;
+            font-size: 1.03rem;
+            font-weight: 680;
+            letter-spacing: -.02em;
+        }
+        .section-description {
+            display: block;
+            color: var(--admin-muted);
+            font-size: .72rem;
+            line-height: 1.5;
+            margin-top: 5px;
+        }
+        .section-tag {
+            color: #aaa3ff;
+            background: var(--admin-accent-soft);
+            border: 1px solid rgba(124,108,255,.22);
+            border-radius: 999px;
+            padding: 5px 8px;
+            font-size: .62rem;
+            white-space: nowrap;
+        }
+        .settings-card {
+            background: transparent;
+            border: 0;
+            border-radius: 0;
+            padding: 18px 22px 22px;
+        }
+
+        .media-row-horizontal {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+        }
+        .media-item {
+            max-width: none;
+            min-width: 0;
+            background: var(--admin-panel-soft);
+            border: 1px solid var(--admin-border);
+            border-radius: 17px;
+            padding: 13px;
+            text-align: left;
+            cursor: default;
+            transition: border-color .15s ease, transform .15s ease, background .15s ease;
+        }
+        .media-item:hover { background: #1a1d24; border-color: rgba(255,255,255,.14); transform: translateY(-1px); }
+        #openAudioManagerBtn { cursor: pointer; }
+        .media-label { color: #d9dbe1; font-size: .72rem; font-weight: 650; margin-bottom: 11px; }
+        .media-content { align-items: stretch; gap: 10px; }
+        .media-preview {
+            width: 100%;
+            height: 112px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 1px solid var(--admin-border);
+            background: #0d0f13;
+        }
+        .file-badge { position: absolute; opacity: 0; pointer-events: none; }
+        .file-input-wrapper { display: block; width: 100%; }
+        .file-input-button {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            background: rgba(255,255,255,.05);
+            border: 1px solid var(--admin-border);
+            border-radius: 10px;
+            padding: 8px 9px;
+            color: #dddfe5;
+            font-size: .68rem;
+        }
+        .file-input-button:hover { background: rgba(255,255,255,.085); }
+        .file-input-name {
+            display: block;
+            width: 100%;
+            margin-top: 6px;
+            color: #676e79;
+            font-size: .61rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .audio-placeholder, .cursor-placeholder {
+            min-height: 112px;
+            border-radius: 12px;
+            border: 1px dashed rgba(255,255,255,.12);
+            background: #0f1116;
+            color: #aeb3bc;
+            padding: 12px;
+        }
+        .audio-placeholder svg, .cursor-placeholder svg { width: 24px; height: 24px; opacity: .8; }
+
+        .settings-grid { gap: 16px; }
+        .two-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+        .settings-column { min-width: 0; }
+        .setting-item { margin-bottom: 0; }
+        .setting-label { color: #c9ccd3; font-size: .72rem; font-weight: 600; margin-bottom: 7px; }
+        .input-wrapper,
+        .color-input {
+            background: #0f1116;
+            border: 1px solid var(--admin-border);
+            border-radius: 12px;
+            transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+        }
+        .input-wrapper { min-height: 42px; padding: 9px 12px; }
+        .input-wrapper:focus-within,
+        .color-input:focus {
+            border-color: rgba(124,108,255,.55);
+            box-shadow: 0 0 0 3px rgba(124,108,255,.1);
+            background: #12151b;
+        }
+        .input-wrapper input { font-size: .78rem; }
+        .field-hint { color: #626a75; font-size: .62rem; line-height: 1.45; margin-top: 6px; }
+
+        .slider-box {
+            padding: 12px 13px 13px;
+            border-radius: 14px;
+            background: #0f1116;
+            border: 1px solid var(--admin-border);
+        }
+        .slider-head { display: flex; justify-content: space-between; gap: 8px; align-items: center; margin-bottom: 10px; }
+        .slider-head .setting-label { margin: 0; }
+        .slider-value {
+            color: #c8c4ff;
+            background: var(--admin-accent-soft);
+            padding: 3px 7px;
+            border-radius: 999px;
+            font-size: .64rem;
+            font-variant-numeric: tabular-nums;
+        }
+        .slider { height: 5px; background: #292d36; }
+        .slider::-webkit-slider-thumb { width: 15px; height: 15px; background: var(--admin-accent); box-shadow: 0 0 0 4px rgba(124,108,255,.12); }
+
+        .color-panel {
+            background: #0f1116;
+            border: 1px solid var(--admin-border);
+            border-radius: 14px;
+            padding: 12px;
+        }
+        .color-picker-row { margin-bottom: 0; gap: 8px; }
+        .color-swatch { width: 31px; height: 31px; border: 1px solid rgba(255,255,255,.2); border-radius: 9px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.15); }
+        .color-input { min-width: 0; height: 34px; padding: 6px 9px; font-size: .72rem; }
+        hr { border: 0; border-top: 1px solid var(--admin-border); margin: 16px 0; }
+
+        .checkbox-row,
+        .setting-switch {
+            min-height: 53px;
+            margin: 0 0 8px;
+            padding: 10px 12px;
+            border-radius: 13px;
+            background: #0f1116;
+            border: 1px solid var(--admin-border);
+        }
+        .checkbox-label { color: #d5d7dd; font-size: .74rem; font-weight: 550; }
+        .checkbox-row.is-disabled { opacity: .42; }
+        .checkbox-row.is-disabled .checkbox-label::after { display: block; margin-top: 3px; content: "нужен Discord API"; font-size: .59rem; }
+        .toggle-switch { width: 39px; height: 21px; }
+        .toggle-slider { background: #2b3038; border: 1px solid rgba(255,255,255,.07); }
+        .toggle-slider::before { width: 15px; height: 15px; left: 2px; top: 2px; }
+        .toggle-switch input:checked + .toggle-slider { background: var(--admin-accent); }
+        .toggle-switch input:checked + .toggle-slider::before { transform: translateX(18px); }
+
+        .publish-note {
+            margin: 0;
+            text-align: left;
+            color: var(--admin-muted);
+            font-size: .67rem;
+            line-height: 1.45;
+        }
+        .global-actions {
+            position: sticky;
+            bottom: 14px;
+            margin-top: 18px;
+            padding: 10px;
+            border-radius: 17px;
+            background: rgba(14,16,20,.88);
+            border: 1px solid var(--admin-border-strong);
+            box-shadow: 0 16px 45px rgba(0,0,0,.34);
+            backdrop-filter: blur(22px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            z-index: 20;
+        }
+        .action-buttons { display: flex; gap: 7px; flex-wrap: wrap; justify-content: flex-end; }
+        .global-actions button {
+            min-height: 36px;
+            border-radius: 11px;
+            padding: 0 12px;
+            border: 1px solid var(--admin-border-strong);
+            background: #181b21;
+            color: #e3e5e9;
+            font-size: .68rem;
+            font-weight: 600;
+        }
+        .global-actions button:hover { background: #20242c; }
+        .global-actions button.primary { background: var(--admin-accent); border-color: transparent; color: #fff; }
+        .global-actions button.primary:hover { background: #8b7cff; }
+        #resetProfileBtn { color: #ff9aa6; }
+
+        .modal-overlay { background: rgba(4,5,7,.72); backdrop-filter: blur(12px); padding: 18px; }
+        .audio-manager-modal, .edit-audio-modal {
+            background: #12151a;
+            border: 1px solid var(--admin-border-strong);
+            border-radius: 22px;
+            box-shadow: 0 30px 90px rgba(0,0,0,.5);
+        }
+        .modal-header, .edit-audio-modal-header { border-color: var(--admin-border); }
+        .modal-header h2, .edit-audio-modal-header h3 { letter-spacing: -.02em; }
+        .close-modal, .edit-audio-close { background: #1b1e24; border: 1px solid var(--admin-border); border-radius: 10px; }
+        .add-audio-btn, .btn-small { border-radius: 11px; }
+        .btn-small.primary { background: var(--admin-accent); border-color: transparent; }
+        .btn-small.primary:hover { background: #8b7cff; }
+        .toast { border-radius: 12px; background: #15181e; border-color: var(--admin-border-strong); box-shadow: 0 14px 40px rgba(0,0,0,.35); }
+
+        @media (max-width: 1080px) {
+            .admin-shell { grid-template-columns: 190px minmax(0,1fr); width: min(100% - 24px, 1180px); gap: 16px; }
+            .media-row-horizontal { grid-template-columns: repeat(2, minmax(0,1fr)); }
+            .status-strip { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 760px) {
+            .admin-shell { width: min(100% - 18px, 760px); display: block; padding-top: 10px; }
+            .admin-sidebar { position: sticky; top: 8px; min-height: auto; z-index: 50; padding: 9px; border-radius: 17px; margin-bottom: 18px; }
+            .brand-block, .sidebar-label, .sidebar-foot { display: none; }
+            .sidebar-nav { display: flex; gap: 5px; overflow-x: auto; scrollbar-width: none; }
+            .sidebar-nav::-webkit-scrollbar { display: none; }
+            .sidebar-nav a { white-space: nowrap; padding: 8px 10px; }
+            .nav-icon { display: none; }
+            .admin-hero { display: block; margin-top: 24px; }
+            .hero-actions { justify-content: flex-start; margin-top: 14px; }
+            .admin-hero h1 { font-size: 2.25rem; }
+            .two-columns, .media-row-horizontal { grid-template-columns: 1fr; }
+            .media-preview { height: 150px; }
+            .section-heading, .settings-card { padding-left: 15px; padding-right: 15px; }
+            .global-actions { align-items: stretch; flex-direction: column; }
+            .action-buttons { display: grid; grid-template-columns: repeat(2, 1fr); }
+            .global-actions button { width: 100%; }
+        }
+
     </style>
 </head>
 <body>
-<div class="customize-container">
-    <!-- Загрузка медиа -->
-    <div class="settings-section">
-        <span class="section-title">Загрузка медиа</span>
-        <div class="settings-card">
-            <div class="media-row-horizontal">
-                <div class="media-item">
-                    <div class="media-label">Фон</div>
-                    <div class="media-content">
-                        <div class="file-badge"><span>.WEBP</span><span>✕</span></div>
-                        <img class="media-preview" id="bgPreview" src="https://r2.guns.lol/404eaec9-de84-4ca0-b031-6059b171072a.webp" alt="фон">
-                        <label class="file-input-wrapper">
-                            <span class="file-input-button">Выбрать фон</span>
-                            <span class="file-input-name" id="bgFileName">Файл не выбран</span>
-                            <input type="file" id="bgFileInput" accept="image/*">
-                        </label>
+<div class="admin-shell">
+    <aside class="admin-sidebar">
+        <div class="brand-block">
+            <div class="brand-mark">LC</div>
+            <div class="brand-copy">
+                <strong>Lolekx Card</strong>
+                <span>панель настроек</span>
+            </div>
+        </div>
+
+        <div class="sidebar-label">Настройки</div>
+        <nav class="sidebar-nav" aria-label="Разделы админки">
+            <a href="#media"><span class="nav-icon">01</span>Медиа</a>
+            <a href="#profile"><span class="nav-icon">02</span>Профиль</a>
+            <a href="#colors"><span class="nav-icon">03</span>Цвета</a>
+            <a href="#behavior"><span class="nav-icon">04</span>Поведение</a>
+        </nav>
+
+        <div class="sidebar-foot">
+            <b>profile.json</b><br>
+            Экспортируй файл после настройки, чтобы опубликовать изменения для всех.
+        </div>
+    </aside>
+
+    <main class="admin-main">
+        <header class="admin-hero">
+            <div>
+                <div class="hero-kicker">Admin dashboard</div>
+                <h1>Настрой карточку<br>без лишнего шума.</h1>
+                <p>Все основные параметры собраны по разделам. Локальное сохранение остаётся для тестов, экспорт — для публикации.</p>
+            </div>
+            <div class="hero-actions">
+                <a class="hero-link" href="index.html" target="_blank" rel="noopener noreferrer">Открыть карточку ↗</a>
+                <a class="hero-link primary" href="#media">Начать настройку</a>
+            </div>
+        </header>
+
+        <div class="status-strip">
+            <div class="status-card"><span>Статус</span><strong><i class="status-dot"></i>Админка готова</strong></div>
+            <div class="status-card"><span>Публикация</span><strong>Экспорт profile.json</strong></div>
+            <div class="status-card"><span>Хранение</span><strong>Локально в браузере</strong></div>
+        </div>
+
+        <div class="customize-container">
+            <section class="settings-section" id="media">
+                <div class="section-heading">
+                    <div class="section-heading-copy">
+                        <span class="section-title">Медиа</span>
+                        <span class="section-description">Фон, аватар, музыка и пользовательский курсор.</span>
+                    </div>
+                    <span class="section-tag">4 источника</span>
+                </div>
+                <div class="settings-card">
+                    <div class="media-row-horizontal">
+                        <div class="media-item">
+                            <div class="media-label">Фон страницы</div>
+                            <div class="media-content">
+                                <div class="file-badge"><span>.WEBP</span><span>✕</span></div>
+                                <img class="media-preview" id="bgPreview" src="https://r2.guns.lol/404eaec9-de84-4ca0-b031-6059b171072a.webp" alt="фон">
+                                <label class="file-input-wrapper">
+                                    <span class="file-input-button">Заменить фон</span>
+                                    <span class="file-input-name" id="bgFileName">Файл не выбран</span>
+                                    <input type="file" id="bgFileInput" accept="image/*">
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="media-item" id="openAudioManagerBtn">
+                            <div class="media-label">Аудиоплеер</div>
+                            <div class="media-content audio-placeholder">
+                                <svg viewBox="0 0 24 24" fill="white"><path d="M14 22v-3.075l5.525-5.5q.225-.225.5-.325t.5-.1q.3 0 .575.113t.5.337l.925.925q.2.225.313.5t.112.55t-.1.563t-.325.512l-5.5 5.5zm6.575-5.6l.925-.975l-.925-.925l-.95.95zM4 20q-.825 0-1.412-.587T2 18V6q0-.825.588-1.412T4 4h6l2 2h8q.825 0 1.413.588T22 8v3.3q-.35-.15-.725-.225t-.75-.075q-.7 0-1.312.25T18.1 12L12 18.1V20z"/></svg>
+                                <span>Управлять треками</span>
+                            </div>
+                        </div>
+
+                        <div class="media-item">
+                            <div class="media-label">Аватар профиля</div>
+                            <div class="media-content">
+                                <div class="file-badge"><span>.WEBP</span><span>✕</span></div>
+                                <img class="media-preview" id="avatarPreview" src="https://r2.guns.lol/a90d9caf-a563-4b08-a030-1febdba3397e.webp" alt="аватар">
+                                <label class="file-input-wrapper">
+                                    <span class="file-input-button">Заменить аватар</span>
+                                    <span class="file-input-name" id="avatarFileName">Файл не выбран</span>
+                                    <input type="file" id="avatarFileInput" accept="image/*">
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="media-item">
+                            <div class="media-label">Курсор</div>
+                            <div class="media-content cursor-placeholder">
+                                <svg viewBox="0 0 24 24" fill="white"><path d="M5 3.2v16.1l4.1-4.1l2.6 5.6l2.3-1.1l-2.6-5.4h5.8z"/></svg>
+                                <label class="file-input-wrapper">
+                                    <span class="file-input-button">Выбрать курсор</span>
+                                    <span class="file-input-name" id="cursorFileName">Файл не выбран</span>
+                                    <input type="file" id="cursorFileInput" accept="image/png,image/webp,image/gif">
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </section>
 
-                <div class="media-item" id="openAudioManagerBtn">
-                    <div class="media-label">Аудио</div>
-                    <div class="media-content audio-placeholder">
-                        <svg viewBox="0 0 24 24" fill="white"><path d="M14 22v-3.075l5.525-5.5q.225-.225.5-.325t.5-.1q.3 0 .575.113t.5.337l.925.925q.2.225.313.5t.112.55t-.1.563t-.325.512l-5.5 5.5zm6.575-5.6l.925-.975l-.925-.925l-.95.95zM4 20q-.825 0-1.412-.587T2 18V6q0-.825.588-1.412T4 4h6l2 2h8q.825 0 1.413.588T22 8v3.3q-.35-.15-.725-.225t-.75-.075q-.7 0-1.312.25T18.1 12L12 18.1V20z"/></svg>
-                        <span>Открыть менеджер</span>
+            <section class="settings-section" id="profile">
+                <div class="section-heading">
+                    <div class="section-heading-copy">
+                        <span class="section-title">Профиль</span>
+                        <span class="section-description">Основной текст карточки и визуальная плотность блока.</span>
+                    </div>
+                    <span class="section-tag">Контент</span>
+                </div>
+                <div class="settings-card">
+                    <div class="settings-grid">
+                        <div class="two-columns">
+                            <div class="setting-item">
+                                <div class="setting-label">Имя профиля</div>
+                                <div class="input-wrapper"><input id="displayNameInput" type="text" value="Lolekx228"></div>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-label">Короткая локация</div>
+                                <div class="input-wrapper"><input id="locationShortInput" type="text" placeholder="Короткое" value="Україна, ДНР, Донецьк"></div>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-label">Описание</div>
+                            <div class="input-wrapper"><input id="descriptionInput" type="text" value="Hiii Me: Animation artist, Voice actor, Programmer, Web Developer, Game Developer, 3D modeler"></div>
+                            <div class="field-hint">Короткое описание выглядит лучше и не растягивает карточку.</div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-label">Полная локация</div>
+                            <div class="input-wrapper"><input id="locationFullInput" type="text" placeholder="Полное (подсказка)" value="Україна, Донецька Народна Республіка, Донецьк"></div>
+                        </div>
+
+                        <div class="two-columns">
+                            <div class="slider-box">
+                                <div class="slider-head"><div class="setting-label">Прозрачность профиля</div><span class="slider-value" id="opacityValue">90%</span></div>
+                                <input id="opacityInput" type="range" min="0.4" max="1" step="0.01" value="0.9" class="slider">
+                            </div>
+                            <div class="slider-box">
+                                <div class="slider-head"><div class="setting-label">Размытие фона</div><span class="slider-value" id="blurValue">10 px</span></div>
+                                <input id="blurInput" type="range" min="0" max="30" value="10" class="slider">
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </section>
 
-                <div class="media-item">
-                    <div class="media-label">Аватар профиля</div>
-                    <div class="media-content">
-                        <div class="file-badge"><span>.WEBP</span><span>✕</span></div>
-                        <img class="media-preview" id="avatarPreview" src="https://r2.guns.lol/a90d9caf-a563-4b08-a030-1febdba3397e.webp" alt="аватар">
-                        <label class="file-input-wrapper">
-                            <span class="file-input-button">Выбрать аватар</span>
-                            <span class="file-input-name" id="avatarFileName">Файл не выбран</span>
-                            <input type="file" id="avatarFileInput" accept="image/*">
-                        </label>
+            <section class="settings-section" id="colors">
+                <div class="section-heading">
+                    <div class="section-heading-copy">
+                        <span class="section-title">Цвета</span>
+                        <span class="section-description">Акцент, текст, фон, иконки и градиент профиля.</span>
+                    </div>
+                    <span class="section-tag">Внешний вид</span>
+                </div>
+                <div class="settings-card">
+                    <div class="two-columns">
+                        <div class="settings-column">
+                            <div class="color-panel">
+                                <div class="setting-label">Акцентный цвет</div>
+                                <div class="color-picker-row">
+                                    <div id="accentSwatch" class="color-swatch" style="background:#5b5b5b;"></div>
+                                    <input id="accentInput" class="color-input" value="#5b5b5b">
+                                </div>
+                                <div class="color-wheel-wrapper"><canvas id="accentColorWheel" width="160" height="160"></canvas></div>
+                            </div>
+                        </div>
+                        <div class="settings-column">
+                            <div class="color-panel">
+                                <div class="setting-label">Цвет текста</div>
+                                <div class="color-picker-row">
+                                    <div id="textSwatch" class="color-swatch" style="background:#ffffff;"></div>
+                                    <input id="textInput" class="color-input" value="#ffffff">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="settings-column">
+                            <div class="color-panel">
+                                <div class="setting-label">Цвет фона</div>
+                                <div class="color-picker-row">
+                                    <div id="bgColorSwatch" class="color-swatch" style="background:#080808;"></div>
+                                    <input id="bgColorInput" class="color-input" value="#080808">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="settings-column">
+                            <div class="color-panel">
+                                <div class="setting-label">Цвет иконок</div>
+                                <div class="color-picker-row">
+                                    <div id="iconColorSwatch" class="color-swatch" style="background:#ffffff;"></div>
+                                    <input id="iconColorInput" class="color-input" value="#ffffff">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <div class="checkbox-row">
+                        <span class="checkbox-label">Выключить градиент профиля</span>
+                        <label class="toggle-switch"><input id="gradientToggle" type="checkbox"><span class="toggle-slider"></span></label>
+                    </div>
+
+                    <div class="two-columns">
+                        <div class="color-panel">
+                            <div class="setting-label">Основной цвет градиента</div>
+                            <div class="color-picker-row">
+                                <div id="grad1Swatch" class="color-swatch" style="background:#6f0000;"></div>
+                                <input id="grad1Input" class="color-input" value="#6f0000">
+                            </div>
+                        </div>
+                        <div class="color-panel">
+                            <div class="setting-label">Дополнительный цвет градиента</div>
+                            <div class="color-picker-row">
+                                <div id="grad2Swatch" class="color-swatch" style="background:#933800;"></div>
+                                <input id="grad2Input" class="color-input" value="#933800">
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </section>
 
-                <div class="media-item">
-                    <div class="media-label">Пользовательский курсор</div>
-                    <div class="media-content cursor-placeholder">
-                        <svg viewBox="0 0 24 24" fill="white"><path d="M5 3.2v16.1l4.1-4.1l2.6 5.6l2.3-1.1l-2.6-5.4h5.8z"/></svg>
-                        <label class="file-input-wrapper">
-                            <span class="file-input-button">Выбрать курсор</span>
-                            <span class="file-input-name" id="cursorFileName">Файл не выбран</span>
-                            <input type="file" id="cursorFileInput" accept="image/png,image/webp,image/gif">
-                        </label>
+            <section class="settings-section" id="behavior">
+                <div class="section-heading">
+                    <div class="section-heading-copy">
+                        <span class="section-title">Поведение</span>
+                        <span class="section-description">Анимации, порядок блоков и дополнительные функции.</span>
                     </div>
+                    <span class="section-tag">Опции</span>
+                </div>
+                <div class="settings-card">
+                    <div class="two-columns">
+                        <div class="settings-column">
+                            <div class="checkbox-row"><span class="checkbox-label">Монохромные иконки</span><label class="toggle-switch"><input id="monochromeToggle" type="checkbox" checked><span class="toggle-slider"></span></label></div>
+                            <div class="checkbox-row"><span class="checkbox-label">Анимированный заголовок</span><label class="toggle-switch"><input id="animatedTitleToggle" type="checkbox" checked><span class="toggle-slider"></span></label></div>
+                            <div class="checkbox-row"><span class="checkbox-label">Поменять блоки местами</span><label class="toggle-switch"><input id="swapBlocksToggle" type="checkbox"><span class="toggle-slider"></span></label></div>
+                        </div>
+                        <div class="settings-column">
+                            <div class="checkbox-row"><span class="checkbox-label">Регулятор громкости</span><label class="toggle-switch"><input id="volumeToggle" type="checkbox" checked><span class="toggle-slider"></span></label></div>
+                            <div class="checkbox-row is-disabled"><span class="checkbox-label">Использовать аватар Discord</span><label class="toggle-switch"><input id="discordAvatarToggle" type="checkbox" disabled><span class="toggle-slider"></span></label></div>
+                            <div class="checkbox-row is-disabled"><span class="checkbox-label">Декор аватара Discord</span><label class="toggle-switch"><input id="discordDecorToggle" type="checkbox" disabled><span class="toggle-slider"></span></label></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="global-actions">
+                <div class="publish-note">Локальное сохранение — для проверки. Для публикации экспортируй <b>profile.json</b>.</div>
+                <div class="action-buttons">
+                    <button id="resetProfileBtn">Сбросить</button>
+                    <button id="saveDefaultBtn">Сделать дефолтом</button>
+                    <button id="exportProfileBtn">Экспорт JSON</button>
+                    <button class="primary" id="saveProfileBtn">Сохранить</button>
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Общие настройки -->
-    <div class="settings-section">
-        <span class="section-title">Общие настройки</span>
-        <div class="settings-card">
-            <div class="settings-grid">
-                <div class="setting-item">
-                    <div class="setting-label">Имя профиля</div>
-                    <div class="input-wrapper">
-                        <input id="displayNameInput" type="text" value="Lolekx228">
-                    </div>
-                </div>
-                <div class="setting-item">
-                    <div class="setting-label">Описание</div>
-                    <div class="input-wrapper">
-                        <input id="descriptionInput" type="text" value="Hiii Me: Animation artist, Voice actor, Programmer, Web Developer, Game Developer, 3D modeler">
-                    </div>
-                </div>
-                <div class="two-columns">
-                    <div class="settings-column">
-                        <div class="setting-label">Прозрачность профиля</div>
-                        <div class="slider-container">
-                            <input id="opacityInput" type="range" min="0.4" max="1" step="0.01" value="0.9" class="slider">
-                        </div>
-                    </div>
-                    <div class="settings-column">
-                        <div class="setting-label">Размытие фона</div>
-                        <div class="slider-container">
-                            <input id="blurInput" type="range" min="0" max="30" value="10" class="slider">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="setting-item">
-                    <div class="setting-label">Местоположение</div>
-                    <div class="location-row">
-                        <div class="input-wrapper">
-                            <input id="locationShortInput" type="text" placeholder="Короткое" value="Україна, ДНР, Донецьк">
-                        </div>
-                        <div class="input-wrapper">
-                            <input id="locationFullInput" type="text" placeholder="Полное (подсказка)" value="Україна, Донецька Народна Республіка, Донецьк">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Настройка цветов -->
-    <div class="settings-section">
-        <span class="section-title">Настройка цветов</span>
-        <div class="settings-card">
-            <div class="two-columns">
-                <div class="settings-column">
-                    <div class="setting-label">Акцентный цвет</div>
-                    <div class="color-picker-row">
-                        <div id="accentSwatch" class="color-swatch" style="background:#5b5b5b;"></div>
-                        <input id="accentInput" class="color-input" value="#5b5b5b">
-                    </div>
-                    <div class="color-wheel-wrapper">
-                        <canvas id="accentColorWheel" width="160" height="160"></canvas>
-                    </div>
-
-                    <div class="setting-label">Цвет текста</div>
-                    <div class="color-picker-row">
-                        <div id="textSwatch" class="color-swatch" style="background:#ffffff;"></div>
-                        <input id="textInput" class="color-input" value="#ffffff">
-                    </div>
-                </div>
-                <div class="settings-column">
-                    <div class="setting-label">Цвет фона</div>
-                    <div class="color-picker-row">
-                        <div id="bgColorSwatch" class="color-swatch" style="background:#080808;"></div>
-                        <input id="bgColorInput" class="color-input" value="#080808">
-                    </div>
-                    <div class="setting-label">Цвет иконок (соц. сети)</div>
-                    <div class="color-picker-row">
-                        <div id="iconColorSwatch" class="color-swatch" style="background:#ffffff;"></div>
-                        <input id="iconColorInput" class="color-input" value="#ffffff">
-                    </div>
-                </div>
-            </div>
-            <hr>
-            <div class="checkbox-row">
-                <span class="checkbox-label">Выключить градиент профиля</span>
-                <label class="toggle-switch">
-                    <input id="gradientToggle" type="checkbox">
-                    <span class="toggle-slider"></span>
-                </label>
-            </div>
-            <div class="two-columns">
-                <div class="settings-column">
-                    <div class="setting-label">Основной цвет градиента</div>
-                    <div class="color-picker-row">
-                        <div id="grad1Swatch" class="color-swatch" style="background:#6f0000;"></div>
-                        <input id="grad1Input" class="color-input" value="#6f0000">
-                    </div>
-                </div>
-                <div class="settings-column">
-                    <div class="setting-label">Дополнительный цвет градиента</div>
-                    <div class="color-picker-row">
-                        <div id="grad2Swatch" class="color-swatch" style="background:#933800;"></div>
-                        <input id="grad2Input" class="color-input" value="#933800">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Другие настройки -->
-    <div class="settings-section">
-        <span class="section-title">Другие настройки</span>
-        <div class="settings-card">
-            <div class="two-columns">
-                <div class="settings-column">
-                    <div class="checkbox-row">
-                        <span class="checkbox-label">Монохромные иконки</span>
-                        <label class="toggle-switch">
-                            <input id="monochromeToggle" type="checkbox" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-                    <div class="checkbox-row">
-                        <span class="checkbox-label">Анимированный заголовок</span>
-                        <label class="toggle-switch">
-                            <input id="animatedTitleToggle" type="checkbox" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-                    <div class="checkbox-row">
-                        <span class="checkbox-label">Поменять блоки местами</span>
-                        <label class="toggle-switch">
-                            <input id="swapBlocksToggle" type="checkbox">
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-                </div>
-                <div class="settings-column">
-                    <div class="checkbox-row">
-                        <span class="checkbox-label">Регулятор громкости</span>
-                        <label class="toggle-switch">
-                            <input id="volumeToggle" type="checkbox" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-                    <div class="checkbox-row is-disabled">
-                        <span class="checkbox-label">Использовать аватар Discord</span>
-                        <label class="toggle-switch">
-                            <input id="discordAvatarToggle" type="checkbox" disabled>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-                    <div class="checkbox-row is-disabled">
-                        <span class="checkbox-label">Декор аватара Discord</span>
-                        <label class="toggle-switch">
-                            <input id="discordDecorToggle" type="checkbox" disabled>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Глобальные кнопки -->
-    <div class="publish-note">Локальное сохранение видно только в этом браузере. Для публикации настроек экспортируйте <b>profile.json</b> и замените файл в проекте.</div>
-    <div class="global-actions">
-        <button id="resetProfileBtn">Сбросить</button>
-        <button id="saveDefaultBtn">Локально как дефолт</button>
-        <button id="exportProfileBtn">Экспорт profile.json</button>
-        <button class="primary" id="saveProfileBtn">Сохранить локально</button>
-    </div>
+    </main>
 </div>
 
 <div id="toast" class="toast">
@@ -1213,6 +1709,7 @@
 
         shuffleCheckbox.checked = profile.audioShuffle;
         playerEnabledCheckbox.checked = profile.audioPlayerEnabled;
+        if (typeof updateSliderLabels === 'function') updateSliderLabels();
     }
 
     function collectProfileFromUI() {
@@ -1614,6 +2111,36 @@
             colorWheelWrapper.classList.remove('active');
         }
     });
+
+
+    const sectionNavLinks = Array.from(document.querySelectorAll('.sidebar-nav a[href^="#"]'));
+    const observedSections = sectionNavLinks
+        .map(link => document.querySelector(link.getAttribute('href')))
+        .filter(Boolean);
+
+    if ('IntersectionObserver' in window && observedSections.length) {
+        const sectionObserver = new IntersectionObserver((entries) => {
+            const visible = entries
+                .filter(entry => entry.isIntersecting)
+                .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+            if (!visible) return;
+            sectionNavLinks.forEach(link => {
+                link.classList.toggle('active', link.getAttribute('href') === `#${visible.target.id}`);
+            });
+        }, { rootMargin: '-16% 0px -68% 0px', threshold: [0.05, 0.2, 0.5] });
+        observedSections.forEach(section => sectionObserver.observe(section));
+    }
+
+    const opacityValue = document.getElementById('opacityValue');
+    const blurValue = document.getElementById('blurValue');
+
+    function updateSliderLabels() {
+        if (opacityValue) opacityValue.textContent = `${Math.round(Number(opacityInput.value) * 100)}%`;
+        if (blurValue) blurValue.textContent = `${Math.round(Number(blurInput.value))} px`;
+    }
+
+    opacityInput.addEventListener('input', updateSliderLabels);
+    blurInput.addEventListener('input', updateSliderLabels);
 
     drawColorWheel();
     (async function init() {
