@@ -2125,10 +2125,15 @@
 
     function normalizeProfileConfig(raw) {
         if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return deepClone(baseProfile);
-        const hasSections = raw.profile && typeof raw.profile === 'object' || raw.settings && typeof raw.settings === 'object';
-        const patch = hasSections
-            ? { ...(raw.profile || {}), ...(raw.settings || {}) }
-            : raw;
+
+        let patch = raw;
+        if (raw.profile && typeof raw.profile === 'object' && !Array.isArray(raw.profile)) {
+            patch = { ...raw.profile, ...(raw.settings && typeof raw.settings === 'object' ? raw.settings : {}) };
+        } else if (raw.settings && typeof raw.settings === 'object' && !Array.isArray(raw.settings)) {
+            const { settings, schemaVersion, updatedAt, ...legacyProfile } = raw;
+            patch = { ...legacyProfile, ...settings };
+        }
+
         return { ...deepClone(baseProfile), ...patch };
     }
 
@@ -2144,7 +2149,7 @@
         return {
             schemaVersion: PROFILE_SCHEMA_VERSION,
             updatedAt: new Date().toISOString(),
-            profile: card,
+            ...card,
             settings
         };
     }
@@ -2248,19 +2253,53 @@
         return record;
     }
 
+    function dataUrlToBlob(ref) {
+        if (typeof ref !== 'string' || !ref.startsWith('data:')) return null;
+        const commaIndex = ref.indexOf(',');
+        if (commaIndex < 0) return null;
+
+        const meta = ref.slice(5, commaIndex);
+        const payload = ref.slice(commaIndex + 1);
+        const parts = meta.split(';').filter(Boolean);
+        const mime = parts[0] && !parts[0].includes('=') ? parts[0] : 'application/octet-stream';
+        const isBase64 = parts.includes('base64');
+
+        try {
+            if (!isBase64) return new Blob([decodeURIComponent(payload)], { type: mime });
+            const binary = atob(payload.replace(/\s/g, ''));
+            const bytes = new Uint8Array(binary.length);
+            const CHUNK = 1024 * 1024;
+            for (let offset = 0; offset < binary.length; offset += CHUNK) {
+                const end = Math.min(binary.length, offset + CHUNK);
+                for (let i = offset; i < end; i++) bytes[i] = binary.charCodeAt(i);
+            }
+            return new Blob([bytes], { type: mime });
+        } catch (error) {
+            console.warn('Не удалось декодировать встроенный файл из profile.json.', error);
+            return null;
+        }
+    }
+
     async function resolveAssetUrl(ref, cacheKey = '') {
+        let blob = null;
         if (isIndexedAssetRef(ref)) {
             const record = await getAssetRecord(ref);
-            if (!record?.blob) return '';
-            const url = URL.createObjectURL(record.blob);
-            if (cacheKey) {
-                const previous = previewObjectUrls.get(cacheKey);
-                if (previous) URL.revokeObjectURL(previous);
-                previewObjectUrls.set(cacheKey, url);
-            }
-            return url;
+            blob = record?.blob || null;
+            if (!blob) return '';
+        } else if (typeof ref === 'string' && ref.startsWith('data:')) {
+            blob = dataUrlToBlob(ref);
+            if (!blob) return '';
+        } else {
+            return isSafeRemoteUrl(ref) ? ref : '';
         }
-        return isSafeRemoteUrl(ref) ? ref : '';
+
+        const url = URL.createObjectURL(blob);
+        if (cacheKey) {
+            const previous = previewObjectUrls.get(cacheKey);
+            if (previous) URL.revokeObjectURL(previous);
+            previewObjectUrls.set(cacheKey, url);
+        }
+        return url;
     }
 
     async function setImagePreview(img, ref, cacheKey) {
