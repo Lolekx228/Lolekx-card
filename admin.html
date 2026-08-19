@@ -655,7 +655,7 @@
         }
     
 
-        /* ===== Admin UI v0.3.0 ===== */
+        /* ===== Admin UI v0.3.1 ===== */
         :root {
             --admin-bg: #090a0d;
             --admin-panel: rgba(18, 20, 25, 0.88);
@@ -1160,7 +1160,7 @@
         <div class="status-strip">
             <div class="status-card"><span>Статус</span><strong><i class="status-dot"></i>Админка готова</strong></div>
             <div class="status-card"><span>Публикация</span><strong>Экспорт profile.json</strong></div>
-            <div class="status-card"><span>Хранение</span><strong>Локально в браузере</strong></div>
+            <div class="status-card"><span>Хранение</span><strong>IndexedDB для файлов</strong></div>
         </div>
 
         <div class="customize-container">
@@ -1433,16 +1433,16 @@
         </div>
 
         <div class="edit-row">
-            <div class="edit-label">URL аудио (лучше для больших файлов)</div>
+            <div class="edit-label">URL аудио</div>
             <input type="url" id="editAudioUrlInput" class="edit-input-text" placeholder="https://example.com/track.mp3">
         </div>
 
         <div class="edit-row">
-            <div class="edit-label">Файл аудио (.mp3, до 2 МБ для локального хранения)</div>
+            <div class="edit-label">Аудиофайл (локальное хранилище браузера)</div>
             <div class="file-input-wrapper">
                 <span class="file-input-button">Выбрать аудио</span>
                 <span class="file-input-name" id="editAudioFileName">Файл не выбран</span>
-                <input type="file" id="editAudioFile" accept="audio/mpeg,audio/mp3">
+                <input type="file" id="editAudioFile" accept="audio/*">
             </div>
         </div>
 
@@ -1452,7 +1452,7 @@
         </div>
 
         <div class="edit-row">
-            <div class="edit-label">Обложка (до 1 МБ для локального хранения)</div>
+            <div class="edit-label">Обложка (локальное хранилище браузера)</div>
             <div class="file-input-wrapper">
                 <span class="file-input-button">Выбрать обложку</span>
                 <span class="file-input-name" id="editCoverFileName">Файл не выбран</span>
@@ -1553,18 +1553,116 @@
         }
     }
 
-    function fileToDataUrl(file, maxBytes, label) {
+    const ASSET_DB_NAME = 'lolekx-card-assets-v1';
+    const ASSET_STORE_NAME = 'assets';
+    const previewObjectUrls = new Map();
+
+    function isIndexedAssetRef(value) {
+        return typeof value === 'string' && value.startsWith('idb:');
+    }
+
+    function openAssetDb() {
         return new Promise((resolve, reject) => {
-            if (!file) return resolve(null);
-            if (file.size > maxBytes) {
-                reject(new Error(`${label}: файл слишком большой (${(file.size / 1024 / 1024).toFixed(1)} МБ)`));
-                return;
+            const request = indexedDB.open(ASSET_DB_NAME, 1);
+            request.onupgradeneeded = () => {
+                const db = request.result;
+                if (!db.objectStoreNames.contains(ASSET_STORE_NAME)) {
+                    db.createObjectStore(ASSET_STORE_NAME, { keyPath: 'id' });
+                }
+            };
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => reject(request.error || new Error('Не удалось открыть хранилище файлов'));
+        });
+    }
+
+    async function storeAsset(file, kind = 'asset') {
+        if (!file) return '';
+        const db = await openAssetDb();
+        const id = `${kind}-${crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`}`;
+        await new Promise((resolve, reject) => {
+            const tx = db.transaction(ASSET_STORE_NAME, 'readwrite');
+            tx.objectStore(ASSET_STORE_NAME).put({
+                id,
+                blob: file,
+                name: file.name || id,
+                type: file.type || '',
+                size: file.size || 0,
+                updatedAt: Date.now()
+            });
+            tx.oncomplete = resolve;
+            tx.onerror = () => reject(tx.error || new Error('Не удалось сохранить файл'));
+            tx.onabort = () => reject(tx.error || new Error('Сохранение файла отменено'));
+        });
+        db.close();
+        return `idb:${id}`;
+    }
+
+    async function getAssetRecord(ref) {
+        if (!isIndexedAssetRef(ref)) return null;
+        const db = await openAssetDb();
+        const id = ref.slice(4);
+        const record = await new Promise((resolve, reject) => {
+            const tx = db.transaction(ASSET_STORE_NAME, 'readonly');
+            const request = tx.objectStore(ASSET_STORE_NAME).get(id);
+            request.onsuccess = () => resolve(request.result || null);
+            request.onerror = () => reject(request.error || new Error('Не удалось прочитать файл'));
+        });
+        db.close();
+        return record;
+    }
+
+    async function resolveAssetUrl(ref, cacheKey = '') {
+        if (isIndexedAssetRef(ref)) {
+            const record = await getAssetRecord(ref);
+            if (!record?.blob) return '';
+            const url = URL.createObjectURL(record.blob);
+            if (cacheKey) {
+                const previous = previewObjectUrls.get(cacheKey);
+                if (previous) URL.revokeObjectURL(previous);
+                previewObjectUrls.set(cacheKey, url);
             }
+            return url;
+        }
+        return isSafeRemoteUrl(ref) ? ref : '';
+    }
+
+    async function setImagePreview(img, ref, cacheKey) {
+        const url = await resolveAssetUrl(ref, cacheKey);
+        img.src = url || '';
+    }
+
+    async function setBackgroundPreview(element, ref, cacheKey) {
+        const url = await resolveAssetUrl(ref, cacheKey);
+        element.style.backgroundImage = url ? `url(${JSON.stringify(url)})` : 'none';
+    }
+
+    function blobToDataUrl(blob) {
+        return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = () => resolve(reader.result);
-            reader.onerror = () => reject(new Error(`${label}: не удалось прочитать файл`));
-            reader.readAsDataURL(file);
+            reader.onerror = () => reject(reader.error || new Error('Не удалось подготовить файл для экспорта'));
+            reader.readAsDataURL(blob);
         });
+    }
+
+    async function portableAssetRef(ref) {
+        if (!isIndexedAssetRef(ref)) return ref;
+        const record = await getAssetRecord(ref);
+        return record?.blob ? await blobToDataUrl(record.blob) : '';
+    }
+
+    async function makePortableProfile(source) {
+        const out = deepClone(source);
+        out.backgroundUrl = await portableAssetRef(out.backgroundUrl);
+        out.avatarUrl = await portableAssetRef(out.avatarUrl);
+        out.cursorUrl = await portableAssetRef(out.cursorUrl);
+        if (Array.isArray(out.audio)) {
+            for (const track of out.audio) {
+                track.url = await portableAssetRef(track.url);
+                track.cover = await portableAssetRef(track.cover);
+            }
+        }
+        return out;
     }
 
     let publishedProfile = deepClone(baseProfile);
@@ -1669,7 +1767,7 @@
         }, 2200);
     }
 
-    function applyProfileToUI() {
+    async function applyProfileToUI() {
         displayNameInput.value = profile.displayName;
         descriptionInput.value = profile.description;
         locationShortInput.value = profile.locationShort;
@@ -1704,8 +1802,8 @@
         discordAvatarToggle.checked = profile.discordAvatar;
         discordDecorToggle.checked = profile.discordDecor;
 
-        bgPreview.src = profile.backgroundUrl;
-        avatarPreview.src = profile.avatarUrl;
+        await setImagePreview(bgPreview, profile.backgroundUrl, 'admin-bg');
+        await setImagePreview(avatarPreview, profile.avatarUrl, 'admin-avatar');
 
         shuffleCheckbox.checked = profile.audioShuffle;
         playerEnabledCheckbox.checked = profile.audioPlayerEnabled;
@@ -1764,37 +1862,37 @@
     bindColorInput(grad1Input, grad1Swatch, 'gradient1');
     bindColorInput(grad2Input, grad2Swatch, 'gradient2');
 
-    async function handleImageFile(input, previewImg, nameLabel, profileKey, maxBytes = 1024 * 1024) {
+    async function handleImageFile(input, previewImg, nameLabel, profileKey, kind, cacheKey) {
         const file = input.files[0];
         if (!file) return;
         nameLabel.textContent = file.name;
         try {
-            const dataUrl = await fileToDataUrl(file, maxBytes, file.name);
-            previewImg.src = dataUrl;
-            profile[profileKey] = dataUrl;
+            const ref = await storeAsset(file, kind);
+            profile[profileKey] = ref;
+            await setImagePreview(previewImg, ref, cacheKey);
         } catch (error) {
             input.value = '';
             nameLabel.textContent = 'Файл не выбран';
-            showToast(error.message);
+            showToast(error?.message || 'Не удалось сохранить файл');
         }
     }
 
     bgFileInput.addEventListener('change', () => {
-        handleImageFile(bgFileInput, bgPreview, bgFileName, 'backgroundUrl', 1024 * 1024);
+        handleImageFile(bgFileInput, bgPreview, bgFileName, 'backgroundUrl', 'background', 'admin-bg');
     });
     avatarFileInput.addEventListener('change', () => {
-        handleImageFile(avatarFileInput, avatarPreview, avatarFileName, 'avatarUrl', 1024 * 1024);
+        handleImageFile(avatarFileInput, avatarPreview, avatarFileName, 'avatarUrl', 'avatar', 'admin-avatar');
     });
     cursorFileInput.addEventListener('change', async () => {
         const file = cursorFileInput.files[0];
         if (!file) return;
         cursorFileName.textContent = file.name;
         try {
-            profile.cursorUrl = await fileToDataUrl(file, 128 * 1024, file.name);
+            profile.cursorUrl = await storeAsset(file, 'cursor');
         } catch (error) {
             cursorFileInput.value = '';
             cursorFileName.textContent = 'Файл не выбран';
-            showToast(error.message);
+            showToast(error?.message || 'Не удалось сохранить файл');
         }
     });
 
@@ -1845,8 +1943,8 @@
             <button class="edit-audio-btn">Редактировать</button>
         `;
         const coverEl = div.querySelector('.audio-cover-small');
-        if (coverUrl && isSafeRemoteUrl(coverUrl)) {
-            coverEl.style.backgroundImage = `url(${JSON.stringify(coverUrl)})`;
+        if (coverUrl) {
+            setBackgroundPreview(coverEl, coverUrl, `audio-list-${index}`).catch(() => {});
         }
 
         div.addEventListener('click', () => {
@@ -1897,15 +1995,15 @@
         editingIndex = index;
         const track = profile.audio[index] || {};
         editTitleInput.value = track.title || '';
-        editAudioUrlInput.value = track.url && !track.url.startsWith('data:') && !track.url.startsWith('blob:') ? track.url : '';
-        editCoverUrlInput.value = track.cover && !track.cover.startsWith('data:') && !track.cover.startsWith('blob:') ? track.cover : '';
+        editAudioUrlInput.value = track.url && !track.url.startsWith('data:') && !track.url.startsWith('blob:') && !isIndexedAssetRef(track.url) ? track.url : '';
+        editCoverUrlInput.value = track.cover && !track.cover.startsWith('data:') && !track.cover.startsWith('blob:') && !isIndexedAssetRef(track.cover) ? track.cover : '';
         editAudioFile.value = '';
         editCoverFile.value = '';
         editAudioFileName.textContent = 'Файл не выбран';
         editCoverFileName.textContent = 'Файл не выбран';
-        editCoverPreview.style.backgroundImage = track.cover && isSafeRemoteUrl(track.cover)
-            ? `url(${JSON.stringify(track.cover)})`
-            : 'none';
+        setBackgroundPreview(editCoverPreview, track.cover || '', 'edit-cover').catch(() => {
+            editCoverPreview.style.backgroundImage = 'none';
+        });
         if (track.url && track.url.startsWith('blob:')) {
             editAudioFileName.textContent = 'Старая blob:-ссылка недействительна — выберите файл заново';
         }
@@ -1933,11 +2031,11 @@
         const file = editCoverFile.files[0];
         if (!file) return;
         editCoverFileName.textContent = file.name;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            editCoverPreview.style.backgroundImage = `url(${JSON.stringify(e.target.result)})`;
-        };
-        reader.readAsDataURL(file);
+        const previewUrl = URL.createObjectURL(file);
+        const previous = previewObjectUrls.get('edit-cover-file');
+        if (previous) URL.revokeObjectURL(previous);
+        previewObjectUrls.set('edit-cover-file', previewUrl);
+        editCoverPreview.style.backgroundImage = `url(${JSON.stringify(previewUrl)})`;
     });
 
     saveEditBtn.addEventListener('click', async () => {
@@ -1961,7 +2059,7 @@
             const audioFile = editAudioFile.files[0];
             const coverFile = editCoverFile.files[0];
             if (audioFile) {
-                track.url = await fileToDataUrl(audioFile, 2 * 1024 * 1024, audioFile.name);
+                track.url = await storeAsset(audioFile, 'audio');
             } else if (remoteAudioUrl) {
                 track.url = remoteAudioUrl;
             } else if (track.url?.startsWith('blob:')) {
@@ -1969,7 +2067,7 @@
             }
 
             if (coverFile) {
-                track.cover = await fileToDataUrl(coverFile, 1024 * 1024, coverFile.name);
+                track.cover = await storeAsset(coverFile, 'audio-cover');
             } else if (remoteCoverUrl) {
                 track.cover = remoteCoverUrl;
             }
@@ -1997,29 +2095,35 @@
         }
     });
 
-    exportProfileBtn.addEventListener('click', () => {
+    exportProfileBtn.addEventListener('click', async () => {
         collectProfileFromUI();
-        const json = JSON.stringify(profile, null, 2) + '\n';
-        const blob = new Blob([json], { type: 'application/json;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'profile.json';
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        URL.revokeObjectURL(url);
-        showToast('profile.json экспортирован — замените им файл в проекте');
+        try {
+            const portableProfile = await makePortableProfile(profile);
+            const json = JSON.stringify(portableProfile, null, 2) + '\n';
+            const blob = new Blob([json], { type: 'application/json;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'profile.json';
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            URL.revokeObjectURL(url);
+            showToast('profile.json экспортирован вместе с локальными файлами');
+        } catch (error) {
+            console.error(error);
+            showToast('Не удалось экспортировать локальные файлы');
+        }
     });
 
-    resetProfileBtn.addEventListener('click', () => {
+    resetProfileBtn.addEventListener('click', async () => {
         const savedDefaultRaw = localStorage.getItem(PROFILE_DEFAULT_KEY);
         if (savedDefaultRaw) {
             profile = loadProfile(PROFILE_DEFAULT_KEY, publishedProfile);
         } else {
             profile = deepClone(publishedProfile);
         }
-        applyProfileToUI();
+        await applyProfileToUI();
         renderAudioList();
         if (saveProfile(PROFILE_KEY, profile)) {
             showToast('Настройки сброшены до дефолтных');
@@ -2146,7 +2250,7 @@
     (async function init() {
         publishedProfile = await loadPublishedProfile();
         profile = loadLocalProfile(publishedProfile);
-        applyProfileToUI();
+        await applyProfileToUI();
         renderAudioList();
     })();
 </script>

@@ -302,6 +302,22 @@
       background: rgba(255,255,255,0.16);
     }
 
+    .ctrl-btn svg {
+      width: 17px;
+      height: 17px;
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .play-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
     .play-btn {
       background: #ffffff;
       color: #000000;
@@ -447,6 +463,7 @@
   let currentVolume = 0.5;
   let lastNonZeroVolume = 0.5;
   let audio = null;
+  let playerRenderVersion = 0;
 
   function deepMergeProfile(base, patch) {
     if (!patch || typeof patch !== 'object' || Array.isArray(patch)) return { ...base };
@@ -500,8 +517,54 @@
     }
   }
 
-  function setBackgroundImage(element, value) {
-    const url = safeUrl(value);
+  const ASSET_DB_NAME = 'lolekx-card-assets-v1';
+  const ASSET_STORE_NAME = 'assets';
+  const runtimeAssetUrls = new Map();
+
+  function isIndexedAssetRef(value) {
+    return typeof value === 'string' && value.startsWith('idb:');
+  }
+
+  function openAssetDb() {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(ASSET_DB_NAME, 1);
+      request.onupgradeneeded = () => {
+        const db = request.result;
+        if (!db.objectStoreNames.contains(ASSET_STORE_NAME)) {
+          db.createObjectStore(ASSET_STORE_NAME, { keyPath: 'id' });
+        }
+      };
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error || new Error('Не удалось открыть хранилище файлов'));
+    });
+  }
+
+  async function resolveAssetUrl(value) {
+    if (!isIndexedAssetRef(value)) return safeUrl(value);
+    try {
+      const db = await openAssetDb();
+      const id = value.slice(4);
+      const record = await new Promise((resolve, reject) => {
+        const tx = db.transaction(ASSET_STORE_NAME, 'readonly');
+        const request = tx.objectStore(ASSET_STORE_NAME).get(id);
+        request.onsuccess = () => resolve(request.result || null);
+        request.onerror = () => reject(request.error || new Error('Не удалось прочитать локальный файл'));
+      });
+      db.close();
+      if (!record?.blob) return '';
+      const cached = runtimeAssetUrls.get(value);
+      if (cached) return cached;
+      const url = URL.createObjectURL(record.blob);
+      runtimeAssetUrls.set(value, url);
+      return url;
+    } catch (error) {
+      console.warn('Не удалось загрузить локальный файл из IndexedDB.', error);
+      return '';
+    }
+  }
+
+  async function setBackgroundImage(element, value) {
+    const url = await resolveAssetUrl(value);
     element.style.backgroundImage = url ? `url(${JSON.stringify(url)})` : 'none';
   }
 
@@ -532,7 +595,7 @@
     }
   }
 
-  function applyProfile() {
+  async function applyProfile() {
     const blurValue = Number.isFinite(Number(profile.blur)) ? Math.max(0, Number(profile.blur)) : 10;
     const opacityValue = Number.isFinite(Number(profile.opacity)) ? Math.min(1, Math.max(0.4, Number(profile.opacity))) : 0.9;
     const accentColor = profile.accentColor || '#5b5b5b';
@@ -541,11 +604,14 @@
 
     document.documentElement.style.setProperty('--accent-color', accentColor);
     document.body.style.backgroundColor = profile.bgColor || '#080808';
-    document.body.style.cursor = safeUrl(profile.cursorUrl, ['data:', 'http:', 'https:'])
-      ? `url(${JSON.stringify(safeUrl(profile.cursorUrl, ['data:', 'http:', 'https:']))}) 0 0, auto`
+    const cursorAssetUrl = isIndexedAssetRef(profile.cursorUrl)
+      ? await resolveAssetUrl(profile.cursorUrl)
+      : safeUrl(profile.cursorUrl, ['data:', 'http:', 'https:']);
+    document.body.style.cursor = cursorAssetUrl
+      ? `url(${JSON.stringify(cursorAssetUrl)}) 0 0, auto`
       : 'auto';
 
-    setBackgroundImage(bgBlur, profile.backgroundUrl);
+    await setBackgroundImage(bgBlur, profile.backgroundUrl);
     bgBlur.style.filter = `blur(${blurValue}px) brightness(0.7)`;
 
     const grad = `linear-gradient(25deg, ${profile.gradient1 || '#6f0000'}, ${profile.gradient2 || '#933800'})`;
@@ -569,7 +635,7 @@
     locationTooltipEl.textContent = locFull;
     locationWrapper.classList.toggle('is-hidden', !locShort);
 
-    const avatarUrl = safeUrl(profile.avatarUrl);
+    const avatarUrl = await resolveAssetUrl(profile.avatarUrl);
     avatar.src = avatarUrl || '';
     avatar.classList.toggle('is-hidden', !avatarUrl);
     avatar.style.borderColor = accentColor;
@@ -608,7 +674,7 @@
   }
 
   function getPlaylistFromProfile() {
-    return (Array.isArray(profile.audio) ? profile.audio : []).filter((track) => track && safeUrl(track.url));
+    return (Array.isArray(profile.audio) ? profile.audio : []).filter((track) => track && (isIndexedAssetRef(track.url) || safeUrl(track.url)));
   }
 
   function chooseInitialTrackIndex() {
@@ -641,7 +707,8 @@
     renderAudioPlayer();
   }
 
-  function renderAudioPlayer() {
+  async function renderAudioPlayer() {
+    const renderVersion = ++playerRenderVersion;
     stopAudio();
     const enabled = profile.audioPlayerEnabled !== false && playlist.length > 0;
     mediaCard.classList.toggle('is-hidden', !enabled);
@@ -662,11 +729,11 @@
             <span class="duration" id="duration">0:00</span>
           </div>
           <div class="audio-controls">
-            <button class="ctrl-btn" id="prevBtn" aria-label="Предыдущий трек">◀</button>
-            <button class="ctrl-btn play-btn" id="playPauseBtn" aria-label="Воспроизведение/пауза">▶</button>
-            <button class="ctrl-btn" id="nextBtn" aria-label="Следующий трек">▶</button>
+            <button class="ctrl-btn" id="prevBtn" aria-label="Предыдущий трек"><span id="prevIcon"></span></button>
+            <button class="ctrl-btn play-btn" id="playPauseBtn" aria-label="Воспроизведение/пауза"><span id="playPauseIcon"></span></button>
+            <button class="ctrl-btn" id="nextBtn" aria-label="Следующий трек"><span id="nextIcon"></span></button>
             ${profile.volumeControl === false ? '' : `
-              <button class="ctrl-btn" id="volumeBtn" aria-label="Громкость"><span id="volumeIcon">🔊</span></button>
+              <button class="ctrl-btn" id="volumeBtn" aria-label="Громкость"><span id="volumeIcon"></span></button>
               <input type="range" id="volumeSlider" class="volume-slider" min="0" max="${MAX_VOLUME}" step="0.01" value="${currentVolume}" aria-label="Громкость">
             `}
           </div>
@@ -675,7 +742,8 @@
 
     document.getElementById('audioTitle').textContent = track.title || 'Без названия';
     const cover = document.getElementById('currentCover');
-    const coverUrl = safeUrl(track.cover);
+    const coverUrl = await resolveAssetUrl(track.cover);
+    if (renderVersion !== playerRenderVersion) return;
     if (coverUrl) {
       cover.src = coverUrl;
       cover.addEventListener('error', () => cover.classList.add('is-hidden'), { once: true });
@@ -683,7 +751,8 @@
       cover.classList.add('is-hidden');
     }
 
-    initPlayer(track);
+    setStaticPlayerIcons();
+    await initPlayer(track, renderVersion);
   }
 
   function formatTime(seconds) {
@@ -693,19 +762,35 @@
     return `${min}:${String(sec).padStart(2, '0')}`;
   }
 
+  const PLAYER_ICONS = {
+    prev: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5v14M19 5l-10 7 10 7V5z" fill="currentColor" stroke="none"/></svg>`,
+    next: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 5v14M5 5l10 7-10 7V5z" fill="currentColor" stroke="none"/></svg>`,
+    play: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l11 7-11 7V5z" fill="currentColor" stroke="none"/></svg>`,
+    pause: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg>`,
+    volume: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5L6 9H3v6h3l5 4V5z" fill="currentColor" stroke="none"/><path d="M15 9a4 4 0 010 6M17.8 6.8a7.5 7.5 0 010 10.4"/></svg>`,
+    muted: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5L6 9H3v6h3l5 4V5z" fill="currentColor" stroke="none"/><path d="M16 9l5 6M21 9l-5 6"/></svg>`
+  };
+
+  function setStaticPlayerIcons() {
+    const prev = document.getElementById('prevIcon');
+    const next = document.getElementById('nextIcon');
+    if (prev) prev.innerHTML = PLAYER_ICONS.prev;
+    if (next) next.innerHTML = PLAYER_ICONS.next;
+  }
+
   function setPlayIcon(isPlaying) {
-    const btn = document.getElementById('playPauseBtn');
-    if (btn) btn.textContent = isPlaying ? '❚❚' : '▶';
+    const icon = document.getElementById('playPauseIcon');
+    if (icon) icon.innerHTML = isPlaying ? PLAYER_ICONS.pause : PLAYER_ICONS.play;
   }
 
   function renderVolumeIcon(volume) {
     const icon = document.getElementById('volumeIcon');
-    if (icon) icon.textContent = volume <= 0 ? '🔇' : '🔊';
+    if (icon) icon.innerHTML = volume <= 0 ? PLAYER_ICONS.muted : PLAYER_ICONS.volume;
   }
 
-  function initPlayer(track) {
-    const audioUrl = safeUrl(track.url);
-    if (!audioUrl) return;
+  async function initPlayer(track, renderVersion) {
+    const audioUrl = await resolveAssetUrl(track.url);
+    if (!audioUrl || renderVersion !== playerRenderVersion) return;
 
     audio = new Audio(audioUrl);
     audio.preload = 'metadata';
@@ -818,11 +903,16 @@
     });
   }
 
+  window.addEventListener('beforeunload', () => {
+    for (const url of runtimeAssetUrls.values()) URL.revokeObjectURL(url);
+    runtimeAssetUrls.clear();
+  });
+
   window.addEventListener('storage', (event) => {
     if (event.key !== PROFILE_KEY && event.key !== PROFILE_DEFAULT_KEY) return;
-    loadPublishedProfile().then((published) => {
+    loadPublishedProfile().then(async (published) => {
       profile = loadLocalProfile(published);
-      applyProfile();
+      await applyProfile();
       rebuildPlayerFromProfile();
     });
   });
@@ -830,7 +920,7 @@
   (async function init() {
     const published = await loadPublishedProfile();
     profile = loadLocalProfile(published);
-    applyProfile();
+    await applyProfile();
     rebuildPlayerFromProfile();
   })();
 </script>
