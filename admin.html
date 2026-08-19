@@ -632,21 +632,129 @@
             font-size: 9px;
         }
 
-        .color-wheel-wrapper {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            margin-top: 8px;
+        .discord-color-picker {
+            --picker-hue: 0;
+            margin-top: 12px;
+            padding: 12px;
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: 14px;
+            background: #11141a;
+            box-shadow: 0 16px 34px rgba(0,0,0,.28);
         }
-        .color-wheel-wrapper.active {
-            display: flex;
-        }
-        #accentColorWheel {
-            border-radius: 50%;
+        .discord-color-picker[hidden] { display: none; }
+        .picker-sv-wrap { width: 100%; }
+        .picker-sv {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1.9 / 1;
+            min-height: 128px;
+            max-height: 190px;
+            border-radius: 10px;
             cursor: crosshair;
-            border: 1px solid #333;
+            overflow: hidden;
+            background:
+                linear-gradient(to top, #000, transparent),
+                linear-gradient(to right, #fff, hsl(var(--picker-hue), 100%, 50%));
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+            touch-action: none;
+            outline: none;
         }
+        .picker-sv:focus-visible { box-shadow: inset 0 0 0 1px rgba(255,255,255,.2), 0 0 0 3px rgba(124,108,255,.25); }
+        .picker-sv-thumb {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            box-shadow: 0 1px 5px rgba(0,0,0,.8);
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+        .picker-hue-row {
+            display: grid;
+            grid-template-columns: auto minmax(0,1fr);
+            align-items: center;
+            gap: 10px;
+            margin-top: 11px;
+        }
+        .picker-label { color: #8e949f; font-size: .66rem; font-weight: 650; }
+        .picker-hue {
+            width: 100%;
+            height: 14px;
+            margin: 0;
+            padding: 0;
+            border: 0;
+            border-radius: 999px;
+            appearance: none;
+            -webkit-appearance: none;
+            background: linear-gradient(90deg, #f00 0%, #ff0 16.66%, #0f0 33.33%, #0ff 50%, #00f 66.66%, #f0f 83.33%, #f00 100%);
+            cursor: pointer;
+        }
+        .picker-hue::-webkit-slider-thumb {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            background: transparent;
+            box-shadow: 0 1px 6px rgba(0,0,0,.8);
+        }
+        .picker-hue::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            background: transparent;
+            box-shadow: 0 1px 6px rgba(0,0,0,.8);
+        }
+        .picker-bottom {
+            display: grid;
+            grid-template-columns: 36px minmax(0,1fr);
+            gap: 9px;
+            margin-top: 11px;
+        }
+        .picker-preview {
+            width: 36px;
+            height: 34px;
+            border-radius: 9px;
+            border: 1px solid rgba(255,255,255,.16);
+            box-shadow: inset 0 0 0 1px rgba(0,0,0,.15);
+        }
+        .picker-hex-wrap {
+            height: 34px;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            padding: 0 10px;
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: 9px;
+            background: #0d0f14;
+            color: #767d88;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            font-size: .72rem;
+        }
+        .picker-hex {
+            min-width: 0;
+            width: 100%;
+            padding: 0;
+            border: 0;
+            outline: 0;
+            background: transparent;
+            color: #f4f5f7;
+            font: inherit;
+            text-transform: uppercase;
+        }
+        .color-swatch { position: relative; }
+        .color-swatch::after {
+            content: "";
+            position: absolute;
+            inset: -4px;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            pointer-events: none;
+        }
+        .color-panel.picker-open .color-swatch::after { border-color: rgba(124,108,255,.72); }
 
         @media (max-width: 768px) {
             body { padding: 24px 12px 70px; }
@@ -655,7 +763,7 @@
         }
     
 
-        /* ===== Admin UI v0.3.1 ===== */
+        /* ===== Admin UI v0.3.2 ===== */
         :root {
             --admin-bg: #090a0d;
             --admin-panel: rgba(18, 20, 25, 0.88);
@@ -1286,7 +1394,6 @@
                                     <div id="accentSwatch" class="color-swatch" style="background:#5b5b5b;"></div>
                                     <input id="accentInput" class="color-input" value="#5b5b5b">
                                 </div>
-                                <div class="color-wheel-wrapper"><canvas id="accentColorWheel" width="160" height="160"></canvas></div>
                             </div>
                         </div>
                         <div class="settings-column">
@@ -1338,6 +1445,25 @@
                                 <div id="grad2Swatch" class="color-swatch" style="background:#933800;"></div>
                                 <input id="grad2Input" class="color-input" value="#933800">
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="discordColorPicker" class="discord-color-picker" hidden>
+                    <div class="picker-sv-wrap">
+                        <div id="pickerSv" class="picker-sv" role="slider" tabindex="0" aria-label="Насыщенность и яркость цвета">
+                            <span id="pickerSvThumb" class="picker-sv-thumb"></span>
+                        </div>
+                    </div>
+                    <div class="picker-hue-row">
+                        <span class="picker-label">Оттенок</span>
+                        <input id="pickerHue" class="picker-hue" type="range" min="0" max="360" step="1" value="0" aria-label="Оттенок цвета">
+                    </div>
+                    <div class="picker-bottom">
+                        <span id="pickerPreview" class="picker-preview" aria-hidden="true"></span>
+                        <div class="picker-hex-wrap">
+                            <span>#</span>
+                            <input id="pickerHex" class="picker-hex" inputmode="text" maxlength="6" value="ffffff" aria-label="HEX цвет">
                         </div>
                     </div>
                 </div>
@@ -1751,9 +1877,12 @@
     const toast = document.getElementById('toast');
     const toastText = document.getElementById('toastText');
 
-    const wheelCanvas = document.getElementById('accentColorWheel');
-    const wheelCtx = wheelCanvas.getContext('2d');
-    const colorWheelWrapper = document.querySelector('.color-wheel-wrapper');
+    const discordColorPicker = document.getElementById('discordColorPicker');
+    const pickerSv = document.getElementById('pickerSv');
+    const pickerSvThumb = document.getElementById('pickerSvThumb');
+    const pickerHue = document.getElementById('pickerHue');
+    const pickerPreview = document.getElementById('pickerPreview');
+    const pickerHex = document.getElementById('pickerHex');
 
     let editingIndex = null;
     let toastTimeout = null;
@@ -1849,10 +1978,15 @@
                 inputEl.value = val;
                 swatchEl.style.background = val;
                 profile[key] = val;
+                if (activeColorTarget?.input === inputEl) syncPickerFromHex(val);
             }
         }
         inputEl.addEventListener('change', setFromHex);
         inputEl.addEventListener('blur', setFromHex);
+        swatchEl.addEventListener('click', (event) => {
+            event.stopPropagation();
+            openColorPicker(inputEl, swatchEl, key);
+        });
     }
 
     bindColorInput(accentInput, accentSwatch, 'accentColor');
@@ -2131,89 +2265,156 @@
     });
 
     // color wheel
-    function hslToRgb(h, s, l) {
-        let r, g, b;
-        if (s === 0) {
-            r = g = b = l;
-        } else {
-            const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-            const p = 2 * l - q;
-            const hue2rgb = (p, q, t) => {
-                if (t < 0) t += 1;
-                if (t > 1) t -= 1;
-                if (t < 1/6) return p + (q - p) * 6 * t;
-                if (t < 1/2) return q;
-                if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-                return p;
-            };
-            r = hue2rgb(p, q, h + 1/3);
-            g = hue2rgb(p, q, h);
-            b = hue2rgb(p, q, h - 1/3);
-        }
-        return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+    function hexToRgb(hex) {
+        const normalized = String(hex || '').trim().replace('#', '');
+        if (!/^[0-9a-fA-F]{6}$/.test(normalized)) return null;
+        return {
+            r: parseInt(normalized.slice(0, 2), 16),
+            g: parseInt(normalized.slice(2, 4), 16),
+            b: parseInt(normalized.slice(4, 6), 16)
+        };
     }
 
     function rgbToHex(r, g, b) {
-        const toHex = v => v.toString(16).padStart(2, '0');
-        return '#' + toHex(r) + toHex(g) + toHex(b);
+        return '#' + [r, g, b].map(value => Math.round(value).toString(16).padStart(2, '0')).join('');
     }
 
-    function drawColorWheel() {
-        const radius = wheelCanvas.width / 2;
-        const imageData = wheelCtx.createImageData(wheelCanvas.width, wheelCanvas.height);
-        for (let x = 0; x < wheelCanvas.width; x++) {
-            for (let y = 0; y < wheelCanvas.height; y++) {
-                const dx = x - radius;
-                const dy = y - radius;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance <= radius) {
-                    const angle = Math.atan2(dy, dx);
-                    const hue = (angle + Math.PI) / (2 * Math.PI);
-                    const saturation = distance / radius;
-                    const rgb = hslToRgb(hue, saturation, 0.5);
-                    const idx = (y * wheelCanvas.width + x) * 4;
-                    imageData.data[idx] = rgb[0];
-                    imageData.data[idx + 1] = rgb[1];
-                    imageData.data[idx + 2] = rgb[2];
-                    imageData.data[idx + 3] = 255;
-                }
-            }
+    function rgbToHsv(r, g, b) {
+        r /= 255; g /= 255; b /= 255;
+        const max = Math.max(r, g, b);
+        const min = Math.min(r, g, b);
+        const delta = max - min;
+        let h = 0;
+        if (delta !== 0) {
+            if (max === r) h = 60 * (((g - b) / delta) % 6);
+            else if (max === g) h = 60 * (((b - r) / delta) + 2);
+            else h = 60 * (((r - g) / delta) + 4);
         }
-        wheelCtx.putImageData(imageData, 0, 0);
+        if (h < 0) h += 360;
+        const s = max === 0 ? 0 : delta / max;
+        return { h, s, v: max };
     }
 
-    function pickWheelColor(e) {
-        const rect = wheelCanvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const pixel = wheelCtx.getImageData(x, y, 1, 1).data;
-        if (pixel[3] === 0) return;
-        const hex = rgbToHex(pixel[0], pixel[1], pixel[2]);
-        accentInput.value = hex;
-        accentSwatch.style.background = hex;
-        profile.accentColor = hex;
+    function hsvToRgb(h, s, v) {
+        const c = v * s;
+        const hh = ((h % 360) + 360) % 360 / 60;
+        const x = c * (1 - Math.abs((hh % 2) - 1));
+        let rp = 0, gp = 0, bp = 0;
+        if (hh < 1) { rp = c; gp = x; }
+        else if (hh < 2) { rp = x; gp = c; }
+        else if (hh < 3) { gp = c; bp = x; }
+        else if (hh < 4) { gp = x; bp = c; }
+        else if (hh < 5) { rp = x; bp = c; }
+        else { rp = c; bp = x; }
+        const m = v - c;
+        return { r: (rp + m) * 255, g: (gp + m) * 255, b: (bp + m) * 255 };
     }
 
-    let wheelDragging = false;
-    wheelCanvas.addEventListener('mousedown', (e) => {
-        wheelDragging = true;
-        pickWheelColor(e);
-    });
-    wheelCanvas.addEventListener('mousemove', (e) => {
-        if (wheelDragging) pickWheelColor(e);
-    });
-    window.addEventListener('mouseup', () => {
-        wheelDragging = false;
-    });
+    let activeColorTarget = null;
+    let pickerH = 0;
+    let pickerS = 0;
+    let pickerV = 1;
+    let svDragging = false;
 
-    accentSwatch.addEventListener('click', (e) => {
-        e.stopPropagation();
-        colorWheelWrapper.classList.toggle('active');
-    });
-    document.addEventListener('click', (e) => {
-        if (!colorWheelWrapper.contains(e.target) && e.target !== accentSwatch) {
-            colorWheelWrapper.classList.remove('active');
+    function renderColorPicker() {
+        const rgb = hsvToRgb(pickerH, pickerS, pickerV);
+        const hex = rgbToHex(rgb.r, rgb.g, rgb.b).toLowerCase();
+        discordColorPicker.style.setProperty('--picker-hue', String(Math.round(pickerH)));
+        pickerHue.value = String(Math.round(pickerH));
+        pickerSvThumb.style.left = `${pickerS * 100}%`;
+        pickerSvThumb.style.top = `${(1 - pickerV) * 100}%`;
+        pickerPreview.style.background = hex;
+        pickerHex.value = hex.slice(1).toUpperCase();
+        return hex;
+    }
+
+    function syncPickerFromHex(hex) {
+        const rgb = hexToRgb(hex);
+        if (!rgb) return false;
+        const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
+        pickerH = hsv.h; pickerS = hsv.s; pickerV = hsv.v;
+        renderColorPicker();
+        return true;
+    }
+
+    function applyPickerColor() {
+        if (!activeColorTarget) return;
+        const hex = renderColorPicker();
+        activeColorTarget.input.value = hex;
+        activeColorTarget.swatch.style.background = hex;
+        profile[activeColorTarget.key] = hex;
+    }
+
+    function closeColorPicker() {
+        if (!activeColorTarget) return;
+        activeColorTarget.panel?.classList.remove('picker-open');
+        activeColorTarget = null;
+        discordColorPicker.hidden = true;
+    }
+
+    function openColorPicker(input, swatch, key) {
+        const panel = swatch.closest('.color-panel');
+        if (activeColorTarget?.swatch === swatch && !discordColorPicker.hidden) {
+            closeColorPicker();
+            return;
         }
+        activeColorTarget?.panel?.classList.remove('picker-open');
+        activeColorTarget = { input, swatch, key, panel };
+        panel?.classList.add('picker-open');
+        if (panel) panel.appendChild(discordColorPicker);
+        discordColorPicker.hidden = false;
+        syncPickerFromHex(input.value);
+    }
+
+    function updateSvFromPointer(event) {
+        const rect = pickerSv.getBoundingClientRect();
+        if (!rect.width || !rect.height) return;
+        pickerS = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+        pickerV = 1 - Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height));
+        applyPickerColor();
+    }
+
+    pickerSv.addEventListener('pointerdown', (event) => {
+        svDragging = true;
+        pickerSv.setPointerCapture?.(event.pointerId);
+        updateSvFromPointer(event);
+    });
+    pickerSv.addEventListener('pointermove', (event) => {
+        if (svDragging) updateSvFromPointer(event);
+    });
+    pickerSv.addEventListener('pointerup', () => { svDragging = false; });
+    pickerSv.addEventListener('pointercancel', () => { svDragging = false; });
+    pickerSv.addEventListener('keydown', (event) => {
+        const step = event.shiftKey ? 0.05 : 0.01;
+        let handled = true;
+        if (event.key === 'ArrowLeft') pickerS -= step;
+        else if (event.key === 'ArrowRight') pickerS += step;
+        else if (event.key === 'ArrowUp') pickerV += step;
+        else if (event.key === 'ArrowDown') pickerV -= step;
+        else handled = false;
+        if (!handled) return;
+        event.preventDefault();
+        pickerS = Math.max(0, Math.min(1, pickerS));
+        pickerV = Math.max(0, Math.min(1, pickerV));
+        applyPickerColor();
+    });
+    pickerHue.addEventListener('input', () => {
+        pickerH = Number(pickerHue.value) || 0;
+        applyPickerColor();
+    });
+    pickerHex.addEventListener('input', () => {
+        const clean = pickerHex.value.replace(/[^0-9a-fA-F]/g, '').slice(0, 6);
+        pickerHex.value = clean.toUpperCase();
+        if (clean.length !== 6 || !activeColorTarget) return;
+        const hex = '#' + clean.toLowerCase();
+        if (!syncPickerFromHex(hex)) return;
+        activeColorTarget.input.value = hex;
+        activeColorTarget.swatch.style.background = hex;
+        profile[activeColorTarget.key] = hex;
+    });
+    discordColorPicker.addEventListener('click', (event) => event.stopPropagation());
+    document.addEventListener('click', (event) => {
+        if (!discordColorPicker.hidden && !event.target.closest('.color-panel')) closeColorPicker();
     });
 
 
