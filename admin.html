@@ -1226,7 +1226,7 @@
         }
 
 
-        /* ===== Admin UI v0.3.4 - desktop editor ===== */
+        /* ===== Admin UI v0.3.5 - desktop editor ===== */
         :root {
             --admin-bg: #09090a;
             --admin-panel: #101113;
@@ -2052,6 +2052,18 @@
 <script>
     const PROFILE_KEY = 'Lolekx228_profile';
     const PROFILE_DEFAULT_KEY = 'Lolekx228_profile_default';
+    const PROFILE_SCHEMA_VERSION = 2;
+
+    const CARD_PROFILE_KEYS = [
+        'displayName', 'description', 'locationShort', 'locationFull', 'location',
+        'backgroundUrl', 'avatarUrl', 'socials', 'audio'
+    ];
+    const SETTINGS_KEYS = [
+        'accentColor', 'textColor', 'bgColor', 'iconColor', 'cursorUrl',
+        'gradientEnabled', 'gradient1', 'gradient2', 'blur', 'opacity',
+        'monochrome', 'animatedTitle', 'swapBlocks', 'volumeControl',
+        'discordAvatar', 'discordDecor', 'audioShuffle', 'audioPlayerEnabled'
+    ];
 
     const baseProfile = {
         displayName: "Lolekx228",
@@ -2102,12 +2114,51 @@
         return JSON.parse(JSON.stringify(obj));
     }
 
+    function fingerprintText(text) {
+        let hash = 2166136261;
+        for (let i = 0; i < text.length; i++) {
+            hash ^= text.charCodeAt(i);
+            hash = Math.imul(hash, 16777619);
+        }
+        return (hash >>> 0).toString(16).padStart(8, '0');
+    }
+
+    function normalizeProfileConfig(raw) {
+        if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return deepClone(baseProfile);
+        const hasSections = raw.profile && typeof raw.profile === 'object' || raw.settings && typeof raw.settings === 'object';
+        const patch = hasSections
+            ? { ...(raw.profile || {}), ...(raw.settings || {}) }
+            : raw;
+        return { ...deepClone(baseProfile), ...patch };
+    }
+
+    function makeProfileConfig(source) {
+        const card = {};
+        const settings = {};
+        for (const key of CARD_PROFILE_KEYS) {
+            if (Object.prototype.hasOwnProperty.call(source, key)) card[key] = deepClone(source[key]);
+        }
+        for (const key of SETTINGS_KEYS) {
+            if (Object.prototype.hasOwnProperty.call(source, key)) settings[key] = deepClone(source[key]);
+        }
+        return {
+            schemaVersion: PROFILE_SCHEMA_VERSION,
+            updatedAt: new Date().toISOString(),
+            profile: card,
+            settings
+        };
+    }
+
+    let publishedFingerprint = 'builtin';
+
     function loadProfile(key, fallback) {
         try {
             const raw = localStorage.getItem(key);
             if (!raw) return deepClone(fallback);
             const parsed = JSON.parse(raw);
-            return { ...fallback, ...parsed };
+            if (!parsed || parsed.__lolekxLocal !== 1 || !parsed.data) return deepClone(fallback);
+            if (parsed.sourceFingerprint !== publishedFingerprint) return deepClone(fallback);
+            return { ...fallback, ...parsed.data };
         } catch {
             return deepClone(fallback);
         }
@@ -2115,7 +2166,12 @@
 
     function saveProfile(key, data) {
         try {
-            localStorage.setItem(key, JSON.stringify(data));
+            localStorage.setItem(key, JSON.stringify({
+                __lolekxLocal: 1,
+                sourceFingerprint: publishedFingerprint,
+                savedAt: new Date().toISOString(),
+                data
+            }));
             return true;
         } catch (error) {
             console.error('Не удалось сохранить профиль в localStorage.', error);
@@ -2253,9 +2309,11 @@
         try {
             const response = await fetch('./profile.json', { cache: 'no-store' });
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            const parsed = await response.json();
-            return { ...baseProfile, ...parsed };
+            const rawText = await response.text();
+            publishedFingerprint = fingerprintText(rawText);
+            return normalizeProfileConfig(JSON.parse(rawText));
         } catch (error) {
+            publishedFingerprint = 'builtin';
             console.warn('profile.json не загружен, используется встроенный профиль.', error);
             return deepClone(baseProfile);
         }
@@ -2688,7 +2746,7 @@
         collectProfileFromUI();
         try {
             const portableProfile = await makePortableProfile(profile);
-            const json = JSON.stringify(portableProfile, null, 2) + '\n';
+            const json = JSON.stringify(makeProfileConfig(portableProfile), null, 2) + '\n';
             const blob = new Blob([json], { type: 'application/json;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');

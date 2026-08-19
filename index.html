@@ -473,13 +473,35 @@
     return merged;
   }
 
+  function fingerprintText(text) {
+    let hash = 2166136261;
+    for (let i = 0; i < text.length; i++) {
+      hash ^= text.charCodeAt(i);
+      hash = Math.imul(hash, 16777619);
+    }
+    return (hash >>> 0).toString(16).padStart(8, '0');
+  }
+
+  function normalizeProfileConfig(raw) {
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return { ...builtinProfile };
+    const hasSections = raw.profile && typeof raw.profile === 'object' || raw.settings && typeof raw.settings === 'object';
+    const patch = hasSections
+      ? { ...(raw.profile || {}), ...(raw.settings || {}) }
+      : raw;
+    return deepMergeProfile(builtinProfile, patch);
+  }
+
+  let publishedFingerprint = 'builtin';
+
   async function loadPublishedProfile() {
     try {
       const response = await fetch('./profile.json', { cache: 'no-store' });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const parsed = await response.json();
-      return deepMergeProfile(builtinProfile, parsed);
+      const rawText = await response.text();
+      publishedFingerprint = fingerprintText(rawText);
+      return normalizeProfileConfig(JSON.parse(rawText));
     } catch (error) {
+      publishedFingerprint = 'builtin';
       console.warn('profile.json не загружен, используется встроенный профиль.', error);
       return { ...builtinProfile };
     }
@@ -488,7 +510,11 @@
   function readStoredProfile(key) {
     try {
       const raw = localStorage.getItem(key);
-      return raw ? JSON.parse(raw) : null;
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (!parsed || parsed.__lolekxLocal !== 1 || !parsed.data) return null;
+      if (parsed.sourceFingerprint !== publishedFingerprint) return null;
+      return parsed.data;
     } catch (error) {
       console.warn(`Не удалось прочитать ${key}.`, error);
       return null;
