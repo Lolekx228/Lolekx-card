@@ -1,0 +1,49 @@
+{
+  "displayName": "Lolekx228",
+  "description": "Hiii Me: Animation artist, Voice actor, Programmer, Web Developer, Game Developer, 3D modeler",
+  "locationShort": "Україна, ДНР, Донецьк",
+  "locationFull": "Україна, Донецкая Народная Республика, город Донецьк",
+  "location": "Україна, ДНР, Донецьк",
+  "accentColor": "#5b5b5b",
+  "textColor": "#ffffff",
+  "bgColor": "#080808",
+  "iconColor": "#ffffff",
+  "gradientEnabled": true,
+  "gradient1": "#6f0000",
+  "gradient2": "#933800",
+  "blur": 10,
+  "opacity": 0.9,
+  "monochrome": true,
+  "animatedTitle": true,
+  "swapBlocks": false,
+  "volumeControl": true,
+  "audioShuffle": false,
+  "audioPlayerEnabled": true,
+  "cursorUrl": "",
+  "audio": [
+    {
+      "title": "Durnojj Vkus - Plastinki",
+      "url": "https://r2.guns.lol/e2040c07-063d-4f8d-bf4a-4a784e5cb3f2.mp3",
+      "cover": "https://r2.guns.lol/8b57c2d3-3cd2-4915-ad39-431819946a45.webp",
+      "active": true
+    },
+    {
+      "title": "Kino - Spokojjnaya Noch",
+      "url": "https://r2.guns.lol/ef254576-8efc-4601-a39a-025acd7f50af.mp3",
+      "cover": "https://r2.guns.lol/998a3ed5-4b5d-41c0-bdbe-c3ce107fc6b0.webp",
+      "active": false
+    }
+  ],
+  "socials": [
+    {
+      "name": "youtube",
+      "url": "https://youtube.com/@Lolekx228"
+    },
+    {
+      "name": "discord",
+      "url": "https://discord.com/users/919815468519391252"
+    }
+  ],
+  "backgroundUrl": "https://r2.guns.lol/404eaec9-de84-4ca0-b031-6059b171072a.webp",
+  "avatarUrl": "https://r2.guns.lol/a90d9caf-a563-4b08-a030-1febdba3397e.webp"
+}

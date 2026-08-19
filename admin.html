@@ -202,6 +202,12 @@
             gap: 10px;
         }
         .checkbox-label { color: #ddd; font-size: 0.85rem; }
+        .checkbox-row.is-disabled { opacity: 0.48; }
+        .checkbox-row.is-disabled .checkbox-label::after {
+            content: " — нужен Discord API/бэкенд";
+            color: #777;
+            font-size: 0.7rem;
+        }
 
         .toggle-switch {
             position: relative;
@@ -547,6 +553,15 @@
             box-shadow: 0 0 0 2px rgba(255,255,255,0.08);
         }
 
+        .publish-note {
+            margin-top: -20px;
+            margin-bottom: 12px;
+            color: #888;
+            font-size: 0.75rem;
+            line-height: 1.45;
+            text-align: right;
+        }
+
         .global-actions {
             position: sticky;
             bottom: 12px;
@@ -554,6 +569,7 @@
             display: flex;
             justify-content: flex-end;
             gap: 8px;
+            flex-wrap: wrap;
             z-index: 5;
         }
         .global-actions button {
@@ -683,8 +699,12 @@
                 <div class="media-item">
                     <div class="media-label">Пользовательский курсор</div>
                     <div class="media-content cursor-placeholder">
-                        <svg viewBox="0 0 24 24" fill="white"><path d="M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21zm2-4h10q.3 0 .45-.275t-.05-.525l-2.75-3.675q-.15-.2-.4-.2t-.4.2L11.25 16L9.4 13.525q-.15-.2-.4-.2t-.4.2l-2 2.675q-.2.25-.05.525T7 17"/></svg>
-                        <span>Загрузить файл</span>
+                        <svg viewBox="0 0 24 24" fill="white"><path d="M5 3.2v16.1l4.1-4.1l2.6 5.6l2.3-1.1l-2.6-5.4h5.8z"/></svg>
+                        <label class="file-input-wrapper">
+                            <span class="file-input-button">Выбрать курсор</span>
+                            <span class="file-input-name" id="cursorFileName">Файл не выбран</span>
+                            <input type="file" id="cursorFileInput" accept="image/png,image/webp,image/gif">
+                        </label>
                     </div>
                 </div>
             </div>
@@ -820,7 +840,7 @@
                         </label>
                     </div>
                     <div class="checkbox-row">
-                        <span class="checkbox-label">Поменять цвета блоков</span>
+                        <span class="checkbox-label">Поменять блоки местами</span>
                         <label class="toggle-switch">
                             <input id="swapBlocksToggle" type="checkbox">
                             <span class="toggle-slider"></span>
@@ -835,17 +855,17 @@
                             <span class="toggle-slider"></span>
                         </label>
                     </div>
-                    <div class="checkbox-row">
+                    <div class="checkbox-row is-disabled">
                         <span class="checkbox-label">Использовать аватар Discord</span>
                         <label class="toggle-switch">
-                            <input id="discordAvatarToggle" type="checkbox">
+                            <input id="discordAvatarToggle" type="checkbox" disabled>
                             <span class="toggle-slider"></span>
                         </label>
                     </div>
-                    <div class="checkbox-row">
+                    <div class="checkbox-row is-disabled">
                         <span class="checkbox-label">Декор аватара Discord</span>
                         <label class="toggle-switch">
-                            <input id="discordDecorToggle" type="checkbox" checked>
+                            <input id="discordDecorToggle" type="checkbox" disabled>
                             <span class="toggle-slider"></span>
                         </label>
                     </div>
@@ -855,10 +875,12 @@
     </div>
 
     <!-- Глобальные кнопки -->
+    <div class="publish-note">Локальное сохранение видно только в этом браузере. Для публикации настроек экспортируйте <b>profile.json</b> и замените файл в проекте.</div>
     <div class="global-actions">
         <button id="resetProfileBtn">Сбросить</button>
-        <button id="saveDefaultBtn">Сохранить как дефолт</button>
-        <button class="primary" id="saveProfileBtn">Сохранить в профиль</button>
+        <button id="saveDefaultBtn">Локально как дефолт</button>
+        <button id="exportProfileBtn">Экспорт profile.json</button>
+        <button class="primary" id="saveProfileBtn">Сохранить локально</button>
     </div>
 </div>
 
@@ -915,7 +937,12 @@
         </div>
 
         <div class="edit-row">
-            <div class="edit-label">Файл аудио (.mp3)</div>
+            <div class="edit-label">URL аудио (лучше для больших файлов)</div>
+            <input type="url" id="editAudioUrlInput" class="edit-input-text" placeholder="https://example.com/track.mp3">
+        </div>
+
+        <div class="edit-row">
+            <div class="edit-label">Файл аудио (.mp3, до 2 МБ для локального хранения)</div>
             <div class="file-input-wrapper">
                 <span class="file-input-button">Выбрать аудио</span>
                 <span class="file-input-name" id="editAudioFileName">Файл не выбран</span>
@@ -924,7 +951,12 @@
         </div>
 
         <div class="edit-row">
-            <div class="edit-label">Обложка</div>
+            <div class="edit-label">URL обложки</div>
+            <input type="url" id="editCoverUrlInput" class="edit-input-text" placeholder="https://example.com/cover.webp">
+        </div>
+
+        <div class="edit-row">
+            <div class="edit-label">Обложка (до 1 МБ для локального хранения)</div>
             <div class="file-input-wrapper">
                 <span class="file-input-button">Выбрать обложку</span>
                 <span class="file-input-name" id="editCoverFileName">Файл не выбран</span>
@@ -953,6 +985,7 @@
         textColor: "#ffffff",
         bgColor: "#080808",
         iconColor: "#ffffff",
+        cursorUrl: "",
         gradientEnabled: true,
         gradient1: "#6f0000",
         gradient2: "#933800",
@@ -963,11 +996,15 @@
         swapBlocks: false,
         volumeControl: true,
         discordAvatar: false,
-        discordDecor: true,
+        discordDecor: false,
         audioShuffle: false,
         audioPlayerEnabled: true,
         backgroundUrl: "https://r2.guns.lol/404eaec9-de84-4ca0-b031-6059b171072a.webp",
         avatarUrl: "https://r2.guns.lol/a90d9caf-a563-4b08-a030-1febdba3397e.webp",
+        socials: [
+            { name: "youtube", url: "https://youtube.com/@Lolekx228" },
+            { name: "discord", url: "https://discord.com/users/919815468519391252" }
+        ],
         audio: [
             {
                 title: "Durnojj Vkus - Plastinki",
@@ -1000,10 +1037,59 @@
     }
 
     function saveProfile(key, data) {
-        localStorage.setItem(key, JSON.stringify(data));
+        try {
+            localStorage.setItem(key, JSON.stringify(data));
+            return true;
+        } catch (error) {
+            console.error('Не удалось сохранить профиль в localStorage.', error);
+            showToast('Не удалось сохранить: хранилище переполнено');
+            return false;
+        }
     }
 
-    let profile = loadProfile(PROFILE_KEY, baseProfile);
+    function isSafeRemoteUrl(value) {
+        if (!value) return true;
+        try {
+            const parsed = new URL(value, window.location.href);
+            return parsed.protocol === 'http:' || parsed.protocol === 'https:' || parsed.protocol === 'data:';
+        } catch {
+            return false;
+        }
+    }
+
+    function fileToDataUrl(file, maxBytes, label) {
+        return new Promise((resolve, reject) => {
+            if (!file) return resolve(null);
+            if (file.size > maxBytes) {
+                reject(new Error(`${label}: файл слишком большой (${(file.size / 1024 / 1024).toFixed(1)} МБ)`));
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = () => reject(new Error(`${label}: не удалось прочитать файл`));
+            reader.readAsDataURL(file);
+        });
+    }
+
+    let publishedProfile = deepClone(baseProfile);
+    let profile = deepClone(baseProfile);
+
+    async function loadPublishedProfile() {
+        try {
+            const response = await fetch('./profile.json', { cache: 'no-store' });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const parsed = await response.json();
+            return { ...baseProfile, ...parsed };
+        } catch (error) {
+            console.warn('profile.json не загружен, используется встроенный профиль.', error);
+            return deepClone(baseProfile);
+        }
+    }
+
+    function loadLocalProfile(publishedProfile) {
+        const localDefault = loadProfile(PROFILE_DEFAULT_KEY, publishedProfile);
+        return loadProfile(PROFILE_KEY, localDefault);
+    }
 
     const displayNameInput = document.getElementById('displayNameInput');
     const descriptionInput = document.getElementById('descriptionInput');
@@ -1039,6 +1125,8 @@
     const avatarPreview = document.getElementById('avatarPreview');
     const avatarFileInput = document.getElementById('avatarFileInput');
     const avatarFileName = document.getElementById('avatarFileName');
+    const cursorFileInput = document.getElementById('cursorFileInput');
+    const cursorFileName = document.getElementById('cursorFileName');
 
     const openAudioManagerBtn = document.getElementById('openAudioManagerBtn');
     const audioManagerModal = document.getElementById('audioManagerModal');
@@ -1051,10 +1139,13 @@
     const saveProfileBtn = document.getElementById('saveProfileBtn');
     const saveDefaultBtn = document.getElementById('saveDefaultBtn');
     const resetProfileBtn = document.getElementById('resetProfileBtn');
+    const exportProfileBtn = document.getElementById('exportProfileBtn');
 
     const editOverlay = document.getElementById('editAudioOverlay');
     const closeEditModalBtn = document.getElementById('closeEditModalBtn');
     const editTitleInput = document.getElementById('editTitleInput');
+    const editAudioUrlInput = document.getElementById('editAudioUrlInput');
+    const editCoverUrlInput = document.getElementById('editCoverUrlInput');
     const editAudioFile = document.getElementById('editAudioFile');
     const editCoverFile = document.getElementById('editCoverFile');
     const editAudioFileName = document.getElementById('editAudioFileName');
@@ -1099,8 +1190,8 @@
         bgColorInput.value = profile.bgColor;
         bgColorSwatch.style.background = profile.bgColor;
 
-        iconColorInput.value = profile.iconColor;
-        iconColorSwatch.style.background = profile.iconColor;
+        iconColorInput.value = profile.iconColor || baseProfile.iconColor;
+        iconColorSwatch.style.background = profile.iconColor || baseProfile.iconColor;
 
         grad1Input.value = profile.gradient1;
         grad1Swatch.style.background = profile.gradient1;
@@ -1129,7 +1220,7 @@
         profile.description = descriptionInput.value.trim() || baseProfile.description;
         profile.locationShort = locationShortInput.value.trim() || baseProfile.locationShort;
         profile.locationFull = locationFullInput.value.trim() || baseProfile.locationFull;
-        profile.opacity = parseFloat(opacityInput.value) || baseProfile.opacity;
+        profile.opacity = Number.isFinite(parseFloat(opacityInput.value)) ? parseFloat(opacityInput.value) : baseProfile.opacity;
         profile.blur = parseFloat(blurInput.value) || 0;
 
         profile.accentColor = accentInput.value || baseProfile.accentColor;
@@ -1145,8 +1236,9 @@
         profile.animatedTitle = animatedTitleToggle.checked;
         profile.swapBlocks = swapBlocksToggle.checked;
         profile.volumeControl = volumeToggle.checked;
-        profile.discordAvatar = discordAvatarToggle.checked;
-        profile.discordDecor = discordDecorToggle.checked;
+        // Discord avatar/decor deliberately remain disabled until a backend/API source is configured.
+        profile.discordAvatar = false;
+        profile.discordDecor = false;
 
         profile.audioShuffle = shuffleCheckbox.checked;
         profile.audioPlayerEnabled = playerEnabledCheckbox.checked;
@@ -1175,23 +1267,38 @@
     bindColorInput(grad1Input, grad1Swatch, 'gradient1');
     bindColorInput(grad2Input, grad2Swatch, 'gradient2');
 
-    function handleImageFile(input, previewImg, nameLabel, profileKey) {
+    async function handleImageFile(input, previewImg, nameLabel, profileKey, maxBytes = 1024 * 1024) {
         const file = input.files[0];
         if (!file) return;
         nameLabel.textContent = file.name;
-        const reader = new FileReader();
-        reader.onload = e => {
-            previewImg.src = e.target.result;
-            profile[profileKey] = e.target.result;
-        };
-        reader.readAsDataURL(file);
+        try {
+            const dataUrl = await fileToDataUrl(file, maxBytes, file.name);
+            previewImg.src = dataUrl;
+            profile[profileKey] = dataUrl;
+        } catch (error) {
+            input.value = '';
+            nameLabel.textContent = 'Файл не выбран';
+            showToast(error.message);
+        }
     }
 
     bgFileInput.addEventListener('change', () => {
-        handleImageFile(bgFileInput, bgPreview, bgFileName, 'backgroundUrl');
+        handleImageFile(bgFileInput, bgPreview, bgFileName, 'backgroundUrl', 1024 * 1024);
     });
     avatarFileInput.addEventListener('change', () => {
-        handleImageFile(avatarFileInput, avatarPreview, avatarFileName, 'avatarUrl');
+        handleImageFile(avatarFileInput, avatarPreview, avatarFileName, 'avatarUrl', 1024 * 1024);
+    });
+    cursorFileInput.addEventListener('change', async () => {
+        const file = cursorFileInput.files[0];
+        if (!file) return;
+        cursorFileName.textContent = file.name;
+        try {
+            profile.cursorUrl = await fileToDataUrl(file, 128 * 1024, file.name);
+        } catch (error) {
+            cursorFileInput.value = '';
+            cursorFileName.textContent = 'Файл не выбран';
+            showToast(error.message);
+        }
     });
 
     openAudioManagerBtn.addEventListener('click', () => {
@@ -1227,19 +1334,23 @@
         if (track.active) div.classList.add('active');
         div.dataset.index = index;
 
-        const coverUrl = track.cover || 'https://via.placeholder.com/40/2a2a2a/ffffff?text=🎵';
+        const coverUrl = track.cover || '';
 
         div.innerHTML = `
             <button class="audio-delete-btn" title="Удалить трек">
                 <span>×</span>
             </button>
-            <div class="audio-cover-small" style="background-image: url('${coverUrl}');"></div>
+            <div class="audio-cover-small"></div>
             <div class="audio-info">
                 <div class="audio-title">${escapeHtml(track.title || 'Без названия')}</div>
                 ${track.active ? '<span class="audio-badge">Активно</span>' : ''}
             </div>
             <button class="edit-audio-btn">Редактировать</button>
         `;
+        const coverEl = div.querySelector('.audio-cover-small');
+        if (coverUrl && isSafeRemoteUrl(coverUrl)) {
+            coverEl.style.backgroundImage = `url(${JSON.stringify(coverUrl)})`;
+        }
 
         div.addEventListener('click', () => {
             (profile.audio || []).forEach((t, i) => {
@@ -1289,11 +1400,18 @@
         editingIndex = index;
         const track = profile.audio[index] || {};
         editTitleInput.value = track.title || '';
+        editAudioUrlInput.value = track.url && !track.url.startsWith('data:') && !track.url.startsWith('blob:') ? track.url : '';
+        editCoverUrlInput.value = track.cover && !track.cover.startsWith('data:') && !track.cover.startsWith('blob:') ? track.cover : '';
         editAudioFile.value = '';
         editCoverFile.value = '';
         editAudioFileName.textContent = 'Файл не выбран';
         editCoverFileName.textContent = 'Файл не выбран';
-        editCoverPreview.style.backgroundImage = track.cover ? `url('${track.cover}')` : 'none';
+        editCoverPreview.style.backgroundImage = track.cover && isSafeRemoteUrl(track.cover)
+            ? `url(${JSON.stringify(track.cover)})`
+            : 'none';
+        if (track.url && track.url.startsWith('blob:')) {
+            editAudioFileName.textContent = 'Старая blob:-ссылка недействительна — выберите файл заново';
+        }
         editOverlay.classList.add('active');
     }
 
@@ -1320,35 +1438,46 @@
         editCoverFileName.textContent = file.name;
         const reader = new FileReader();
         reader.onload = (e) => {
-            editCoverPreview.style.backgroundImage = `url('${e.target.result}')`;
+            editCoverPreview.style.backgroundImage = `url(${JSON.stringify(e.target.result)})`;
         };
         reader.readAsDataURL(file);
     });
 
-    saveEditBtn.addEventListener('click', () => {
+    saveEditBtn.addEventListener('click', async () => {
         if (editingIndex === null) return;
-        const track = profile.audio[editingIndex] || {};
+        const track = { ...(profile.audio[editingIndex] || {}) };
+        const title = editTitleInput.value.trim();
+        if (title) track.title = title;
 
-        if (editTitleInput.value.trim()) {
-            track.title = editTitleInput.value.trim();
+        const remoteAudioUrl = editAudioUrlInput.value.trim();
+        const remoteCoverUrl = editCoverUrlInput.value.trim();
+        if (remoteAudioUrl && !isSafeRemoteUrl(remoteAudioUrl)) {
+            showToast('Некорректный URL аудио');
+            return;
+        }
+        if (remoteCoverUrl && !isSafeRemoteUrl(remoteCoverUrl)) {
+            showToast('Некорректный URL обложки');
+            return;
         }
 
-        const audioFile = editAudioFile.files[0];
-        if (audioFile) {
-            const audioUrl = URL.createObjectURL(audioFile);
-            track.url = audioUrl;
-        }
+        try {
+            const audioFile = editAudioFile.files[0];
+            const coverFile = editCoverFile.files[0];
+            if (audioFile) {
+                track.url = await fileToDataUrl(audioFile, 2 * 1024 * 1024, audioFile.name);
+            } else if (remoteAudioUrl) {
+                track.url = remoteAudioUrl;
+            } else if (track.url?.startsWith('blob:')) {
+                track.url = '';
+            }
 
-        const coverFile = editCoverFile.files[0];
-        if (coverFile) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                track.cover = e.target.result;
-                profile.audio[editingIndex] = track;
-                renderAudioList();
-                closeEditModal();
-            };
-            reader.readAsDataURL(coverFile);
+            if (coverFile) {
+                track.cover = await fileToDataUrl(coverFile, 1024 * 1024, coverFile.name);
+            } else if (remoteCoverUrl) {
+                track.cover = remoteCoverUrl;
+            }
+        } catch (error) {
+            showToast(error.message);
             return;
         }
 
@@ -1359,27 +1488,45 @@
 
     saveProfileBtn.addEventListener('click', () => {
         collectProfileFromUI();
-        saveProfile(PROFILE_KEY, profile);
-        showToast('Настройки успешно сохранены в профиль');
+        if (saveProfile(PROFILE_KEY, profile)) {
+            showToast('Сохранено локально в этом браузере');
+        }
     });
 
     saveDefaultBtn.addEventListener('click', () => {
         collectProfileFromUI();
-        saveProfile(PROFILE_DEFAULT_KEY, profile);
-        showToast('Настройки сохранены как дефолт');
+        if (saveProfile(PROFILE_DEFAULT_KEY, profile)) {
+            showToast('Локальный дефолт сохранён');
+        }
+    });
+
+    exportProfileBtn.addEventListener('click', () => {
+        collectProfileFromUI();
+        const json = JSON.stringify(profile, null, 2) + '\n';
+        const blob = new Blob([json], { type: 'application/json;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'profile.json';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+        showToast('profile.json экспортирован — замените им файл в проекте');
     });
 
     resetProfileBtn.addEventListener('click', () => {
         const savedDefaultRaw = localStorage.getItem(PROFILE_DEFAULT_KEY);
         if (savedDefaultRaw) {
-            profile = loadProfile(PROFILE_DEFAULT_KEY, baseProfile);
+            profile = loadProfile(PROFILE_DEFAULT_KEY, publishedProfile);
         } else {
-            profile = deepClone(baseProfile);
+            profile = deepClone(publishedProfile);
         }
         applyProfileToUI();
         renderAudioList();
-        saveProfile(PROFILE_KEY, profile);
-        showToast('Настройки сброшены до дефолтных');
+        if (saveProfile(PROFILE_KEY, profile)) {
+            showToast('Настройки сброшены до дефолтных');
+        }
     });
 
     // color wheel
@@ -1469,8 +1616,12 @@
     });
 
     drawColorWheel();
-    applyProfileToUI();
-    renderAudioList();
+    (async function init() {
+        publishedProfile = await loadPublishedProfile();
+        profile = loadLocalProfile(publishedProfile);
+        applyProfileToUI();
+        renderAudioList();
+    })();
 </script>
 </body>
 </html>
